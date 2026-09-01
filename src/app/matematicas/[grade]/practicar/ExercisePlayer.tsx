@@ -3,13 +3,13 @@
 import { useState } from "react";
 import Link from "next/link";
 import type { Exercise, MultipleChoiceConfig, TrueFalseConfig } from "@/lib/exercises";
+import { playCorrect, playIncorrect } from "@/lib/sound";
 
 type Feedback = "correct" | "incorrect" | null;
 
 // Mismos colores y misma lógica que components/theory/quiz-player.tsx: clic único,
 // calificación inmediata, la correcta se rellena en verde sólido, la elegida (si es
-// incorrecta) en rojo sólido, y las demás bajan a 40% de opacidad. Sin checkboxes,
-// sin confirmar aparte, sin escribir nada — se elige entre opciones, como pidió el director.
+// incorrecta) en rojo sólido, y las demás bajan a 40% de opacidad.
 const GREEN = "#22c55e";
 const RED = "#ef4444";
 
@@ -25,22 +25,16 @@ export default function ExercisePlayer({ grade, exercises }: { grade: number; ex
   const current = exercises[index];
   const done = index >= exercises.length;
 
-  function checkMultipleChoice(choiceIndex: number) {
+  function pick(choiceIndex: number, isCorrect: boolean) {
     if (feedback) return;
-    const config = current.config as MultipleChoiceConfig;
-    const correct = choiceIndex === config.correctIndex;
     setChosenIndex(choiceIndex);
-    setFeedback(correct ? "correct" : "incorrect");
-    if (correct) setScore((s) => s + 1);
-  }
-
-  function checkTrueFalse(value: boolean) {
-    if (feedback) return;
-    const config = current.config as TrueFalseConfig;
-    const correct = value === config.correctAnswer;
-    setChosenIndex(value ? 0 : 1);
-    setFeedback(correct ? "correct" : "incorrect");
-    if (correct) setScore((s) => s + 1);
+    setFeedback(isCorrect ? "correct" : "incorrect");
+    if (isCorrect) {
+      setScore((s) => s + 1);
+      playCorrect();
+    } else {
+      playIncorrect();
+    }
   }
 
   function next() {
@@ -63,12 +57,20 @@ export default function ExercisePlayer({ grade, exercises }: { grade: number; ex
 
   if (done) {
     return (
-      <div className="rounded-2xl border border-hairline bg-surface p-8 text-center shadow-card">
-        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-ink-faint mb-2">Resultado</p>
-        <p className="text-5xl font-light tabular-nums mb-4">
-          {score} / {exercises.length}
-        </p>
-        <div className="flex gap-2 justify-center">
+      <div className="fixed inset-0 z-50 flex flex-col bg-canvas">
+        <div className="flex-1 flex flex-col items-center justify-center px-6 gap-4">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-ink-faint">Resultado</p>
+          <p className="text-6xl font-light tabular-nums">
+            {score} / {exercises.length}
+          </p>
+        </div>
+        <div className="shrink-0 px-4 pb-8 pt-2 max-w-sm w-full mx-auto flex gap-2">
+          <Link
+            href={`/matematicas/${grade}`}
+            className="duo-press flex-1 rounded-full border border-hairline px-5 py-3.5 text-sm font-semibold text-ink text-center hover:opacity-80 transition-opacity"
+          >
+            Volver a los temas
+          </Link>
           <button
             onClick={() => {
               setIndex(0);
@@ -76,47 +78,55 @@ export default function ExercisePlayer({ grade, exercises }: { grade: number; ex
               setFeedback(null);
               setChosenIndex(null);
             }}
-            className="duo-press rounded-full bg-brand-teal text-white px-5 py-3 text-sm font-semibold hover:opacity-90 transition-opacity"
+            className="duo-press flex-1 rounded-full bg-brand-teal text-white px-5 py-3.5 text-sm font-semibold hover:opacity-90 transition-opacity"
           >
             Practicar de nuevo
           </button>
-          <Link
-            href={`/matematicas/${grade}`}
-            className="duo-press rounded-full border border-hairline px-5 py-3 text-sm font-semibold text-ink hover:opacity-80 transition-opacity"
-          >
-            Volver a los temas
-          </Link>
         </div>
       </div>
     );
   }
 
   // Las dos opciones de true_false se tratan como un multiple_choice de 2, con el mismo
-  // render: así hay un solo camino visual para "elegir entre opciones" en toda la app.
-  const options =
-    current.type === "true_false"
-      ? ["Verdadero", "Falso"]
-      : (current.config as MultipleChoiceConfig).options;
-  const correctIndex =
-    current.type === "true_false"
-      ? (current.config as TrueFalseConfig).correctAnswer
-        ? 0
-        : 1
-      : (current.config as MultipleChoiceConfig).correctIndex;
-  const onPick = current.type === "true_false" ? (i: number) => checkTrueFalse(i === 0) : checkMultipleChoice;
+  // render: un solo camino visual para "elegir entre opciones" en toda la app.
+  const isTrueFalse = current.type === "true_false";
+  const options = isTrueFalse ? ["Verdadero", "Falso"] : (current.config as MultipleChoiceConfig).options;
+  const correctIndex = isTrueFalse
+    ? (current.config as TrueFalseConfig).correctAnswer ? 0 : 1
+    : (current.config as MultipleChoiceConfig).correctIndex;
+  const operation = isTrueFalse ? undefined : (current.config as MultipleChoiceConfig).operation;
 
   return (
-    <div>
-      <div className="flex items-center justify-between mb-6 text-xs uppercase tracking-[0.12em] text-ink-faint">
-        <span className="tabular-nums">
-          Ejercicio {index + 1} / {exercises.length}
+    <div className="fixed inset-0 z-50 flex flex-col bg-canvas">
+      {/* Barra superior: salir + contador. Alto fijo, no compite por espacio con la pregunta. */}
+      <div className="shrink-0 flex items-center justify-between px-3 pt-3">
+        <Link
+          href={`/matematicas/${grade}`}
+          aria-label="Salir del ejercicio"
+          className="p-2 -ml-1 rounded-full text-ink-faint hover:opacity-70 transition-opacity"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <path d="M18 6 6 18M6 6l12 12" />
+          </svg>
+        </Link>
+        <span className="text-xs tabular-nums text-ink-faint">
+          {index + 1} / {exercises.length}
         </span>
-        <span className="tabular-nums">{score} correctas</span>
+        <span className="text-xs tabular-nums text-ink-faint">{score} ✓</span>
       </div>
 
-      <div className="rounded-2xl border border-hairline bg-surface p-6 sm:p-8 shadow-card">
-        <p className="text-lg leading-relaxed mb-6">{current.prompt}</p>
+      {/* La pregunta ocupa el centro de lo que sobra entre las dos barras fijas: siempre
+          en el mismo punto de la pantalla, sin importar cuánto texto tenga cada ejercicio. */}
+      <div className="flex-1 min-h-0 flex flex-col items-center justify-center px-6 gap-3 text-center">
+        <p className="text-base text-ink-muted max-w-xs">{current.prompt}</p>
+        {operation && (
+          <p className="text-3xl sm:text-4xl font-bold tabular-nums text-ink">{operation}</p>
+        )}
+      </div>
 
+      {/* Las opciones van SIEMPRE al fondo de la pantalla: es donde cae el pulgar al
+          sostener el teléfono con una mano, y es donde las pone quiz-player.tsx. */}
+      <div className="shrink-0 px-4 pb-6 pt-2 max-w-md w-full mx-auto">
         <div className={`grid gap-2 ${options.length > 4 ? "grid-cols-2 sm:grid-cols-4" : "grid-cols-2"}`}>
           {options.map((option, i) => {
             let cls = OPTION_BASE;
@@ -133,7 +143,7 @@ export default function ExercisePlayer({ grade, exercises }: { grade: number; ex
               <button
                 key={i}
                 type="button"
-                onClick={() => onPick(i)}
+                onClick={() => pick(i, i === correctIndex)}
                 disabled={feedback !== null}
                 className={`px-3 py-3.5 rounded-xl border text-sm font-medium transition-colors ${cls}`}
               >
@@ -145,7 +155,7 @@ export default function ExercisePlayer({ grade, exercises }: { grade: number; ex
 
         {feedback && (
           <div
-            className="mt-5 rounded-xl px-4 py-3 text-sm font-semibold"
+            className="mt-3 rounded-xl px-4 py-3 text-sm font-semibold text-center"
             style={
               feedback === "correct"
                 ? { background: `${GREEN}1a`, color: GREEN }
@@ -155,16 +165,16 @@ export default function ExercisePlayer({ grade, exercises }: { grade: number; ex
             {feedback === "correct" ? "¡Correcto!" : "No es correcto."}
           </div>
         )}
-      </div>
 
-      {feedback && (
-        <button
-          onClick={next}
-          className="duo-press mt-4 w-full rounded-full bg-brand-teal text-white px-4 py-3 text-sm font-semibold hover:opacity-90 transition-opacity"
-        >
-          Siguiente →
-        </button>
-      )}
+        {feedback && (
+          <button
+            onClick={next}
+            className="duo-press mt-3 w-full rounded-full bg-brand-teal text-white px-4 py-3.5 text-sm font-semibold hover:opacity-90 transition-opacity"
+          >
+            Siguiente →
+          </button>
+        )}
+      </div>
     </div>
   );
 }

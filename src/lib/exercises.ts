@@ -2,7 +2,9 @@ import { supabase } from "@/lib/supabase";
 
 export type ExerciseType = "multiple_choice" | "multiple_response" | "numeric_input" | "true_false" | "drag_sort" | "match_pairs";
 
-export type MultipleChoiceConfig = { options: string[]; correctIndex: number };
+// `operation` es opcional: cuando el DBA es de cálculo (una suma, una secuencia), se separa
+// del enunciado para poder mostrarla grande y en negrilla, aparte de la instrucción.
+export type MultipleChoiceConfig = { options: string[]; correctIndex: number; operation?: string };
 // A diferencia de multiple_choice (una sola respuesta correcta), aquí puede haber varias —
 // o ninguna: el estudiante marca todas las que apliquen y comprueba con un botón, no al
 // primer clic.
