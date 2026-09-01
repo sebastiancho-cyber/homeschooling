@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import type { Exercise, MultipleChoiceConfig, TrueFalseConfig } from "@/lib/exercises";
 import { playCorrect, playIncorrect } from "@/lib/sound";
@@ -16,11 +16,16 @@ const RED = "#ef4444";
 // Idle: border-hairline hover:bg-raised text-graphite (optionBase de quiz-player.tsx).
 const OPTION_BASE = "border-hairline hover:bg-raised text-ink";
 
+// Cuánto se ve el resultado antes de avanzar solo. Ni tan corto que no dé tiempo a leerlo,
+// ni tan largo que se sienta una espera — el mismo criterio que advanceMs en quiz-player.tsx.
+const ADVANCE_MS = 1300;
+
 export default function ExercisePlayer({ grade, exercises }: { grade: number; exercises: Exercise[] }) {
   const [index, setIndex] = useState(0);
   const [feedback, setFeedback] = useState<Feedback>(null);
   const [chosenIndex, setChosenIndex] = useState<number | null>(null);
   const [score, setScore] = useState(0);
+  const advanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const current = exercises[index];
   const done = index >= exercises.length;
@@ -35,13 +40,18 @@ export default function ExercisePlayer({ grade, exercises }: { grade: number; ex
     } else {
       playIncorrect();
     }
+    advanceTimer.current = setTimeout(() => {
+      setFeedback(null);
+      setChosenIndex(null);
+      setIndex((i) => i + 1);
+    }, ADVANCE_MS);
   }
 
-  function next() {
-    setFeedback(null);
-    setChosenIndex(null);
-    setIndex((i) => i + 1);
-  }
+  // Si se sale del ejercicio a mitad del conteo, el temporizador no puede sobrevivir al
+  // componente: seguiría avanzando un player que ya no está en pantalla.
+  useEffect(() => () => {
+    if (advanceTimer.current) clearTimeout(advanceTimer.current);
+  }, []);
 
   if (exercises.length === 0) {
     return (
@@ -97,7 +107,7 @@ export default function ExercisePlayer({ grade, exercises }: { grade: number; ex
   const operation = isTrueFalse ? undefined : (current.config as MultipleChoiceConfig).operation;
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col bg-canvas">
+    <div className="fixed inset-0 z-50 flex flex-col bg-canvas overflow-hidden">
       {/* Barra superior: salir + contador. Alto fijo, no compite por espacio con la pregunta. */}
       <div className="shrink-0 flex items-center justify-between px-3 pt-3">
         <Link
@@ -117,10 +127,27 @@ export default function ExercisePlayer({ grade, exercises }: { grade: number; ex
 
       {/* La pregunta ocupa el centro de lo que sobra entre las dos barras fijas: siempre
           en el mismo punto de la pantalla, sin importar cuánto texto tenga cada ejercicio. */}
-      <div className="flex-1 min-h-0 flex flex-col items-center justify-center px-6 gap-3 text-center">
+      <div className="relative flex-1 min-h-0 flex flex-col items-center justify-center px-6 gap-3 text-center">
         <p className="text-base text-ink-muted max-w-xs">{current.prompt}</p>
         {operation && (
           <p className="text-3xl sm:text-4xl font-bold tabular-nums text-ink">{operation}</p>
+        )}
+
+        {/* El resultado flota SOBRE la pregunta y se disuelve solo — no empuja nada, no hay
+            que cerrarlo. `key={index}` obliga a remontar el nodo en cada ejercicio para que
+            la animación vuelva a correr desde el principio. */}
+        {feedback && (
+          <div
+            key={index}
+            className="duo-toast absolute bottom-3 left-1/2 -translate-x-1/2 rounded-full px-5 py-2.5 text-sm font-semibold shadow-card"
+            style={{
+              ["--duo-toast-life" as string]: `${ADVANCE_MS}ms`,
+              background: feedback === "correct" ? GREEN : RED,
+              color: "white",
+            }}
+          >
+            {feedback === "correct" ? "¡Correcto!" : "No es correcto"}
+          </div>
         )}
       </div>
 
@@ -152,28 +179,6 @@ export default function ExercisePlayer({ grade, exercises }: { grade: number; ex
             );
           })}
         </div>
-
-        {feedback && (
-          <div
-            className="mt-3 rounded-xl px-4 py-3 text-sm font-semibold text-center"
-            style={
-              feedback === "correct"
-                ? { background: `${GREEN}1a`, color: GREEN }
-                : { background: `${RED}1a`, color: RED }
-            }
-          >
-            {feedback === "correct" ? "¡Correcto!" : "No es correcto."}
-          </div>
-        )}
-
-        {feedback && (
-          <button
-            onClick={next}
-            className="duo-press mt-3 w-full rounded-full bg-brand-teal text-white px-4 py-3.5 text-sm font-semibold hover:opacity-90 transition-opacity"
-          >
-            Siguiente →
-          </button>
-        )}
       </div>
     </div>
   );

@@ -123,8 +123,19 @@ body {
   }
   .duo-rise { animation: duo-rise 260ms cubic-bezier(.22,1,.36,1) both; }
 
+  /* La ventana flotante del resultado: entra, se queda y se disuelve, todo en UNA sola
+     animación (si la entrada fuera por animación y la salida por transición, la animación
+     —que va con `both`— gana sobre el estilo en línea y la salida no llega a ocurrir).
+     El largo total lo pone quien la usa vía --duo-toast-life. */
+  @keyframes duo-toast {
+    0%      { opacity: 0; transform: translateY(10px) scale(.94); }
+    8%, 82% { opacity: 1; transform: translateY(0) scale(1); }
+    100%    { opacity: 0; transform: translateY(-6px) scale(.98); }
+  }
+  .duo-toast { animation: duo-toast var(--duo-toast-life, 1.1s) cubic-bezier(.22,1,.36,1) both; }
+
   @media (prefers-reduced-motion: reduce) {
-    .duo-pop, .duo-shake, .duo-rise { animation: none !important; }
+    .duo-pop, .duo-shake, .duo-rise, .duo-toast { animation: none !important; }
     .duo-press:not(:disabled):active { transform: none; }
   }
 }
