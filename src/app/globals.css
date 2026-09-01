@@ -1,54 +1,130 @@
 @import "tailwindcss";
 
-:root {
-  --bg: #edf0ee;
-  --surface: #ffffff;
-  --surface-2: #f5f7f4;
-  --ink: #1e2624;
-  --ink-soft: #57635f;
-  --ink-faint: #8b9793;
-  --border: #d7dcd8;
-  --border-soft: #e4e8e4;
+/* ==========================================================================
+   Paleta "Niebla" — portada de la escuela de música (Teoría Musical), tal
+   cual vive en cmc/apps/web/app/globals.css. Se reutiliza el token, no se
+   reinventa: mismo canvas/surface/ink/accent, mismo comportamiento en oscuro.
+   -------------------------------------------------------------------------- */
 
-  --accent: #1f6e6e;
-  --accent-bg: #e4eeec;
+:root {
+  --canvas: 243 243 245; /* #f3f3f5 */
+  --surface: 255 255 255;
+  --raised: 247 247 249;
+  --hairline: 225 225 230;
+  --ink: 43 43 49; /* grafito, nunca negro puro */
+  --ink-muted: 92 92 102;
+  --ink-faint: 138 138 148;
+
+  --brand-teal: 18 178 161;
+  --brand-gold: 184 151 81;
+  --brand-rose: 209 110 151;
+  --brand-sage: 148 162 101;
+  --brand-blue: 122 145 196;
+  --brand-violet: 141 115 201;
+
+  --tint: 0.11;
+  --card-shadow: 0 1px 2px rgba(40, 40, 55, .04), 0 6px 20px -8px rgba(40, 40, 55, .08);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #14191a;
-    --surface: #1b2222;
-    --surface-2: #212928;
-    --ink: #e8ece9;
-    --ink-soft: #9daaa5;
-    --ink-faint: #6c7773;
-    --border: #2b3433;
-    --border-soft: #232b2a;
+    --canvas: 22 22 26;
+    --surface: 33 33 39;
+    --raised: 43 43 49;
+    --hairline: 58 58 66;
+    --ink: 237 238 242;
+    --ink-muted: 163 163 173;
+    --ink-faint: 116 116 127;
 
-    --accent: #5bc0b5;
-    --accent-bg: #16292a;
+    --brand-teal: 79 214 198;
+    --brand-gold: 214 179 108;
+    --brand-rose: 232 148 181;
+    --brand-sage: 176 190 129;
+    --brand-blue: 157 176 218;
+    --brand-violet: 182 162 227;
+
+    --tint: 0.2;
+    --card-shadow: 0 0 0 1px rgba(255, 255, 255, .05), 0 8px 24px -12px rgba(0, 0, 0, .7);
   }
 }
 
 @theme inline {
-  --color-bg: var(--bg);
-  --color-surface: var(--surface);
-  --color-surface-2: var(--surface-2);
-  --color-ink: var(--ink);
-  --color-ink-soft: var(--ink-soft);
-  --color-ink-faint: var(--ink-faint);
-  --color-border: var(--border);
-  --color-border-soft: var(--border-soft);
-  --color-accent: var(--accent);
-  --color-accent-bg: var(--accent-bg);
+  --color-canvas: rgb(var(--canvas));
+  --color-surface: rgb(var(--surface));
+  --color-raised: rgb(var(--raised));
+  --color-hairline: rgb(var(--hairline));
+  --color-ink: rgb(var(--ink));
+  --color-ink-muted: rgb(var(--ink-muted));
+  --color-ink-faint: rgb(var(--ink-faint));
 
-  --font-display: var(--font-display);
-  --font-body: var(--font-body);
-  --font-mono: var(--font-mono);
+  --color-brand-teal: rgb(var(--brand-teal));
+  --color-brand-gold: rgb(var(--brand-gold));
+  --color-brand-rose: rgb(var(--brand-rose));
+  --color-brand-sage: rgb(var(--brand-sage));
+  --color-brand-blue: rgb(var(--brand-blue));
+  --color-brand-violet: rgb(var(--brand-violet));
+
+  --shadow-card: var(--card-shadow);
 }
 
 body {
-  background: var(--bg);
-  color: var(--ink);
-  font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+  background: rgb(var(--canvas));
+  color: rgb(var(--ink));
+  font-family: "Segoe UI Variable Text", "Segoe UI", var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+@layer base {
+  table {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* ==========================================================================
+   Capa de juego — las mismas clases `duo-*` del entrenador de Teoría Musical.
+   Solo las de interacción/feedback: las animaciones de la mascota (delfín)
+   no aplican aquí, este producto no tiene esa marca.
+   ========================================================================== */
+@layer components {
+  .duo-press {
+    --duo-depth: 4px;
+    transform: translateY(0);
+  }
+  .duo-press:not(:disabled):active {
+    transform: translateY(var(--duo-depth));
+    box-shadow: none !important;
+  }
+  .duo-press:focus-visible {
+    outline: 3px solid rgba(141, 115, 201, 0.85);
+    outline-offset: 2px;
+  }
+}
+
+@layer utilities {
+  @keyframes duo-pop {
+    0% { transform: scale(1); }
+    38% { transform: scale(1.22); }
+    100% { transform: scale(1); }
+  }
+  .duo-pop { animation: duo-pop 380ms cubic-bezier(.34,1.56,.64,1); }
+
+  @keyframes duo-shake {
+    0%, 100% { transform: translateX(0); }
+    18% { transform: translateX(-7px); }
+    38% { transform: translateX(6px); }
+    58% { transform: translateX(-4px); }
+    78% { transform: translateX(3px); }
+  }
+  .duo-shake { animation: duo-shake 340ms ease-in-out; }
+
+  @keyframes duo-rise {
+    0% { opacity: 0; transform: translateY(14px) scale(.94); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .duo-rise { animation: duo-rise 260ms cubic-bezier(.22,1,.36,1) both; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .duo-pop, .duo-shake, .duo-rise { animation: none !important; }
+    .duo-press:not(:disabled):active { transform: none; }
+  }
 }

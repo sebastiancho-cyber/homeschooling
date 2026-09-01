@@ -22,11 +22,11 @@ export default async function PracticarPage({
       <div className="mx-auto max-w-2xl px-6 py-12 sm:py-16">
         <Link
           href={`/matematicas/${grade}`}
-          className="font-mono text-xs uppercase tracking-wider text-ink-faint hover:text-accent transition-colors"
+          className="text-xs font-semibold uppercase tracking-[0.18em] text-ink-faint hover:text-brand-teal transition-colors"
         >
           ← Grado {grade}º
         </Link>
-        <h1 className="font-display text-3xl sm:text-4xl font-semibold tracking-tight mt-3 mb-8">
+        <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight mt-3 mb-8">
           Practicar
         </h1>
         <ExercisePlayer grade={grade} exercises={exercises} />

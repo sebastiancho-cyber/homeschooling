@@ -1,23 +1,13 @@
 import type { Metadata } from "next";
-import { Fraunces, Karla, IBM_Plex_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 
-const fraunces = Fraunces({
-  variable: "--font-display",
+// Segoe UI Variable es la fuente de las apps del portal (Teoría Musical incluida); en equipos
+// sin Segoe (la mayoría de móviles) cae a Inter, que se declara aquí, y de ahí al stack del
+// sistema. Mismo criterio que cmc/apps/web/tailwind.config.ts.
+const inter = Inter({
+  variable: "--font-sans",
   subsets: ["latin"],
-  weight: ["500", "600", "700"],
-});
-
-const karla = Karla({
-  variable: "--font-body",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-});
-
-const plexMono = IBM_Plex_Mono({
-  variable: "--font-mono",
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
 });
 
 export const metadata: Metadata = {
@@ -27,10 +17,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html
-      lang="es"
-      className={`${fraunces.variable} ${karla.variable} ${plexMono.variable} h-full antialiased`}
-    >
+    <html lang="es" className={`${inter.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );

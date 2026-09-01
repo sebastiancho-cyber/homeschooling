@@ -54,24 +54,24 @@ export default async function GradePage({
       <div className="mx-auto max-w-3xl px-6 py-12 sm:py-16">
         <Link
           href="/"
-          className="font-mono text-xs uppercase tracking-wider text-ink-faint hover:text-accent transition-colors"
+          className="text-xs font-semibold uppercase tracking-[0.18em] text-ink-faint hover:text-brand-teal transition-colors"
         >
           ← Matemáticas
         </Link>
 
         <div className="flex items-baseline gap-3 mt-3 mb-2">
-          <h1 className="font-display text-4xl sm:text-5xl font-semibold tracking-tight">
+          <h1 className="text-4xl sm:text-5xl font-semibold tracking-tight">
             Grado {grade}º
           </h1>
-          <span className="font-mono text-sm text-ink-faint">{dbas.length} DBA</span>
+          <span className="text-sm tabular-nums text-ink-faint">{dbas.length} DBA</span>
         </div>
-        <p className="text-ink-soft mb-6">
+        <p className="text-ink-muted mb-6">
           Derechos básicos de aprendizaje según el MEN (V.2, 2016).
         </p>
 
         <Link
           href={`/matematicas/${grade}/practicar`}
-          className="inline-block rounded-md bg-accent text-white px-4 py-2 text-sm font-medium hover:opacity-90 transition-opacity mb-10"
+          className="duo-press inline-block rounded-full bg-brand-teal text-white px-6 py-3 text-sm font-semibold tracking-[0.02em] hover:opacity-90 transition-opacity mb-10"
         >
           Practicar →
         </Link>
@@ -80,9 +80,9 @@ export default async function GradePage({
           {dbas.map((dba) => (
             <li
               key={dba.id}
-              className="flex gap-4 rounded-lg border border-border-soft bg-surface border-l-4 border-l-accent p-4 shadow-sm"
+              className="flex gap-4 rounded-xl border border-hairline bg-surface p-4 shadow-card"
             >
-              <span className="font-mono text-sm font-semibold text-accent shrink-0 pt-0.5">
+              <span className="text-sm font-semibold tabular-nums text-brand-teal shrink-0 pt-0.5">
                 {String(dba.num).padStart(2, "0")}
               </span>
               <span className="text-sm leading-relaxed text-ink">{dba.enunciado}</span>
@@ -90,16 +90,16 @@ export default async function GradePage({
           ))}
         </ol>
 
-        <div className="flex justify-between mt-10 font-mono text-sm">
+        <div className="flex justify-between mt-10 text-sm">
           {prevGrade ? (
-            <Link href={`/matematicas/${prevGrade}`} className="text-ink-soft hover:text-accent transition-colors">
+            <Link href={`/matematicas/${prevGrade}`} className="text-ink-muted hover:text-brand-teal transition-colors">
               ← Grado {prevGrade}º
             </Link>
           ) : (
             <span />
           )}
           {nextGrade ? (
-            <Link href={`/matematicas/${nextGrade}`} className="text-ink-soft hover:text-accent transition-colors">
+            <Link href={`/matematicas/${nextGrade}`} className="text-ink-muted hover:text-brand-teal transition-colors">
               Grado {nextGrade}º →
             </Link>
           ) : (

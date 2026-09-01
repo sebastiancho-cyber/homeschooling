@@ -40,13 +40,13 @@ export default async function Home() {
   return (
     <main className="flex-1">
       <div className="mx-auto max-w-4xl px-6 py-12 sm:py-16">
-        <div className="font-mono text-xs uppercase tracking-wider text-ink-faint mb-3">
+        <div className="text-xs font-semibold uppercase tracking-[0.18em] text-ink-faint mb-3">
           Aprende en Casa · MEN Colombia
         </div>
-        <h1 className="font-display text-4xl sm:text-5xl font-semibold tracking-tight mb-4 text-balance">
+        <h1 className="text-4xl sm:text-5xl font-semibold tracking-tight mb-4 text-balance">
           Matemáticas
         </h1>
-        <p className="max-w-prose text-ink-soft mb-10">
+        <p className="max-w-prose text-ink-muted mb-10">
           {total} derechos básicos de aprendizaje repartidos en 11 grados. Elige un grado
           para ver sus temáticas.
         </p>
@@ -56,12 +56,12 @@ export default async function Home() {
             <Link
               key={grade}
               href={`/matematicas/${grade}`}
-              className="group flex flex-col gap-1 rounded-lg border border-border-soft bg-surface p-4 shadow-sm hover:border-accent transition-colors"
+              className="group flex flex-col gap-1 rounded-xl border border-hairline bg-surface p-4 shadow-card hover:border-brand-teal transition-colors"
             >
-              <span className="font-mono text-2xl font-semibold text-ink group-hover:text-accent transition-colors">
+              <span className="text-2xl font-light tabular-nums text-ink group-hover:text-brand-teal transition-colors">
                 {grade}º
               </span>
-              <span className="font-mono text-xs text-ink-faint">{count} DBA</span>
+              <span className="text-[10px] uppercase tracking-[0.12em] text-ink-faint">{count} DBA</span>
             </Link>
           ))}
         </div>
