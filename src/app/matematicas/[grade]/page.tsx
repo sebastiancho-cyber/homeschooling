@@ -65,9 +65,16 @@ export default async function GradePage({
           </h1>
           <span className="font-mono text-sm text-ink-faint">{dbas.length} DBA</span>
         </div>
-        <p className="text-ink-soft mb-10">
+        <p className="text-ink-soft mb-6">
           Derechos básicos de aprendizaje según el MEN (V.2, 2016).
         </p>
+
+        <Link
+          href={`/matematicas/${grade}/practicar`}
+          className="inline-block rounded-md bg-accent text-white px-4 py-2 text-sm font-medium hover:opacity-90 transition-opacity mb-10"
+        >
+          Practicar →
+        </Link>
 
         <ol className="flex flex-col gap-3">
           {dbas.map((dba) => (
