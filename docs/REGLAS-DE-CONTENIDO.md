@@ -1,13 +1,38 @@
 # Cómo se elaboran los ejercicios
 
-Estas reglas salieron de armar el grado 1 completo y de equivocarnos varias
-veces en el camino. Cada una dice **por qué** existe, casi siempre nombrando el
-error que la hizo necesaria: una regla sin su motivo se rompe apenas estorba.
+Estas reglas salieron de armar el grado 1 de Matemáticas completo y de
+equivocarnos muchas veces en el camino. Cada una dice **por qué** existe,
+casi siempre nombrando el error que la hizo necesaria: una regla sin su motivo
+se rompe apenas estorba.
 
-Aplican a cualquier grado y a cualquier área. El grado 1 de Matemáticas es el
-ejemplo trabajado; el generador que lo produce está en la carpeta de trabajo de
-la sesión y la migración que lo sembró es
-`supabase/migrations/0020_reparto_y_techo.sql`.
+Aplican a cualquier grado y a cualquier área. El grado 1 es el ejemplo
+trabajado: su generador vive en la carpeta de trabajo de la sesión, el contenido
+se sembró con `supabase/migrations/0023_sin_fugas.sql` y las estaciones de
+repaso con `supabase/migrations/0022_lecciones_de_repaso.sql`.
+
+## Las diez que más importan
+
+Si solo vas a leer una parte, que sea esta. Cada una tiene su sección.
+
+1. **Un tema es un DBA del MEN**, completo y sin mezclar. (§1)
+2. **Cada evidencia del DBA, entre 2 y 4 ranuras.** Eso decide el largo de la
+   lección, no un número redondo. (§1)
+3. **Tres versiones por ranura**, con respuestas distintas entre sí. (§1)
+4. **Las últimas ranuras salen del ejemplo oficial del DBA**, que es la tarea
+   de verdad. (§1)
+5. **Corto no es lo mismo que sin contexto.** Si al recortar la pregunta deja de
+   significar algo, el recorte estaba mal. (§2)
+6. **El distractor sale del error típico**, y tiene que ser algo que un niño
+   pueda creer. (§3)
+7. **Que no se pueda acertar sin saber.** Es la sección más larga y la que más
+   errores evita: eco, molde, longitud, concordancia, opciones equivalentes y
+   el patrón numérico. (§4)
+8. **El dibujo se deriva del contenido, nunca se etiqueta a mano**, y no se pone
+   donde regale la respuesta. (§5)
+9. **Ninguna pregunta queda muda**: al fallar, el niño tiene que poder leer por
+   qué. (§6)
+10. **Lo automático no reemplaza leerlo.** Un revisor independiente encontró en
+    el grado 1 la fuga de mayor alcance de todas. (§4, §9)
 
 ---
 
@@ -67,6 +92,20 @@ No todo lo que pide el ejemplo cabe en una selección múltiple —proponer y
 construir, no—, pero casi siempre hay una versión que sí: *"¿cuántas parejas
 sirven?"* mide lo mismo que *"indaga otras soluciones"*, y se puede contestar
 tocando una ficha.
+
+**La ruta lleva además LECCIONES DE REPASO.** Una a la mitad y otra al cierre.
+Sin ellas, un niño puede aprobar los diez temas sin haber tenido que decidir
+nunca, frente a una pregunta, de cuál se trataba — y decidir eso es media
+matemática, porque en un examen de verdad nadie avisa qué tema viene.
+
+Un repaso **no es un DBA y no tiene preguntas propias**: toma las de los temas
+que repasa, dos de cada uno. Copiarlas sería más fácil y dejaría el repaso
+preguntando la versión vieja el día que se corrija un ejercicio.
+
+Eso obliga a separar el lugar en la ruta del número del DBA: `orden` va de diez
+en diez para que quepan repasos en medio sin renumerar nada. En la base, un
+repaso es una fila con `tipo = 'repaso'`, la lista de temas que repasa y cuántas
+ranuras arma.
 
 **El orden de las ranuras es una rampa de dificultad, no el orden del
 documento.** Va de lo concreto a lo abstracto. El orden en que el MEN lista las
@@ -146,7 +185,121 @@ sentirse como diez cosas distintas.
 
 ---
 
-## 4. El dibujo
+## 4. Que no se pueda acertar sin saber
+
+Esta es la sección que más errores va a evitarle a los grados que siguen, y la
+que más nos costó: un detector encontró 54 fugas, y un árbitro que revisó el
+banco por su cuenta encontró otras tantas, **incluida la más grave, que el
+detector no sabía ver**.
+
+Una **fuga** es cualquier cosa en la forma de la pregunta que deje acertar sin
+saber la materia. No hay que imaginar a un niño haciendo trampa: estas pistas se
+aprovechan solas, sin darse cuenta, y lo que miden es la habilidad de leer el
+molde de una pregunta. Peor todavía, castigan al niño que sí estudió, porque el
+que no estudió empata con él.
+
+### La fuga más grave: el patrón numérico
+
+No se ve mirando un ejercicio. Se ve mirando el banco entero.
+
+Las opciones de cálculo salían del resultado, el error típico, y el resultado
+±1. Ordenadas de menor a mayor eso deja **tres números seguidos con la correcta
+en el medio** y un número lejano aparte. Una sola regla —*descarto el raro y
+marco el del medio*— resolvía noventa y cuatro ejercicios sin hacer una cuenta.
+
+La cura no es quitar el distractor del error típico, que es el que diagnostica:
+es dejar de poner la correcta siempre en el mismo sitio. Los dos vecinos salen
+de una lista de moldes que se elige con los propios operandos, así que varía
+entre ejercicios y no varía entre corridas.
+
+**Cómo se mide, y es la única manera de verlo:** sobre todos los ejercicios de
+cálculo del grado, ordenar las cuatro opciones y anotar en qué posición quedó la
+correcta. Si una posición se lleva más de la mitad, hay patrón. Lo mismo con "¿hay
+un número claramente suelto que se pueda descartar de un vistazo?".
+
+| | antes | después |
+|---|---|---|
+| la correcta cae en la misma posición | 100 % | 47 % |
+| hay un número suelto descartable | 100 % | 21 % |
+
+### Las otras cinco familias
+
+**1. Eco.** Una palabra del enunciado aparece en la correcta y en ninguna otra.
+
+> *"¿Cuál número dice CUÁNTO MIDE?"* → **«Mide 3 metros»**
+
+El niño empareja "MIDE" con "Mide" y gana. Tres arreglos, por orden de
+preferencia:
+
+- **Nombrar la categoría, no el verbo**: *"¿En cuál el número es una MEDIDA?"*.
+- **Poner la palabra delatora también en un distractor**. Si la pregunta habla de
+  goles, que otra opción hable de goles.
+- **Nombrar las dos caras del contraste en el enunciado**. Para la lateralidad no
+  se puede evitar decir "derecha"; lo que se hace es decir también "izquierda":
+  *"Lápiz a la derecha, borrador a la izquierda. Coges el lápiz con:"*.
+
+**2. Molde.** Las tres incorrectas comparten una forma y la correcta tiene otra:
+es la única sin artículo, la única con un número, la única palabra entre tres
+cifras, la única frase completa entre tres truncadas. Se elige por la forma sin
+leer el contenido. **Las cuatro opciones se escriben con el mismo molde.**
+
+**3. Longitud.** La correcta es visiblemente la más larga —porque es la más
+completa, o la que junta dos ideas— y las otras tres son cortas. Se nota sin
+leerlas. **Las cuatro de largo parecido.**
+
+**4. Concordancia.** El enunciado termina en *"…y encima una:"* y de las cuatro
+figuras solo dos son femeninas: las otras dos se caen antes de mirar ninguna
+forma. **El enunciado no debe pedir género ni número.** Se cierra en neutro:
+*"…¿qué forma lleva encima?"*.
+
+**5. Opciones que dicen lo mismo.** Si dos opciones significan lo mismo, ninguna
+puede ser la correcta —no puede haber dos— así que el niño las descarta juntas.
+Con un distractor absurdo más, la pregunta se contesta con **una sola opción
+viva** y cero materia. Pasaba en cuatro ranuras del grado 1:
+
+> *"Para saber cuántos quedan:"* · Resto · Sumo · **Cuento hacia atrás** · No hago nada
+
+"Resto" y "Cuento hacia atrás" son lo mismo; "No hago nada" no lo marca nadie.
+Queda "Sumo" contra la correcta, y "Sumo" es obviamente falso.
+
+De la misma familia: una opción que es la negación de la otra (*"Dice X"* /
+*"No dice X"*) deja al niño sabiendo que la respuesta es una de esas dos.
+
+### Y el distractor absurdo
+
+*"El agua se congela"*, *"Se vuelven sillas"*, *"Nunca"*. Nadie los marca, así
+que la pregunta tiene tres opciones y no cuatro. **Un distractor tiene que ser
+algo que un niño pueda creer.** Si no se te ocurre por qué alguien lo marcaría,
+no sirve.
+
+### Los detectores
+
+Seis corren dentro del generador y una fuga nueva no deja generar: eco,
+concordancia, longitud, molde, símbolo exclusivo y opciones equivalentes. Más la
+medición del patrón numérico, que se hace sobre el banco completo.
+
+**Los falsos positivos se anotan, no se apagan.** Van a un archivo de excepciones
+con el motivo escrito, una por una. La clave incluye el enunciado y la respuesta,
+así que si el ejercicio cambia la excepción caduca y el detector vuelve a hablar.
+En el grado 1 son seis excepciones para 312 ejercicios: se leen en un minuto.
+
+**Cada detector se prueba contra casos conocidos antes de creerle.** Dos de los
+nuestros se equivocaban al principio: uno daba por iguales *"3 decenas y 4
+unidades"* y *"4 decenas y 3 unidades"* (no lo son), y otro daba por iguales
+*"Baja en la jarra y sube en el vaso"* y la misma frase al revés (tampoco). La
+prueba de "las mismas palabras en otro orden" acabó limitada a las
+enumeraciones, que es donde el orden de verdad no importa.
+
+### Lo que ninguna máquina ve
+
+Hay que leerlo. Un árbitro que lea el banco entero encuentra cosas que ningún
+detector: que *"Resto"* y *"Cuento hacia atrás"* dicen lo mismo con otras
+palabras, que un distractor es defendible, que una premisa es falsa. **El paso de
+revisión humana no es opcional y no lo reemplaza el generador.**
+
+---
+
+## 5. El dibujo
 
 Ver `src/components/Ilustracion.tsx`.
 
@@ -222,7 +375,7 @@ final**: la posición es información, no adorno.
 
 ---
 
-## 5. La explicación
+## 6. La explicación
 
 Ver `src/lib/ayuda.ts` (la derivada) y el mapa de ayudas escritas del generador.
 
@@ -257,7 +410,7 @@ En el grado 1: 85 ranuras escritas (255 ejercicios) y 19 derivadas (57).
 
 ---
 
-## 6. El rango numérico
+## 7. El rango numérico
 
 **Lo fija el propio DBA, no la costumbre.** El enunciado del DBA y sus
 evidencias dicen hasta dónde llega el grado; se lee ahí antes de escribir nada.
@@ -277,7 +430,7 @@ grande es un descuido.
 
 ---
 
-## 7. El control de calidad
+## 8. El control de calidad
 
 Corre **dos veces**: en el generador, antes de escribir el SQL, y otra vez
 dentro de la transacción de la migración. Si algo no cumple, no se genera nada y
@@ -285,23 +438,32 @@ la migración se revierte entera.
 
 En el generador (aborta sin escribir):
 
+**De forma**
 - Cada evidencia del DBA entre 2 y 4 ranuras, y la lección con 10 como mínimo.
 - 3 versiones por ranura, distintas entre sí **y** con respuestas distintas.
 - 4 opciones, todas distintas, ninguna vacía, ninguna de más de 36 caracteres.
-- La correcta está de primera.
+- La correcta está de primera (el barajado es del servidor).
 - La evidencia declarada existe en ese DBA.
-- La aritmética de la línea de operación da lo que marca la opción correcta.
 - Ningún enunciado pasa del largo del globo.
+
+**De contenido**
+- La aritmética de la línea de operación da lo que marca la opción correcta.
 - Ninguna resta da negativo.
 - **Ninguna ranura queda muda**: o trae ayuda escrita, o trae una operación de
   una forma que la app sabe explicar.
 - Ninguna ayuda escrita apunta a una ranura que ya no existe.
 
-Esa penúltima es la que más ha encontrado. Para saber si la app sabe explicar
-una operación, el generador tiene la lista de formas que `ayudaPara()` reconoce.
-Es un espejo, y por eso está anotado en los dos lados: si allá se agrega una
-forma, aquí también. Sin él, `3 + 4 = 7 y 7 = 5 + 2` parecía explicable —tiene
-operación— y no lo era: esa ranura estaba muda y no se vio hasta que el chequeo la señaló.
+**De fugas** (sección 4)
+- Eco léxico, concordancia, longitud, molde, símbolo exclusivo y opciones
+  equivalentes, ejercicio por ejercicio.
+- El patrón numérico, medido sobre el banco completo del grado.
+
+La de las ranuras mudas es la que más ha encontrado. Para saber si la app sabe
+explicar una operación, el generador tiene la lista de formas que `ayudaPara()`
+reconoce. Es un espejo, y por eso está anotado en los dos lados: si allá se
+agrega una forma, aquí también. Sin él, `3 + 4 = 7 y 7 = 5 + 2` parecía
+explicable —tiene operación— y no lo era: esa ranura estaba muda y no se vio
+hasta que el chequeo la señaló.
 
 La ayuda escrita se busca **por el enunciado de su primera versión**, no por la
 posición de la ranura. Repartir las ranuras las mueve de sitio, y una ayuda que
@@ -312,27 +474,55 @@ En la migración (`do $$ … raise exception … $$;`):
 - El total de evidencias y de ejercicios es el esperado.
 - Ninguna ranura quedó con un número de versiones distinto de 3.
 - Ningún ejercicio quedó mal formado.
+- Ningún ejercicio quedó sin ayuda y sin operación.
 
 Poner las comprobaciones **dentro** de la transacción es lo que hace que una
 migración mala no deje la base a medias.
 
 ---
 
-## 8. El procedimiento
+## 9. El procedimiento
 
-1. Sacar del texto oficial el DBA y sus evidencias, **literales**. No se
-   reescriben ni se resumen: son la trazabilidad con el MEN.
-2. Escribir el generador del grado — un archivo, que es la única fuente de
-   verdad. Produce el `.sql` **y** el cuerpo JSON de la petición.
-3. Correrlo. Si se queja, se corrige el contenido; nunca el chequeo.
-4. Aplicar la migración por la Management API (`curl --data-binary "@archivo"`,
-   que evita que se corrompan las tildes y las comillas).
-5. **Jugar el grado completo en el navegador.** Los tres errores de dibujo de
-   arriba pasaron los chequeos automáticos y solo se vieron jugando.
+Sembrar un grado, en orden. Los pasos 6 y 7 no son opcionales: los tres errores
+de dibujo y los cinco de contenido más graves del grado 1 pasaron todos los
+chequeos automáticos.
+
+1. **Sacar del texto oficial el DBA, sus evidencias y su EJEMPLO**, literales.
+   No se reescriben ni se resumen. El ejemplo se lee antes de escribir la
+   primera pregunta: es la tarea de verdad, y la pregunta que uno escribe sin
+   mirarlo suele ser su sombra (sección 1).
+2. **Repartir las ranuras** entre las evidencias, 2 a 4 cada una, antes de
+   redactar nada. Es lo que decide el largo de la lección.
+3. **Escribir el generador del grado** — un archivo, única fuente de verdad.
+   Produce el `.sql` y el cuerpo JSON de la petición.
+4. **Correrlo.** Si se queja, se corrige el contenido; **nunca el chequeo**. Si
+   un chequeo señala un falso positivo, va a las excepciones con su motivo.
+5. **Aplicar la migración** por la Management API
+   (`curl --data-binary "@archivo"`, que evita que se corrompan las tildes).
+6. **Jugar el grado completo en el navegador**, en pantalla de teléfono. Aquí
+   aparecen los dibujos que se salen, el texto que no cabe y las preguntas que
+   no se entienden aunque estén bien escritas.
+7. **Pasarle el banco a un revisor independiente**, con el encargo de buscar
+   defectos y no de confirmar que está bien. En el grado 1 encontró la fuga de
+   mayor alcance de todas, que ningún detector veía porque no está en un
+   ejercicio sino en el conjunto.
+
+### Lo que NO se hace
+
+- **No generar los ejercicios al vuelo.** Se probó y se descartó: uno curado que
+  sale mal se arregla una vez y queda arreglado para todos; uno generado que
+  sale mal es una fábrica de errores, y además rompe la coherencia con el
+  dibujo, que se deriva del contenido.
+- **No diseñar contra el niño que hace trampa.** Las fugas se cierran porque
+  miden lo que no es, no porque alguien vaya a explotarlas a propósito.
+- **No copiar preguntas de un tema a otro ni a un repaso.** Se referencian. Una
+  copia se queda vieja el día que se corrige el original, y nadie se entera.
+- **No inventar contenido pedagógico** que el DBA no pida, ni subir el rango
+  numérico porque una pregunta quede más bonita.
 
 ---
 
-## 9. Lo que todavía no sabemos hacer
+## 10. Lo que todavía no sabemos hacer
 
 Honestidad sobre los límites, para no fingir cobertura:
 
