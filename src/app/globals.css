@@ -45,6 +45,10 @@
   --mint-deep: 20 170 141;
   --bubble: 255 105 170;
   --bubble-deep: 218 68 133;
+  /* Solo para el elenco: el zorro necesitaba un naranja MÁS oscuro que el del
+     gato, o los dos leen como el mismo bicho a 80 píxeles. */
+  --rust: 198 86 40;
+  --rust-deep: 158 62 24;
 
   --ring: 163 98 242;
 }
@@ -80,6 +84,8 @@
     --mint-deep: 18 156 130;
     --bubble: 255 130 186;
     --bubble-deep: 200 62 122;
+    --rust: 226 118 68;
+    --rust-deep: 176 76 34;
   }
 }
 
@@ -108,6 +114,8 @@
   --mint-deep: 18 156 130;
   --bubble: 255 130 186;
   --bubble-deep: 200 62 122;
+  --rust: 226 118 68;
+  --rust-deep: 176 76 34;
 }
 
 @theme inline {

@@ -157,6 +157,10 @@ export const ELENCO: Personaje[] = [
             <path d={`M92 ${74 + dy} L110 ${70 + dy * 1.6}`} />
           </g>
         ))}
+        {/* La nariz en triángulo invertido: sin ella no es un gato, es una bola
+            naranja con orejas. Va sobre la boca, no en su lugar, para que el
+            gesto de acierto y error se siga leyendo. */}
+        <path d="M54 70 L66 70 L60 77 Z" fill={TINTA} />
       </>
     ),
   },
@@ -185,8 +189,9 @@ export const ELENCO: Personaje[] = [
     cuerpo: (c, d) => (
       <>
         <ellipse cx="60" cy="68" rx="41" ry="41" fill={c} />
-        {/* Ala pegada al costado. */}
+        {/* Las DOS alas: con una sola parecía manco. */}
         <ellipse cx="26" cy="74" rx="11" ry="17" fill={d} />
+        <ellipse cx="94" cy="74" rx="11" ry="17" fill={d} />
         <ellipse cx="60" cy="80" rx="26" ry="22" fill="rgba(255,255,255,0.25)" />
         {/* Tres plumitas en la coronilla. */}
         <path
@@ -204,27 +209,30 @@ export const ELENCO: Personaje[] = [
     ),
   },
   {
-    nombre: "Pulpo",
+    nombre: "Cerdito",
     base: "--bubble",
     deep: "--bubble-deep",
-    cara: { cy: 56, spread: 14, r: 10, mouthY: 74 },
+    // Sin boca: el hocico ocupa su lugar. El gesto lo llevan los ojos, igual
+    // que en el pollito.
+    cara: { cy: 56, spread: 15, r: 10, mouthY: 82, sinBoca: true },
     cuerpo: (c, d) => (
       <>
-        <ellipse cx="60" cy="58" rx="40" ry="37" fill={c} />
-        {/* Tentáculos: arcos que cuelgan del borde inferior. */}
-        {[24, 42, 60, 78, 96].map((x, i) => (
-          <path
-            key={i}
-            d={`M${x} 84 Q${x + (i % 2 ? 7 : -7)} 100 ${x} 112`}
-            stroke={i % 2 ? d : c}
-            strokeWidth="11"
-            strokeLinecap="round"
-            fill="none"
-          />
-        ))}
-        <ellipse cx="60" cy="66" rx="24" ry="18" fill="rgba(255,255,255,0.22)" />
-        <ellipse cx="28" cy="66" rx="8" ry="6" fill={ROSA} />
-        <ellipse cx="92" cy="66" rx="8" ry="6" fill={ROSA} />
+        {/* Orejas caídas hacia afuera: el único del elenco cuyas orejas no
+            apuntan hacia arriba, que es media silueta ganada. */}
+        <path d="M12 30 L44 26 L30 58 Z" fill={d} />
+        <path d="M108 30 L76 26 L90 58 Z" fill={d} />
+        <ellipse cx="60" cy="66" rx="42" ry="40" fill={c} />
+        <ellipse cx="60" cy="78" rx="28" ry="22" fill="rgba(255,255,255,0.2)" />
+        <ellipse cx="26" cy="66" rx="8" ry="6" fill={ROSA} />
+        <ellipse cx="94" cy="66" rx="8" ry="6" fill={ROSA} />
+      </>
+    ),
+    frente: (_, d) => (
+      <>
+        {/* El hocico con sus dos fosas: es lo que lo hace cerdo y no oso rosado. */}
+        <ellipse cx="60" cy="84" rx="20" ry="14" fill={d} />
+        <ellipse cx="53" cy="84" rx="3.2" ry="5" fill={TINTA} />
+        <ellipse cx="67" cy="84" rx="3.2" ry="5" fill={TINTA} />
       </>
     ),
   },
@@ -291,30 +299,25 @@ export const ELENCO: Personaje[] = [
   },
   {
     nombre: "Zorro",
-    base: "--tangerine",
-    deep: "--tangerine-deep",
-    cara: { cy: 58, spread: 15, r: 9.5, mouthY: 84, sinBoca: true },
+    // Naranja quemado, no el naranja del gato: dos animales del mismo color y
+    // con orejas en punta son el mismo animal para quien mira rápido.
+    base: "--rust",
+    deep: "--rust-deep",
+    cara: { cy: 56, spread: 14, r: 9, mouthY: 86 },
     cuerpo: (c, d) => (
       <>
-        <path d="M24 46 L22 12 L52 30 Z" fill={d} strokeLinejoin="round" stroke={d} strokeWidth="5" />
-        <path d="M96 46 L98 12 L68 30 Z" fill={d} strokeLinejoin="round" stroke={d} strokeWidth="5" />
+        <path d="M24 46 L20 10 L52 30 Z" fill={c} />
+        <path d="M96 46 L100 10 L68 30 Z" fill={c} />
+        {/* Puntas oscuras: marca de zorro, y contraste que el gato no tiene. */}
+        <path d="M23 27 L20 10 L35 19 Z" fill={d} />
+        <path d="M97 27 L100 10 L85 19 Z" fill={d} />
         <ellipse cx="60" cy="66" rx="42" ry="40" fill={c} />
+        {/* La máscara blanca de la media cara de abajo. Va DETRÁS de los rasgos
+            para que la boca se dibuje encima y el gesto siga cambiando. */}
+        <ellipse cx="60" cy="84" rx="30" ry="22" fill="white" />
       </>
     ),
-    frente: (_, d) => (
-      <>
-        {/* Hocico blanco con nariz: lo que lo hace zorro y no gato. */}
-        <ellipse cx="60" cy="84" rx="24" ry="17" fill="white" />
-        <ellipse cx="60" cy="76" rx="6" ry="4.5" fill={d} />
-        <path
-          d="M60 80 L60 86 M52 92 Q60 86 68 92"
-          stroke={TINTA}
-          strokeWidth="3"
-          strokeLinecap="round"
-          fill="none"
-        />
-      </>
-    ),
+    frente: (_, d) => <ellipse cx="60" cy="74" rx="6.5" ry="5" fill={d} />,
   },
   {
     nombre: "Fantasma",
@@ -323,9 +326,12 @@ export const ELENCO: Personaje[] = [
     cara: { cy: 58, spread: 14, r: 10, mouthY: 76 },
     cuerpo: (c) => (
       <>
-        {/* Cuerpo de una sola pieza: cúpula arriba, ondas abajo. */}
+        {/* Cuerpo de una sola pieza: cúpula arriba, ondas abajo.
+            Las ondas van TODAS hacia abajo y todas del mismo ancho (cuatro de
+            21). Antes alternaban arriba y abajo, y las de arriba mordían el
+            cuerpo: el lado izquierdo parecía cortado a mordiscos. */}
         <path
-          d="M18 68 A42 42 0 0 1 102 68 L102 100 Q95 112 88 100 Q81 88 74 100 Q67 112 60 100 Q53 88 46 100 Q39 112 32 100 Q25 88 18 100 Z"
+          d="M18 68 A42 42 0 0 1 102 68 L102 98 q-10.5 18 -21 0 q-10.5 18 -21 0 q-10.5 18 -21 0 q-10.5 18 -21 0 Z"
           fill={c}
         />
         <ellipse cx="28" cy="72" rx="8" ry="6" fill={ROSA} />
