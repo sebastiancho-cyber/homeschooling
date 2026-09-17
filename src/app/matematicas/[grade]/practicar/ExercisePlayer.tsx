@@ -3,32 +3,60 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import type { Exercise, MultipleChoiceConfig, TrueFalseConfig } from "@/lib/exercises";
-import { playCorrect, playIncorrect } from "@/lib/sound";
+import { shuffleExerciseOptions } from "@/lib/exercises";
+import { playCorrect, playIncorrect, playFinish } from "@/lib/sound";
+import { Mascota } from "@/components/Mascota";
 
 type Feedback = "correct" | "incorrect" | null;
 
-// Mismos colores y misma lógica que components/theory/quiz-player.tsx: clic único,
-// calificación inmediata, la correcta se rellena en verde sólido, la elegida (si es
-// incorrecta) en rojo sólido, y las demás bajan a 40% de opacidad.
-const GREEN = "#22c55e";
-const RED = "#ef4444";
-
-// Idle: border-hairline hover:bg-raised text-graphite (optionBase de quiz-player.tsx).
-const OPTION_BASE = "border-hairline hover:bg-raised text-ink";
-
-// Cuánto se ve el resultado antes de avanzar solo. Ni tan corto que no dé tiempo a leerlo,
-// ni tan largo que se sienta una espera — el mismo criterio que advanceMs en quiz-player.tsx.
+// Cuánto se ve el resultado antes de avanzar solo. Ni tan corto que no dé tiempo
+// a leerlo, ni tan largo que se sienta una espera.
 const ADVANCE_MS = 1300;
 
-export default function ExercisePlayer({ grade, exercises }: { grade: number; exercises: Exercise[] }) {
+// Las chispas del acierto: ocho puntos que salen en abanico desde el centro.
+const CHISPAS = [
+  { a: "0deg", d: 52, c: "var(--sun)" },
+  { a: "45deg", d: 44, c: "var(--grass)" },
+  { a: "90deg", d: 50, c: "var(--sky)" },
+  { a: "135deg", d: 42, c: "var(--bubble)" },
+  { a: "180deg", d: 52, c: "var(--grape)" },
+  { a: "225deg", d: 44, c: "var(--tangerine)" },
+  { a: "270deg", d: 50, c: "var(--mint)" },
+  { a: "315deg", d: 42, c: "var(--sun)" },
+];
+
+export default function ExercisePlayer({
+  grade,
+  exercises,
+  isDemo = false,
+}: {
+  grade: number;
+  exercises: Exercise[];
+  isDemo?: boolean;
+}) {
+  const [playExercises, setPlayExercises] = useState(exercises);
   const [index, setIndex] = useState(0);
   const [feedback, setFeedback] = useState<Feedback>(null);
   const [chosenIndex, setChosenIndex] = useState<number | null>(null);
   const [score, setScore] = useState(0);
   const advanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const current = exercises[index];
-  const done = index >= exercises.length;
+  const current = playExercises[index];
+  const done = index >= playExercises.length;
+  const total = playExercises.length;
+
+  // El sonido de cierre suena una vez, al llegar — no en cada render de la
+  // pantalla final (un re-render volvería a dispararlo).
+  useEffect(() => {
+    if (done && total > 0) playFinish();
+  }, [done, total]);
+
+  useEffect(
+    () => () => {
+      if (advanceTimer.current) clearTimeout(advanceTimer.current);
+    },
+    [],
+  );
 
   function pick(choiceIndex: number, isCorrect: boolean) {
     if (feedback) return;
@@ -47,123 +75,227 @@ export default function ExercisePlayer({ grade, exercises }: { grade: number; ex
     }, ADVANCE_MS);
   }
 
-  // Si se sale del ejercicio a mitad del conteo, el temporizador no puede sobrevivir al
-  // componente: seguiría avanzando un player que ya no está en pantalla.
-  useEffect(() => () => {
-    if (advanceTimer.current) clearTimeout(advanceTimer.current);
-  }, []);
+  function reiniciar() {
+    setPlayExercises(shuffleExerciseOptions(exercises));
+    setIndex(0);
+    setScore(0);
+    setFeedback(null);
+    setChosenIndex(null);
+  }
 
-  if (exercises.length === 0) {
+  /* ---------------------------------------------------------------- vacío */
+  if (total === 0) {
     return (
-      <p className="text-ink-muted">
-        Todavía no hay ejercicios cargados para este grado.{" "}
-        <Link href={`/matematicas/${grade}`} className="text-brand-teal underline">
-          Volver a los temas
+      <div className="fixed inset-0 z-50 flex flex-col items-center justify-center gap-4 bg-canvas px-8 text-center">
+        <span className="text-5xl" aria-hidden>
+          🚧
+        </span>
+        <p className="font-display text-xl text-ink">Este tema todavía no tiene ejercicios</p>
+        <Link
+          href={`/matematicas/${grade}`}
+          className="btn3d bg-grass px-6 py-3 text-white"
+          style={{ ["--btn-edge" as string]: "var(--grass-deep)" }}
+        >
+          Volver a la ruta
         </Link>
-        .
-      </p>
+      </div>
     );
   }
 
+  /* ------------------------------------------------------------- terminó */
   if (done) {
+    const pct = Math.round((score / total) * 100);
+    const perfecto = score === total;
+    const estrellas = pct >= 90 ? 3 : pct >= 60 ? 2 : pct > 0 ? 1 : 0;
+
     return (
       <div className="fixed inset-0 z-50 flex flex-col bg-canvas">
-        <div className="flex-1 flex flex-col items-center justify-center px-6 gap-4">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-ink-faint">Resultado</p>
-          <p className="text-6xl font-light tabular-nums">
-            {score} / {exercises.length}
-          </p>
+        <div className="flex flex-1 flex-col items-center justify-center gap-5 px-6 text-center">
+          <span className="rec-pop text-7xl" aria-hidden>
+            {perfecto ? "🏆" : pct >= 60 ? "🎉" : "💪"}
+          </span>
+
+          <div className="flex gap-2" aria-hidden>
+            {[0, 1, 2].map((i) => (
+              <span
+                key={i}
+                className={`rec-rise text-4xl ${i < estrellas ? "" : "opacity-20 grayscale"}`}
+                style={{ animationDelay: `${120 + i * 140}ms` }}
+              >
+                ⭐
+              </span>
+            ))}
+          </div>
+
+          <div>
+            <p className="font-display text-5xl tabular-nums text-ink">
+              {score}
+              <span className="text-ink-faint"> / {total}</span>
+            </p>
+            <p className="mt-1 font-sans text-sm font-extrabold text-ink-muted">
+              {perfecto
+                ? "¡Perfecto! No fallaste ni una."
+                : pct >= 60
+                  ? "¡Muy bien! Sigue así."
+                  : "Cada intento cuenta. ¡Otra vez!"}
+            </p>
+          </div>
         </div>
-        <div className="shrink-0 px-4 pb-8 pt-2 max-w-sm w-full mx-auto flex gap-2">
+
+        <div className="mx-auto flex w-full max-w-md shrink-0 flex-col gap-2 px-4 pb-8 pt-2">
+          <button
+            onClick={reiniciar}
+            className="btn3d w-full bg-grass px-5 py-4 text-base text-white"
+            style={{ ["--btn-edge" as string]: "var(--grass-deep)" }}
+          >
+            Jugar otra vez
+          </button>
           <Link
             href={`/matematicas/${grade}`}
-            className="duo-press flex-1 rounded-full border border-hairline px-5 py-3.5 text-sm font-semibold text-ink text-center hover:opacity-80 transition-opacity"
+            className="btn3d w-full bg-surface px-5 py-4 text-base text-ink-muted"
           >
-            Volver a los temas
+            Volver a la ruta
           </Link>
-          <button
-            onClick={() => {
-              setIndex(0);
-              setScore(0);
-              setFeedback(null);
-              setChosenIndex(null);
-            }}
-            className="duo-press flex-1 rounded-full bg-brand-teal text-white px-5 py-3.5 text-sm font-semibold hover:opacity-90 transition-opacity"
-          >
-            Practicar de nuevo
-          </button>
         </div>
       </div>
     );
   }
 
-  // Las dos opciones de true_false se tratan como un multiple_choice de 2, con el mismo
-  // render: un solo camino visual para "elegir entre opciones" en toda la app.
+  /* ------------------------------------------------------------ jugando */
   const isTrueFalse = current.type === "true_false";
-  const options = isTrueFalse ? ["Verdadero", "Falso"] : (current.config as MultipleChoiceConfig).options;
+  const options = isTrueFalse
+    ? ["Verdadero", "Falso"]
+    : (current.config as MultipleChoiceConfig).options;
   const correctIndex = isTrueFalse
-    ? (current.config as TrueFalseConfig).correctAnswer ? 0 : 1
+    ? (current.config as TrueFalseConfig).correctAnswer
+      ? 0
+      : 1
     : (current.config as MultipleChoiceConfig).correctIndex;
   const operation = isTrueFalse ? undefined : (current.config as MultipleChoiceConfig).operation;
 
+  // La barra avanza al CONTESTAR, no al pasar de pregunta: el premio llega con
+  // el clic, que es lo que hace el niño.
+  const progreso = ((index + (feedback ? 1 : 0)) / total) * 100;
+
   return (
-    <div className="fixed inset-0 z-50 flex flex-col bg-canvas overflow-hidden">
-      {/* Barra superior: salir + contador. Alto fijo, no compite por espacio con la pregunta. */}
-      <div className="shrink-0 flex items-center justify-between px-3 pt-3">
+    <div className="fixed inset-0 z-50 flex flex-col overflow-hidden bg-canvas">
+      {/* ---------------------------------------------------- barra superior */}
+      <div className="flex shrink-0 items-center gap-3 px-4 pb-1 pt-[max(0.75rem,env(safe-area-inset-top))]">
         <Link
           href={`/matematicas/${grade}`}
           aria-label="Salir del ejercicio"
-          className="p-2 -ml-1 rounded-full text-ink-faint hover:opacity-70 transition-opacity"
+          className="btn3d h-10 w-10 shrink-0 rounded-full bg-surface text-ink-faint"
+          style={{ ["--btn-depth" as string]: "3px" }}
         >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-            <path d="M18 6 6 18M6 6l12 12" />
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
+            <path d="M18 6 6 18M6 6l12 12" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
           </svg>
         </Link>
-        <span className="text-xs tabular-nums text-ink-faint">
-          {index + 1} / {exercises.length}
+
+        <div className="progress-track flex-1">
+          <div className="progress-fill" style={{ width: `${progreso}%` }} />
+        </div>
+
+        <span className="flex shrink-0 items-center gap-1 font-display text-base tabular-nums text-ink">
+          <span aria-hidden>⭐</span>
+          {score}
         </span>
-        <span className="text-xs tabular-nums text-ink-faint">{score} ✓</span>
       </div>
 
-      {/* La pregunta ocupa el centro de lo que sobra entre las dos barras fijas: siempre
-          en el mismo punto de la pantalla, sin importar cuánto texto tenga cada ejercicio. */}
-      <div className="relative flex-1 min-h-0 flex flex-col items-center justify-center px-6 gap-3 text-center">
-        <p className="text-base text-ink-muted max-w-xs">{current.prompt}</p>
+      {isDemo && (
+        <p className="shrink-0 px-4 pt-1 text-center font-sans text-[10px] font-extrabold uppercase tracking-wider text-sun-deep">
+          Contenido de muestra · sin conexión a la base
+        </p>
+      )}
+
+      {/* ------------------------------------------------------- la pregunta */}
+      {/* El `pb-14` sesga el centrado hacia arriba: centrado exacto deja la
+          pregunta flotando demasiado lejos del pulgar en pantallas altas. */}
+      <div className="relative flex min-h-0 flex-1 flex-col items-center justify-center gap-3 px-6 pb-14 text-center">
+        {/* La mascota y el globo: el enunciado no lo "muestra la pantalla", se lo
+            dice alguien. Es la diferencia entre un formulario y un juego. */}
+        <div className="flex items-end gap-1">
+          <Mascota animo={feedback === "correct" ? "happy" : feedback === "incorrect" ? "sad" : "idle"} />
+          <div className="card3d relative mb-4 max-w-[13rem] px-4 py-3 text-left">
+            {/* El pico del globo, apuntando a la mascota. */}
+            <span
+              aria-hidden
+              className="absolute -left-[9px] bottom-4 h-4 w-4 rotate-45 border-b-2 border-l-2 border-hairline bg-surface"
+            />
+            <p className="relative font-sans text-base font-extrabold leading-snug text-ink">
+              {current.prompt}
+            </p>
+          </div>
+        </div>
+
         {operation && (
-          <p className="text-3xl sm:text-4xl font-bold tabular-nums text-ink">{operation}</p>
+          // La operación es lo que el niño tiene que resolver: va sola, enorme,
+          // y en una tarjeta, para que no se confunda con el enunciado.
+          <div
+            key={`op-${index}`}
+            className="rec-rise card3d px-7 py-4"
+            style={{ ["--depth" as string]: "var(--sky-deep)" }}
+          >
+            <p className="font-display text-4xl tabular-nums text-sky sm:text-5xl">{operation}</p>
+          </div>
         )}
 
-        {/* El resultado flota SOBRE la pregunta y se disuelve solo — no empuja nada, no hay
-            que cerrarlo. `key={index}` obliga a remontar el nodo en cada ejercicio para que
-            la animación vuelva a correr desde el principio. */}
+        {/* El resultado flota sobre la pregunta y se disuelve solo: no empuja
+            nada y no hay que cerrarlo. `key={index}` remonta el nodo en cada
+            ejercicio para que la animación vuelva a correr desde cero. */}
         {feedback && (
           <div
-            key={index}
-            className="duo-toast absolute bottom-3 left-1/2 -translate-x-1/2 rounded-full px-5 py-2.5 text-sm font-semibold shadow-card"
-            style={{
-              ["--duo-toast-life" as string]: `${ADVANCE_MS}ms`,
-              background: feedback === "correct" ? GREEN : RED,
-              color: "white",
-            }}
+            key={`fb-${index}`}
+            className="pointer-events-none absolute bottom-2 left-1/2 -translate-x-1/2"
           >
-            {feedback === "correct" ? "¡Correcto!" : "No es correcto"}
+            <div className="relative">
+              {feedback === "correct" &&
+                CHISPAS.map((s, i) => (
+                  <span
+                    key={i}
+                    aria-hidden
+                    className="rec-spark absolute left-1/2 top-1/2 h-2.5 w-2.5 rounded-full"
+                    style={{
+                      ["--a" as string]: s.a,
+                      ["--d" as string]: `${s.d}px`,
+                      background: `rgb(${s.c})`,
+                      animationDelay: "60ms",
+                    }}
+                  />
+                ))}
+              <div
+                className={`rec-toast relative whitespace-nowrap rounded-full px-6 py-3 font-display text-lg text-white shadow-lg ${
+                  feedback === "incorrect" ? "rec-shake" : ""
+                }`}
+                style={{
+                  ["--toast-life" as string]: `${ADVANCE_MS}ms`,
+                  background: feedback === "correct" ? "rgb(var(--grass))" : "rgb(var(--coral))",
+                }}
+              >
+                {feedback === "correct" ? "¡Correcto! 🎉" : "Casi... 💪"}
+              </div>
+            </div>
           </div>
         )}
       </div>
 
-      {/* Las opciones van SIEMPRE al fondo de la pantalla: es donde cae el pulgar al
-          sostener el teléfono con una mano, y es donde las pone quiz-player.tsx. */}
-      <div className="shrink-0 px-4 pb-6 pt-2 max-w-md w-full mx-auto">
-        <div className={`grid gap-2 ${options.length > 4 ? "grid-cols-2 sm:grid-cols-4" : "grid-cols-2"}`}>
+      {/* ------------------------------------------------------ las opciones */}
+      <div className="mx-auto w-full max-w-md shrink-0 px-4 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-2">
+        <div className="grid grid-cols-2 gap-3">
           {options.map((option, i) => {
-            let cls = OPTION_BASE;
+            // Tras responder: la correcta se rellena en verde, la elegida (si
+            // falló) en rojo, y las demás se apagan. Un solo vistazo basta.
+            let clase = "bg-surface text-ink";
+            let edge = "var(--depth)";
             if (chosenIndex !== null) {
               if (i === correctIndex) {
-                cls = "border-transparent bg-[#22c55e] text-white";
+                clase = "bg-grass text-white";
+                edge = "var(--grass-deep)";
               } else if (i === chosenIndex) {
-                cls = "border-transparent bg-[#ef4444] text-white";
+                clase = "bg-coral text-white";
+                edge = "var(--coral-deep)";
               } else {
-                cls = `${OPTION_BASE} opacity-40`;
+                clase = "bg-surface text-ink opacity-40";
               }
             }
             return (
@@ -172,7 +304,8 @@ export default function ExercisePlayer({ grade, exercises }: { grade: number; ex
                 type="button"
                 onClick={() => pick(i, i === correctIndex)}
                 disabled={feedback !== null}
-                className={`px-3 py-3.5 rounded-xl border text-sm font-medium transition-colors ${cls}`}
+                className={`btn3d min-h-16 w-full px-3 py-4 text-base leading-tight ${clase}`}
+                style={{ ["--btn-edge" as string]: edge }}
               >
                 {option}
               </button>

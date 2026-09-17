@@ -1,39 +1,10 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { supabase } from "@/lib/supabase";
+import { getGradePath } from "@/lib/curriculum";
+import { LearningPath, TONOS_TEMA } from "@/components/LearningPath";
+import { DemoBanner } from "@/components/DemoBanner";
 
-type Dba = { id: string; num: number; enunciado: string };
-
-async function getGradeDbas(grade: number): Promise<Dba[]> {
-  const { data: subject, error: subjectError } = await supabase
-    .from("subjects")
-    .select("id")
-    .eq("slug", "matematicas")
-    .single();
-
-  if (subjectError || !subject) {
-    throw new Error(subjectError?.message ?? "No se encontró el área de Matemáticas.");
-  }
-
-  const { data, error } = await supabase
-    .from("dbas")
-    .select("id, num, enunciado")
-    .eq("subject_id", subject.id)
-    .eq("grade", grade)
-    .order("num", { ascending: true });
-
-  if (error) {
-    throw new Error(error.message);
-  }
-
-  return data ?? [];
-}
-
-export default async function GradePage({
-  params,
-}: {
-  params: Promise<{ grade: string }>;
-}) {
+export default async function GradePage({ params }: { params: Promise<{ grade: string }> }) {
   const { grade: gradeParam } = await params;
   const grade = Number(gradeParam);
 
@@ -41,71 +12,110 @@ export default async function GradePage({
     notFound();
   }
 
-  const dbas = await getGradeDbas(grade);
-  if (dbas.length === 0) {
-    notFound();
-  }
+  const { data: nodes, isDemo } = await getGradePath(grade);
+  if (nodes.length === 0) notFound();
 
+  const listos = nodes.filter((n) => n.exerciseCount > 0).length;
   const prevGrade = grade > 1 ? grade - 1 : null;
   const nextGrade = grade < 11 ? grade + 1 : null;
 
   return (
     <main className="flex-1">
-      <div className="mx-auto max-w-3xl px-6 py-12 sm:py-16">
-        <Link
-          href="/"
-          className="text-xs font-semibold uppercase tracking-[0.18em] text-ink-faint hover:text-brand-teal transition-colors"
-        >
-          ← Matemáticas
-        </Link>
-
-        <div className="flex items-baseline gap-3 mt-3 mb-2">
-          <h1 className="text-4xl sm:text-5xl font-semibold tracking-tight">
-            Grado {grade}º
-          </h1>
-          <span className="text-sm tabular-nums text-ink-faint">{dbas.length} DBA</span>
+      {/* Barra superior fija: salir siempre está en el mismo sitio. */}
+      <div className="sticky top-0 z-20 border-b-2 border-hairline bg-canvas/95 backdrop-blur">
+        <div className="mx-auto flex w-full max-w-2xl items-center gap-3 px-4 py-3">
+          <Link
+            href="/"
+            aria-label="Volver al inicio"
+            className="btn3d h-11 w-11 shrink-0 rounded-full bg-surface text-ink-muted"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
+              <path
+                d="M15 5 8 12l7 7"
+                stroke="currentColor"
+                strokeWidth="2.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </Link>
+          <div className="min-w-0 flex-1">
+            <p className="font-display text-lg leading-tight text-ink">Matemáticas · {grade}º</p>
+            <p className="font-sans text-xs font-bold text-ink-faint">
+              {listos} de {nodes.length} temas listos para jugar
+            </p>
+          </div>
         </div>
-        <p className="text-ink-muted mb-6">
-          Derechos básicos de aprendizaje según el MEN (V.2, 2016).
-        </p>
+      </div>
 
-        <Link
-          href={`/matematicas/${grade}/practicar`}
-          className="duo-press inline-block rounded-full bg-brand-teal text-white px-6 py-3 text-sm font-semibold tracking-[0.02em] hover:opacity-90 transition-opacity mb-10"
-        >
-          Practicar →
-        </Link>
+      <div className="mx-auto w-full max-w-2xl px-4 pb-16 pt-6">
+        {isDemo && <DemoBanner />}
 
-        <ol className="flex flex-col gap-3">
-          {dbas.map((dba) => (
-            <li
-              key={dba.id}
-              className="flex gap-4 rounded-xl border border-hairline bg-surface p-4 shadow-card"
+        <LearningPath grade={grade} nodes={nodes} />
+
+        {/* --- El detalle, para quien acompaña ---------------------------- */}
+        <section className="mt-12">
+          <h2 className="mb-3 px-1 font-display text-lg text-ink">Lo que vas a aprender</h2>
+          <ol className="flex flex-col gap-2">
+            {nodes.map((node, i) => {
+              const tono = TONOS_TEMA[i % TONOS_TEMA.length];
+              const listo = node.exerciseCount > 0;
+              return (
+                <li
+                  key={node.id}
+                  className={`card3d flex items-start gap-3 px-3 py-3 ${listo ? "" : "opacity-55"}`}
+                >
+                  {/* El mismo color y el mismo número que en la ruta: así se sabe
+                      qué bolita del camino es cada renglón. */}
+                  <span
+                    className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full font-display text-sm tabular-nums ${
+                      listo ? `${tono.dot} ${tono.fg}` : "bg-raised text-ink-faint"
+                    }`}
+                  >
+                    {node.num}
+                  </span>
+                  <div className="min-w-0 flex-1 pt-0.5">
+                    <p className="font-sans text-sm font-bold leading-snug text-ink">
+                      {node.enunciado}
+                    </p>
+                    <p className="mt-0.5 font-sans text-xs font-bold text-ink-faint">
+                      {listo ? `${node.exerciseCount} ejercicios` : "Próximamente"}
+                    </p>
+                  </div>
+                  {listo && (
+                    <Link
+                      href={`/matematicas/${grade}/practicar?tema=${node.num}`}
+                      className="btn3d shrink-0 self-center bg-grass px-4 py-2 text-xs text-white"
+                      style={{ ["--btn-edge" as string]: "var(--grass-deep)", ["--btn-depth" as string]: "4px" }}
+                    >
+                      Jugar
+                    </Link>
+                  )}
+                </li>
+              );
+            })}
+          </ol>
+        </section>
+
+        {/* --- Saltar de grado -------------------------------------------- */}
+        <nav className="mt-8 flex gap-2">
+          {prevGrade && (
+            <Link
+              href={`/matematicas/${prevGrade}`}
+              className="btn3d flex-1 bg-surface px-4 py-3 text-sm text-ink-muted"
             >
-              <span className="text-sm font-semibold tabular-nums text-brand-teal shrink-0 pt-0.5">
-                {String(dba.num).padStart(2, "0")}
-              </span>
-              <span className="text-sm leading-relaxed text-ink">{dba.enunciado}</span>
-            </li>
-          ))}
-        </ol>
-
-        <div className="flex justify-between mt-10 text-sm">
-          {prevGrade ? (
-            <Link href={`/matematicas/${prevGrade}`} className="text-ink-muted hover:text-brand-teal transition-colors">
-              ← Grado {prevGrade}º
+              ← {prevGrade}º
             </Link>
-          ) : (
-            <span />
           )}
-          {nextGrade ? (
-            <Link href={`/matematicas/${nextGrade}`} className="text-ink-muted hover:text-brand-teal transition-colors">
-              Grado {nextGrade}º →
+          {nextGrade && (
+            <Link
+              href={`/matematicas/${nextGrade}`}
+              className="btn3d flex-1 bg-surface px-4 py-3 text-sm text-ink-muted"
+            >
+              {nextGrade}º →
             </Link>
-          ) : (
-            <span />
           )}
-        </div>
+        </nav>
       </div>
     </main>
   );
