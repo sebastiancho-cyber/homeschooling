@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import type { PathNode } from "@/lib/curriculum";
-import { claveLeccion, leerProgreso, type Progreso } from "@/lib/progress";
+import { claveLeccion, estrellasDe, leerProgreso, type Progreso } from "@/lib/progress";
 
 /* La ruta: el mapa del grado. Los temas no son una lista, son estaciones de un
    camino que sube, y se abren de a una: hasta no terminar la estación actual no
@@ -81,10 +81,12 @@ export function LearningPath({ grade, nodes }: { grade: number; nodes: PathNode[
   const estados: { estado: Estado; estrellas: number; intentada: boolean }[] = nodes.map((n) => {
     if (n.exerciseCount === 0) return { estado: "sin-contenido", estrellas: 0, intentada: false };
     const intento = progreso[claveLeccion(grade, n.num)];
-    const aprobada = Boolean(intento && intento.estrellas > 0);
+    // La estrella se calcula con la escala de hoy, no con la que estaba
+    // vigente cuando se jugó: así un ajuste de la escala recalifica solo.
+    const estrellas = estrellasDe(intento);
     const abierta = anteriorAprobada;
-    anteriorAprobada = aprobada;
-    if (aprobada) return { estado: "hecha", estrellas: intento!.estrellas, intentada: true };
+    anteriorAprobada = estrellas > 0;
+    if (estrellas > 0) return { estado: "hecha", estrellas, intentada: true };
     return { estado: abierta ? "abierta" : "bloqueada", estrellas: 0, intentada: Boolean(intento) };
   });
 

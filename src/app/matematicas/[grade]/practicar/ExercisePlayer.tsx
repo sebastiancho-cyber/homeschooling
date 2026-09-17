@@ -57,11 +57,7 @@ export default function ExercisePlayer({
     if (!done || total === 0) return;
     playFinish();
     if (tema) {
-      guardarLeccion(claveLeccion(grade, tema), {
-        estrellas: estrellasPara(score, total),
-        aciertos: score,
-        total,
-      });
+      guardarLeccion(claveLeccion(grade, tema), { aciertos: score, total });
     }
   }, [done, total, tema, grade, score]);
 
