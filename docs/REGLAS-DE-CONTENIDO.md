@@ -120,7 +120,7 @@ Ver `src/components/Ilustracion.tsx`.
 
 **Solo donde enseña.** `6` es un símbolo que hay que descifrar; seis helados
 apareciendo uno a uno es algo que se *cuenta*. Donde el dibujo no añade nada, no
-va nada. En el grado 1 ilustran 66 de 300.
+va nada. En el grado 1 llevan dibujo 77 de 300, y 18 más lo llevan en las opciones.
 
 **El dibujo se DERIVA del ejercicio, nunca se etiqueta a mano.** Con cientos de
 ejercicios, etiquetarlos uno por uno garantiza que algún día el dibujo deje de
