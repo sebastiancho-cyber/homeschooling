@@ -7,7 +7,7 @@ error que la hizo necesaria: una regla sin su motivo se rompe apenas estorba.
 Aplican a cualquier grado y a cualquier área. El grado 1 de Matemáticas es el
 ejemplo trabajado; el generador que lo produce está en la carpeta de trabajo de
 la sesión y la migración que lo sembró es
-`supabase/migrations/0019_geometria_visible.sql`.
+`supabase/migrations/0020_reparto_y_techo.sql`.
 
 ---
 
@@ -16,7 +16,7 @@ la sesión y la migración que lo sembró es
 | | |
 |---|---|
 | **Tema** | Un DBA del MEN. Ni uno inventado, ni dos juntados. Es una estación de la ruta. |
-| **Ranura** | Una de las 10 preguntas de la lección. |
+| **Ranura** | Una de las preguntas de la lección. Diez o algunas más. |
 | **Versión** | Una de las 3 redacciones de esa pregunta. La app sortea una. |
 
 **Un tema es un DBA, completo y sin mezclar.** La ruta es el currículo oficial;
@@ -24,17 +24,49 @@ si un tema fuera media cosa o dos cosas, la ruta dejaría de ser auditable contr
 el documento del MEN, que es justamente lo que le da valor a la app frente a un
 juego cualquiera.
 
-**Diez ranuras por tema.** La lección son diez preguntas: es lo que alcanza a
-medir sin cansar a un niño, y hace que la escala de estrellas se lea sola
-(10/10 → 3 estrellas, 8-9 → 2, 6-7 → 1).
+**Cada evidencia del DBA, entre 2 y 4 ranuras.** Esta es la regla que decide el
+largo de la lección, y reemplaza a la que había antes —"diez ranuras por tema"—
+porque aquella medía lo fácil y no lo que importa. Con ella el grado 1 llegó a
+tener **dos evidencias sin una sola pregunta**, cinco con una, y el tema 9
+dedicando **siete de sus diez ranuras a la misma**: siete veces *"¿qué número
+falta?"* seguidas. Eso no es una lección, es una plana.
+
+- **Menos de dos no mide, roza.** Una evidencia con una sola pregunta se cubre
+  de nombre.
+- **Más de cuatro acapara.** La lección se vuelve la misma pregunta repetida y
+  las demás evidencias se quedan sin sitio.
+- **El largo sale de ahí:** diez casi siempre, y más cuando el DBA trae tantas
+  evidencias que con diez alguna se quedaría corta. El grado 1 tiene siete temas
+  de diez ranuras, dos de once y uno de doce: los que necesitaban más sitio.
+
+La escala de estrellas no se entera, porque va por porcentaje y no por conteo:
+todo bien → 3, desde 80 % → 2, desde 60 % → 1.
 
 **Tres versiones por ranura.** Una lección se repite —al reprobarla, o para
 subir estrellas—. Con una sola versión, el niño termina recordando *"la de la
 derecha"* en vez de sumar. Tres alcanzan para que repetir no sea recordar.
 
-**Cada ranura declara a qué evidencia de aprendizaje del DBA responde**, y
-**todas las evidencias del DBA tienen que quedar cubiertas** por al menos una
-ranura. La evidencia es la clasificación curricular: dice qué mide el ejercicio.
+**Cada ranura declara a qué evidencia responde.** La evidencia es la
+clasificación curricular del MEN: dice qué mide el ejercicio, y es lo que
+permite auditar la cobertura en vez de suponerla.
+
+**Las últimas ranuras salen del EJEMPLO OFICIAL del DBA.** Cada DBA del MEN
+viene con un ejemplo, y ese ejemplo es la tarea de verdad. La pregunta que uno
+escribe sin mirarlo suele ser su sombra de reconocimiento:
+
+| DBA | Lo que pide el ejemplo del MEN | Lo que preguntábamos |
+|---|---|---|
+| 1 | que el niño **proponga** preguntas que se resuelven con una suma | *"¿Cuál número dice CUÁNTOS hay?"* |
+| 2 | explorar qué hace la tecla `=` al presionarla varias veces | nada: no existía |
+| 3 | armar **$47** con billetes de $1 y $10 de varias maneras | *"¿Qué número tiene 5 decenas y 2 unidades?"* |
+| 4 | llenar cajas para que **la más pequeña pese más** | *"¿Cuál pesa MÁS?"* |
+| 8 | un dispensador: **qué DOS magnitudes cambian** a la vez | *"En la jarra queda…"* |
+| 9 | llenar cadenas que den igual e **indagar otras soluciones** | *"¿Qué número falta?"* |
+
+No todo lo que pide el ejemplo cabe en una selección múltiple —proponer y
+construir, no—, pero casi siempre hay una versión que sí: *"¿cuántas parejas
+sirven?"* mide lo mismo que *"indaga otras soluciones"*, y se puede contestar
+tocando una ficha.
 
 **El orden de las ranuras es una rampa de dificultad, no el orden del
 documento.** Va de lo concreto a lo abstracto. El orden en que el MEN lista las
@@ -120,7 +152,7 @@ Ver `src/components/Ilustracion.tsx`.
 
 **Solo donde enseña.** `6` es un símbolo que hay que descifrar; seis helados
 apareciendo uno a uno es algo que se *cuenta*. Donde el dibujo no añade nada, no
-va nada. En el grado 1 llevan dibujo 77 de 300, y 18 más lo llevan en las opciones.
+va nada. En el grado 1 llevan dibujo 77 de 312, y 19 más lo llevan en las opciones.
 
 **El dibujo se DERIVA del ejercicio, nunca se etiqueta a mano.** Con cientos de
 ejercicios, etiquetarlos uno por uno garantiza que algún día el dibujo deje de
@@ -221,7 +253,7 @@ nada a quien no supo hacerlo. *"Empieza en 7 y cuenta 2 hacia atrás: 6, 5"*, s�
 **El `ojo` nombra el error que la pregunta persigue.** Si una pregunta no
 persigue ningún error concreto, probablemente no está midiendo nada.
 
-En el grado 1: 74 ranuras escritas (222 ejercicios) y 26 derivadas (78).
+En el grado 1: 85 ranuras escritas (255 ejercicios) y 19 derivadas (57).
 
 ---
 
@@ -253,14 +285,27 @@ la migración se revierte entera.
 
 En el generador (aborta sin escribir):
 
-- 10 ranuras por tema, 3 versiones por ranura.
-- 4 opciones, todas distintas, ninguna vacía.
+- Cada evidencia del DBA entre 2 y 4 ranuras, y la lección con 10 como mínimo.
+- 3 versiones por ranura, distintas entre sí **y** con respuestas distintas.
+- 4 opciones, todas distintas, ninguna vacía, ninguna de más de 36 caracteres.
 - La correcta está de primera.
 - La evidencia declarada existe en ese DBA.
-- Las 3 versiones son distintas **y** no se contestan con la misma palabra.
 - La aritmética de la línea de operación da lo que marca la opción correcta.
 - Ningún enunciado pasa del largo del globo.
 - Ninguna resta da negativo.
+- **Ninguna ranura queda muda**: o trae ayuda escrita, o trae una operación de
+  una forma que la app sabe explicar.
+- Ninguna ayuda escrita apunta a una ranura que ya no existe.
+
+Esa penúltima es la que más ha encontrado. Para saber si la app sabe explicar
+una operación, el generador tiene la lista de formas que `ayudaPara()` reconoce.
+Es un espejo, y por eso está anotado en los dos lados: si allá se agrega una
+forma, aquí también. Sin él, `3 + 4 = 7 y 7 = 5 + 2` parecía explicable —tiene
+operación— y no lo era: esa ranura estaba muda y no se vio hasta que el chequeo la señaló.
+
+La ayuda escrita se busca **por el enunciado de su primera versión**, no por la
+posición de la ranura. Repartir las ranuras las mueve de sitio, y una ayuda que
+se queda en la posición vieja no falla: miente, que es peor.
 
 En la migración (`do $$ … raise exception … $$;`):
 
