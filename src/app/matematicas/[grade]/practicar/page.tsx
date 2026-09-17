@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { elegirVariantes, getGradeExercisesSafe, shuffleExerciseOptions } from "@/lib/exercises";
+import { getGradePath } from "@/lib/curriculum";
 import ExercisePlayer from "./ExercisePlayer";
 
 export default async function PracticarPage({
@@ -22,6 +23,13 @@ export default async function PracticarPage({
   const dbaNum = Number.isInteger(temaNum) && temaNum > 0 ? temaNum : undefined;
 
   const { data, isDemo } = await getGradeExercisesSafe("matematicas", grade, dbaNum);
+
+  /* Qué temas del grado tienen contenido, en orden. El jugador lo necesita para
+     saber si ESTA lección está desbloqueada: a la pantalla de práctica se llega
+     también escribiendo la URL a mano, y así una lección a la que no se debería
+     haber llegado todavía no ensucia el avance. */
+  const { data: nodos } = await getGradePath(grade);
+  const temasConContenido = nodos.filter((n) => n.exerciseCount > 0).map((n) => n.num);
   // Los dos sorteos —qué versión de cada pregunta, y en qué orden van las
   // opciones— corren en el SERVIDOR. Si corrieran en el render del cliente, el
   // HTML del servidor y el del cliente no coincidirían.
@@ -37,6 +45,7 @@ export default async function PracticarPage({
       exercises={exercises}
       variantes={variantes}
       tema={dbaNum}
+      temasConContenido={temasConContenido}
       isDemo={isDemo}
     />
   );

@@ -6,7 +6,14 @@ import type { Exercise, MultipleChoiceConfig, TrueFalseConfig } from "@/lib/exer
 import { elegirVariantes, shuffleExerciseOptions } from "@/lib/exercises";
 import { playCorrect, playIncorrect, playFinish } from "@/lib/sound";
 import { Mascota, personajeParaId } from "@/components/Mascota";
-import { claveLeccion, estrellasPara, guardarLeccion, PORCENTAJE_APROBACION } from "@/lib/progress";
+import {
+  claveLeccion,
+  estrellasDe,
+  estrellasPara,
+  guardarLeccion,
+  leerProgreso,
+  PORCENTAJE_APROBACION,
+} from "@/lib/progress";
 
 type Feedback = "correct" | "incorrect" | null;
 
@@ -31,6 +38,7 @@ export default function ExercisePlayer({
   exercises,
   variantes,
   tema,
+  temasConContenido = [],
   isDemo = false,
 }: {
   grade: number;
@@ -41,6 +49,8 @@ export default function ExercisePlayer({
   /** Número del tema de la ruta. Sin él se practica el grado entero y no hay
    *  estación que marcar, así que tampoco se guarda progreso. */
   tema?: number;
+  /** Los temas del grado que tienen contenido, en orden. */
+  temasConContenido?: number[];
   isDemo?: boolean;
 }) {
   const [playExercises, setPlayExercises] = useState(exercises);
@@ -54,16 +64,38 @@ export default function ExercisePlayer({
   const done = index >= playExercises.length;
   const total = playExercises.length;
 
+  /* ¿Esta lección estaba desbloqueada, o se llegó escribiendo la URL?
+     Se resuelve DESPUÉS de montar porque depende de localStorage, que el
+     servidor no ve. La regla es la misma que aplica la ruta: se abre cuando la
+     anterior con contenido quedó aprobada. Una lección ya aprobada siempre se
+     puede repetir. */
+  const [desbloqueada, setDesbloqueada] = useState(false);
+  const firmaTemas = temasConContenido.join(",");
+  useEffect(() => {
+    if (!tema) return;
+    const orden = firmaTemas ? firmaTemas.split(",").map(Number) : [];
+    const i = orden.indexOf(tema);
+    if (i < 0) return;
+    const guardado = leerProgreso();
+    const yaAprobada = estrellasDe(guardado[claveLeccion(grade, tema)]) > 0;
+    const anteriorAprobada =
+      i === 0 || estrellasDe(guardado[claveLeccion(grade, orden[i - 1])]) > 0;
+    setDesbloqueada(yaAprobada || anteriorAprobada);
+  }, [tema, grade, firmaTemas]);
+
   // Al llegar al final: fanfarria y se guarda la estación. Va en un efecto y no
   // en el render porque escribir en disco durante el render es un efecto
   // secundario — React puede repetir un render y guardaríamos dos veces.
   useEffect(() => {
     if (!done || total === 0) return;
     playFinish();
-    if (tema) {
+    // Si se llegó por URL a una lección que la ruta todavía no abre, se juega
+    // pero NO se guarda: así revisar contenido saltando de tema no deja la ruta
+    // con estaciones aprobadas antes de tiempo.
+    if (tema && desbloqueada) {
       guardarLeccion(claveLeccion(grade, tema), { aciertos: score, total });
     }
-  }, [done, total, tema, grade, score]);
+  }, [done, total, tema, grade, score, desbloqueada]);
 
   useEffect(
     () => () => {

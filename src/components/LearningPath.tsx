@@ -67,13 +67,9 @@ function Candado({ size = 24 }: { size?: number }) {
 export function LearningPath({ grade, nodes }: { grade: number; nodes: PathNode[] }) {
   const [progreso, setProgreso] = useState<Progreso>({});
   const [confirmando, setConfirmando] = useState(false);
-  // TEMPORAL: con ?debug=progreso en la URL se ve el avance guardado tal cual,
-  // sin abrir la consola del navegador. Se quita cuando terminemos de mirarlo.
-  const [verCrudo, setVerCrudo] = useState(false);
 
   useEffect(() => {
     setProgreso(leerProgreso());
-    setVerCrudo(new URLSearchParams(window.location.search).get("debug") === "progreso");
   }, []);
 
   const hayProgreso = Object.keys(progreso).length > 0;
@@ -271,17 +267,6 @@ export function LearningPath({ grade, nodes }: { grade: number; nodes: PathNode[
           })}
         </ol>
       </section>
-
-      {verCrudo && (
-        <section className="card3d mt-8 px-4 py-3">
-          <p className="mb-2 font-display text-sm text-ink">Avance guardado (crudo)</p>
-          <pre className="overflow-x-auto whitespace-pre-wrap break-all font-mono text-[11px] leading-relaxed text-ink-muted">
-            {Object.keys(progreso).length === 0
-              ? "(no hay nada guardado)"
-              : JSON.stringify(progreso, null, 2)}
-          </pre>
-        </section>
-      )}
 
       {/* Para el adulto que acompaña, no para el niño: por eso va al final, en
           letra pequeña y con confirmación. Borrar no se puede deshacer. */}
