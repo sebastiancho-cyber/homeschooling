@@ -6,6 +6,7 @@ import type { Exercise, MultipleChoiceConfig, TrueFalseConfig } from "@/lib/exer
 import { elegirVariantes, shuffleExerciseOptions } from "@/lib/exercises";
 import { playCorrect, playIncorrect, playFinish } from "@/lib/sound";
 import { Mascota, personajeParaId } from "@/components/Mascota";
+import { Ilustracion } from "@/components/Ilustracion";
 import {
   claveLeccion,
   estrellasDe,
@@ -234,6 +235,7 @@ export default function ExercisePlayer({
       : 1
     : (current.config as MultipleChoiceConfig).correctIndex;
   const operation = isTrueFalse ? undefined : (current.config as MultipleChoiceConfig).operation;
+  const visual = isTrueFalse ? undefined : (current.config as MultipleChoiceConfig).visual;
 
   // La barra avanza al CONTESTAR, no al pasar de pregunta: el premio llega con
   // el clic, que es lo que hace el niño.
@@ -295,6 +297,18 @@ export default function ExercisePlayer({
             </p>
           </div>
         </div>
+
+        {visual && (
+          // `key` con el índice: obliga a remontar en cada pregunta para que la
+          // animación vuelva a correr desde el principio en vez de quedarse
+          // congelada en su estado final.
+          // `w-full` no sobra: la columna centra con `items-center`, así que sus
+          // hijos se encogen al contenido. Sin un ancho definido aquí, las
+          // barras de datos —que se miden en porcentaje— colapsan a cero.
+          <div key={`vis-${index}`} className="flex w-full justify-center">
+            <Ilustracion visual={visual} />
+          </div>
+        )}
 
         {operation && (
           // La operación es lo que el niño tiene que resolver: va sola, enorme,
