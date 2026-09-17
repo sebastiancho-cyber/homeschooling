@@ -251,7 +251,14 @@ export default function ExercisePlayer({
     : (current.config as MultipleChoiceConfig).correctIndex;
   const operation = isTrueFalse ? undefined : (current.config as MultipleChoiceConfig).operation;
   const visual = isTrueFalse ? undefined : (current.config as MultipleChoiceConfig).visual;
-  const ayuda = ayudaPara(operation);
+  /* La escrita manda sobre la derivada. Los ejercicios conceptuales —comparar,
+     medir, reconocer figuras, leer datos— no tienen una operación de la cual
+     sacar los pasos, y son las tres cuartas partes de la lección. La regla de
+     docs/REGLAS-DE-CONTENIDO.md: derivada por versión donde hay números,
+     escrita por ranura donde hay una idea. */
+  const ayuda = isTrueFalse
+    ? null
+    : ((current.config as MultipleChoiceConfig).ayuda ?? ayudaPara(operation));
 
   // La barra avanza al CONTESTAR, no al pasar de pregunta: el premio llega con
   // el clic, que es lo que hace el niño.

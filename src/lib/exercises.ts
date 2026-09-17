@@ -1,5 +1,6 @@
 import { supabase } from "@/lib/supabase";
 import type { Visual } from "@/components/Ilustracion";
+import type { Ayuda } from "@/lib/ayuda";
 
 export type ExerciseType = "multiple_choice" | "multiple_response" | "numeric_input" | "true_false" | "drag_sort" | "match_pairs";
 
@@ -11,6 +12,9 @@ export type MultipleChoiceConfig = {
   operation?: string;
   /** Ilustración animada de la situación. Ver components/Ilustracion.tsx. */
   visual?: Visual;
+  /** La explicación ESCRITA, para los ejercicios conceptuales, donde no hay
+   *  una operación de la cual derivarla. Ver lib/ayuda.ts. */
+  ayuda?: Ayuda;
 };
 // A diferencia de multiple_choice (una sola respuesta correcta), aquí puede haber varias —
 // o ninguna: el estudiante marca todas las que apliquen y comprueba con un botón, no al

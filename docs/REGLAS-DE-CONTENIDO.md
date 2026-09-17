@@ -7,7 +7,7 @@ error que la hizo necesaria: una regla sin su motivo se rompe apenas estorba.
 Aplican a cualquier grado y a cualquier área. El grado 1 de Matemáticas es el
 ejemplo trabajado; el generador que lo produce está en la carpeta de trabajo de
 la sesión y la migración que lo sembró es
-`supabase/migrations/0016_revision_de_coherencia.sql`.
+`supabase/migrations/0018_ayudas_escritas.sql`.
 
 ---
 
@@ -164,7 +164,42 @@ final**: la posición es información, no adorno.
 
 ---
 
-## 5. El rango numérico
+## 5. La explicación
+
+Ver `src/lib/ayuda.ts` (la derivada) y el mapa de ayudas escritas del generador.
+
+**Ningún ejercicio puede quedar mudo.** Un niño que estudia en casa no tiene a
+quién preguntarle: si falla y la app solo sabe decirle que falló, la app no
+enseñó nada. Cada ejercicio trae su explicación o la deriva. Lo garantiza una
+aserción dentro de la transacción de la migración.
+
+**Al fallar, el juego se detiene.** Aparece la respuesta correcta con el
+desarrollo, y no se avanza hasta que el niño toque "Entendido". Al acertar sí
+sigue solo: ahí no hay nada que explicar y la fluidez importa.
+
+**Dos niveles, y el orden es la regla.** Antes de responder solo se ve la
+`pista`: el método en una línea, **sin el resultado**. Los `pasos`, con los
+números resueltos, solo después. No es para evitar trampas —eso no es lo que nos
+ocupa—: es que una respuesta regalada no enseña y una pista sí.
+
+**Derivada por versión donde hay números; escrita por ranura donde hay una
+idea.** La explicación de `7 − 2 = ?` sale sola de la operación y cambia cuando
+cambian los números. La de *"¿cuál pesa más?"* hay que escribirla, y una sola
+sirve para las tres versiones de la ranura, porque las tres miden la misma idea.
+Por eso una explicación escrita **no puede nombrar los números de una versión
+concreta**; cuando pone un ejemplo, dice "por ejemplo".
+
+**Se explica como se enseña, no como se demuestra.** *"7 − 2 = 5"* no le enseña
+nada a quien no supo hacerlo. *"Empieza en 7 y cuenta 2 hacia atrás: 6, 5"*, sí.
+
+**El `ojo` nombra el error que la pregunta persigue.** Si una pregunta no
+persigue ningún error concreto, probablemente no está midiendo nada.
+
+En el grado 1: 74 ranuras escritas (222 ejercicios) y 26 derivadas (78).
+
+---
+
+## 6. El rango numérico
 
 **Lo fija el propio DBA, no la costumbre.** El enunciado del DBA y sus
 evidencias dicen hasta dónde llega el grado; se lee ahí antes de escribir nada.
@@ -184,7 +219,7 @@ grande es un descuido.
 
 ---
 
-## 6. El control de calidad
+## 7. El control de calidad
 
 Corre **dos veces**: en el generador, antes de escribir el SQL, y otra vez
 dentro de la transacción de la migración. Si algo no cumple, no se genera nada y
@@ -212,7 +247,7 @@ migración mala no deje la base a medias.
 
 ---
 
-## 7. El procedimiento
+## 8. El procedimiento
 
 1. Sacar del texto oficial el DBA y sus evidencias, **literales**. No se
    reescriben ni se resumen: son la trazabilidad con el MEN.
@@ -226,7 +261,7 @@ migración mala no deje la base a medias.
 
 ---
 
-## 8. Lo que todavía no sabemos hacer
+## 9. Lo que todavía no sabemos hacer
 
 Honestidad sobre los límites, para no fingir cobertura:
 
