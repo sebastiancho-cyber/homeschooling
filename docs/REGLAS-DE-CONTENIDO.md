@@ -6,9 +6,10 @@ casi siempre nombrando el error que la hizo necesaria: una regla sin su motivo
 se rompe apenas estorba.
 
 Aplican a cualquier grado y a cualquier área. El grado 1 es el ejemplo
-trabajado: su generador vive en la carpeta de trabajo de la sesión, el contenido
-se sembró con `supabase/migrations/0023_sin_fugas.sql` y las estaciones de
-repaso con `supabase/migrations/0022_lecciones_de_repaso.sql`.
+trabajado: su generador vive en [`contenido/matematicas-1/`](../contenido/),
+que tiene su propio README con el manual de la herramienta. El contenido se
+sembró con `supabase/migrations/0023_sin_fugas.sql` y las estaciones de repaso
+con `supabase/migrations/0022_lecciones_de_repaso.sql`.
 
 ## Las diez que más importan
 
