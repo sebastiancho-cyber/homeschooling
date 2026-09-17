@@ -33,7 +33,8 @@ Si solo vas a leer una parte, que sea esta. Cada una tiene su sección.
 9. **Ninguna pregunta queda muda**: al fallar, el niño tiene que poder leer por
    qué. (§6)
 10. **Lo automático no reemplaza leerlo.** Un revisor independiente encontró en
-    el grado 1 la fuga de mayor alcance de todas. (§4, §9)
+    el grado 1 las DOS fugas de mayor alcance, y las dos eran invisibles
+    ejercicio por ejercicio: solo se ven mirando el banco entero. (§4, §9)
 
 ---
 
@@ -223,7 +224,30 @@ un número claramente suelto que se pueda descartar de un vistazo?".
 | la correcta cae en la misma posición | 100 % | 47 % |
 | hay un número suelto descartable | 100 % | 21 % |
 
-### Las otras cinco familias
+### La otra que solo se ve en el conjunto: las opciones que nunca ganan
+
+*"No se puede saber"* aparecía 12 veces en el grado 1, *"No se sabe"* 11 y *"No
+cambió nada"* 6. **Ninguna era nunca la respuesta.** Son 55 ejercicios en los que
+el niño se lleva una opción gratis en cuanto se da cuenta — y se da cuenta la
+primera tarde.
+
+Pasa sin querer: uno escribe *"No se puede saber"* como relleno cuando no se le
+ocurre un cuarto distractor, y nunca lo pone de correcto porque las preguntas
+están diseñadas para tener respuesta.
+
+**La cura no es quitarlas: es que a veces SEAN la respuesta.** Y resulta que eso
+es de lo mejor que se puede preguntar. Saber cuándo los datos no alcanzan para
+decidir es matemática de verdad, y es de lo poco que una selección múltiple mide
+bien. En el grado 1 hay ahora una cuerda medida y otra sin medir, una iglesia a
+2 cuadras contra un parque a 5 *pasos* —que no se pueden comparar—, dos grupos
+idénticos, y un frasco al que le echaron y le sacaron lo mismo.
+
+**El chequeo:** una opción con palabras que aparezca cuatro veces o más tiene que
+ser la correcta al menos una vez. Los números se excluyen: que un número se
+repita entre distractores y nunca le toque ser la respuesta es casualidad, no un
+patrón que alguien pueda aprender.
+
+### Las otras cinco familias, que sí se ven una por una
 
 **1. Eco.** Una palabra del enunciado aparece en la correcta y en ninguna otra.
 
@@ -275,9 +299,10 @@ no sirve.
 
 ### Los detectores
 
-Seis corren dentro del generador y una fuga nueva no deja generar: eco,
-concordancia, longitud, molde, símbolo exclusivo y opciones equivalentes. Más la
-medición del patrón numérico, que se hace sobre el banco completo.
+Seis corren ejercicio por ejercicio y una fuga nueva no deja generar: eco,
+concordancia, longitud, molde, símbolo exclusivo y opciones equivalentes. Más
+dos que se miden sobre el banco completo: el patrón numérico y las opciones que
+nunca ganan.
 
 **Los falsos positivos se anotan, no se apagan.** Van a un archivo de excepciones
 con el motivo escrito, una por una. La clave incluye el enunciado y la respuesta,
@@ -457,7 +482,8 @@ En el generador (aborta sin escribir):
 **De fugas** (sección 4)
 - Eco léxico, concordancia, longitud, molde, símbolo exclusivo y opciones
   equivalentes, ejercicio por ejercicio.
-- El patrón numérico, medido sobre el banco completo del grado.
+- El patrón numérico y las opciones que nunca ganan, medidos sobre el banco
+  completo del grado. Son las dos que no se ven mirando un ejercicio.
 
 La de las ranuras mudas es la que más ha encontrado. Para saber si la app sabe
 explicar una operación, el generador tiene la lista de formas que `ayudaPara()`
