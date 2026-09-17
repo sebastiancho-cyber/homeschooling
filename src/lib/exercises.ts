@@ -15,6 +15,10 @@ export type MultipleChoiceConfig = {
   /** La explicación ESCRITA, para los ejercicios conceptuales, donde no hay
    *  una operación de la cual derivarla. Ver lib/ayuda.ts. */
   ayuda?: Ayuda;
+  /** Una figura por opción, cuando las opciones SON figuras. Es lo que separa
+   *  "escoger la palabra triángulo" de "mirar cuál de estos tiene 3 lados".
+   *  Va en paralelo a `options` y se baraja con ella. */
+  figuras?: (string | null)[];
 };
 // A diferencia de multiple_choice (una sola respuesta correcta), aquí puede haber varias —
 // o ninguna: el estudiante marca todas las que apliquen y comprueba con un botón, no al
@@ -67,6 +71,9 @@ export function shuffleExerciseOptions(exercises: Exercise[]): Exercise[] {
       config: {
         ...config,
         options: order.map((i) => config.options[i]),
+        // Si las opciones llevan figura, la figura se mueve CON su opción. Si
+        // se quedara quieta, el niño vería un triángulo rotulado "círculo".
+        ...(config.figuras ? { figuras: order.map((i) => config.figuras![i]) } : {}),
         correctIndex: order.indexOf(config.correctIndex),
       },
     };

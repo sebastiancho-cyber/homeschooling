@@ -8,6 +8,7 @@ import { playCorrect, playIncorrect, playFinish } from "@/lib/sound";
 import { Mascota, personajeParaId } from "@/components/Mascota";
 import { Ilustracion } from "@/components/Ilustracion";
 import { BotonAyuda, HojaAyuda, Pasos, useAyuda, type ContextoTema } from "@/components/Ayuda";
+import { FiguraEnOpcion, type NombreFigura } from "@/components/Figura";
 import { ayudaPara } from "@/lib/ayuda";
 import {
   claveLeccion,
@@ -251,6 +252,7 @@ export default function ExercisePlayer({
     : (current.config as MultipleChoiceConfig).correctIndex;
   const operation = isTrueFalse ? undefined : (current.config as MultipleChoiceConfig).operation;
   const visual = isTrueFalse ? undefined : (current.config as MultipleChoiceConfig).visual;
+  const figuras = isTrueFalse ? undefined : (current.config as MultipleChoiceConfig).figuras;
   /* La escrita manda sobre la derivada. Los ejercicios conceptuales —comparar,
      medir, reconocer figuras, leer datos— no tienen una operación de la cual
      sacar los pasos, y son las tres cuartas partes de la lección. La regla de
@@ -449,16 +451,21 @@ export default function ExercisePlayer({
                 clase = "bg-surface text-ink opacity-40";
               }
             }
+            const figura = figuras?.[i];
             return (
               <button
                 key={i}
                 type="button"
                 onClick={() => pick(i, i === correctIndex)}
                 disabled={feedback !== null}
-                className={`btn3d min-h-16 w-full px-3 py-4 text-base leading-tight ${clase}`}
+                className={`btn3d min-h-16 w-full px-3 ${figura ? "flex-col gap-1 py-2.5" : "py-4"} text-base leading-tight ${clase}`}
                 style={{ ["--btn-edge" as string]: edge }}
               >
-                {option}
+                {/* Con figura, el nombre sigue debajo: el dibujo es lo que hay
+                    que mirar, y la palabra es la que el niño está aprendiendo
+                    a asociarle. Quitarla enseñaría a reconocer sin nombrar. */}
+                {figura && <FiguraEnOpcion nombre={figura as NombreFigura} />}
+                <span className={figura ? "text-sm" : undefined}>{option}</span>
               </button>
             );
           })}

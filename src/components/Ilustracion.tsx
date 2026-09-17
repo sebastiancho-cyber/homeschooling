@@ -14,6 +14,8 @@
    Todo es CSS sobre marcado normal: ni un archivo que descargar, ni un
    temporizador de JavaScript que pueda quedar corriendo. */
 
+import { Figura, type NombreFigura } from "@/components/Figura";
+
 export type Visual =
   /** Objetos que aparecen uno a uno. Conteo, pictogramas, cantidades. */
   | { tipo: "contar"; icono: string; cantidad: number }
@@ -23,8 +25,10 @@ export type Visual =
   | { tipo: "grupos"; icono: string; grupos: number; porGrupo: number }
   /** Unos aparecen y otros se van. Restas, quitar. */
   | { tipo: "quitar"; icono: string; cantidad: number; seVan: number }
-  /** Dos colecciones lado a lado, con nombre. Comparar cuál tiene más. */
-  | { tipo: "comparar"; icono: string; a: Lado; b: Lado }
+  /** Varias colecciones alineadas, con nombre. Comparar cuál tiene más. */
+  | { tipo: "comparar"; icono: string; lados: Lado[] }
+  /** Una figura geométrica. Ver components/Figura.tsx. */
+  | { tipo: "figura"; nombre: NombreFigura }
   /** Bloques de diez y unidades sueltas. Valor posicional. */
   | { tipo: "decenas"; decenas: number; unidades: number }
   /** Barras horizontales. Datos, votaciones y medidas que se comparan. */
@@ -62,16 +66,21 @@ function Icono({
   orden,
   seVa = false,
   retraso,
+  talla = "grande",
 }: {
   children: string;
   orden: number;
   seVa?: boolean;
-  /** Retraso explícito en ms, para las figuras que no van en una sola fila. */
+  /** Retraso explícito en ms, para los dibujos que no van en una sola fila. */
   retraso?: number;
+  /** Para las colecciones largas, que si no se salen de la pantalla. */
+  talla?: "grande" | "medio" | "chico";
 }) {
+  const tamaño =
+    talla === "chico" ? "text-base sm:text-lg" : talla === "medio" ? "text-xl sm:text-2xl" : "text-3xl sm:text-4xl";
   return (
     <span
-      className={seVa ? "rec-irse text-3xl leading-none sm:text-4xl" : "rec-aparecer text-3xl leading-none sm:text-4xl"}
+      className={`${seVa ? "rec-irse" : "rec-aparecer"} leading-none ${tamaño}`}
       style={{ animationDelay: `${retraso ?? orden * PASO}ms` }}
       aria-hidden
     >
@@ -129,18 +138,29 @@ export function Ilustracion({ visual }: { visual: Visual }) {
   }
 
   if (visual.tipo === "comparar") {
-    // Las dos filas empiezan en la misma vertical y usan el mismo icono: así la
-    // que sobresale es la que tiene más, y se ve antes de contar.
+    // Todas las filas empiezan en la misma vertical y usan el mismo icono: así
+    // la que sobresale es la que tiene más, y se ve antes de contar.
+    //
+    // Con muchos objetos el icono se achica para que las filas no se envuelvan:
+    // una fila partida en dos renglones deja de servir para comparar de un
+    // vistazo, que es justo lo que este dibujo existe para permitir.
+    // El icono se achica según la fila más larga. Es la única manera de que
+    // las filas quepan en un teléfono sin envolverse, y una fila partida en dos
+    // renglones deja de servir para comparar de un vistazo, que es justo para
+    // lo que existe este dibujo.
+    const mayor = Math.max(...visual.lados.map((l) => l.cantidad), 1);
+    const talla = mayor <= 5 ? "grande" : mayor <= 8 ? "medio" : "chico";
+    let orden = 0;
     return (
-      <div className="flex flex-col gap-1.5">
-        {[visual.a, visual.b].map((lado, fila) => (
-          <div key={lado.etiqueta} className="flex items-center gap-2">
-            <span className="w-16 shrink-0 text-right font-sans text-xs font-extrabold text-ink-muted">
+      <div className="flex max-w-full flex-col gap-1.5">
+        {visual.lados.map((lado) => (
+          <div key={lado.etiqueta} className="flex items-center gap-1.5">
+            <span className="w-14 shrink-0 text-right font-sans text-[11px] font-extrabold leading-tight text-ink-muted">
               {lado.etiqueta}
             </span>
-            <span className="flex flex-wrap gap-1">
+            <span className={`flex ${talla === "grande" ? "gap-1" : "gap-0.5"}`}>
               {Array.from({ length: lado.cantidad }, (_, i) => (
-                <Icono key={i} orden={0} retraso={fila * 380 + i * 90}>
+                <Icono key={i} orden={0} retraso={orden++ * 55} talla={talla}>
                   {visual.icono}
                 </Icono>
               ))}
@@ -149,6 +169,10 @@ export function Ilustracion({ visual }: { visual: Visual }) {
         ))}
       </div>
     );
+  }
+
+  if (visual.tipo === "figura") {
+    return <Figura nombre={visual.nombre} />;
   }
 
   if (visual.tipo === "grupos") {

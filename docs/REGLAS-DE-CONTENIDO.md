@@ -7,7 +7,7 @@ error que la hizo necesaria: una regla sin su motivo se rompe apenas estorba.
 Aplican a cualquier grado y a cualquier área. El grado 1 de Matemáticas es el
 ejemplo trabajado; el generador que lo produce está en la carpeta de trabajo de
 la sesión y la migración que lo sembró es
-`supabase/migrations/0018_ayudas_escritas.sql`.
+`supabase/migrations/0019_geometria_visible.sql`.
 
 ---
 
@@ -144,7 +144,7 @@ detectados solo cuando se dibujó:
 - La barra rotulada **"Rojo"** salía **azul**, porque el color lo repartía el
   turno en la paleta. Si la barra se llama Rojo, la barra es roja.
 
-**Los siete tipos existentes.** Un tipo nuevo se agrega solo si sirve a varias
+**Los ocho tipos existentes.** Un tipo nuevo se agrega solo si sirve a varias
 ranuras; una animación por ejercicio no se mantiene.
 
 | Tipo | Qué muestra |
@@ -153,9 +153,35 @@ ranuras; una animación por ejercicio no se mantiene.
 | `juntar` | dos montones que se unen, el segundo **después** del primero |
 | `grupos` | montones iguales — contar de 2 en 2, de 5 en 5 |
 | `quitar` | los que se van se apagan — restas |
-| `comparar` | dos colecciones con nombre, alineadas para verlas sin contar |
+| `comparar` | varias colecciones con nombre, alineadas para verlas sin contar |
 | `decenas` | columnas de diez + unidades sueltas — valor posicional |
 | `barras` | datos, votaciones y medidas que se comparan |
+| `figura` | una figura plana o un cuerpo, para contarle lados o esquinas |
+
+**A veces el dibujo va en las OPCIONES, no en el enunciado.** Es la diferencia
+entre *escoger la palabra "triángulo"* y *mirar cuál de estos tiene 3 lados*. El
+tema 6 era vocabulario disfrazado de geometría —diez de diez preguntas sin que
+apareciera una sola forma— y esto es lo que lo vuelve geometría.
+
+Lo que decide dónde va el dibujo es **si regala la respuesta**:
+
+- *"¿Cuántos lados tiene un rectángulo?"* → la figura va en el **enunciado**. No
+  regala nada: contar los lados *es* el ejercicio.
+- *"Tiene 4 lados y 2 son más largos. Es un:"* → las figuras van en las
+  **opciones**. Dibujar un rectángulo arriba sería dar la respuesta.
+
+Y se dibujan **las cuatro opciones o ninguna**: si una sola se quedara sin
+dibujo, el dibujo mismo sería la pista. Las figuras se barajan **con** su
+opción; si se quedaran quietas, el niño vería un triángulo rotulado "círculo".
+
+**Las esquinas de una figura NO se redondean.** En el resto de la app se
+redondea todo, pero aquí la esquina es el dato que se cuenta: un triángulo de
+puntas romas deja de servir para contar puntas.
+
+**Un dibujo no puede desbordar el teléfono.** Una fila de objetos que se parte
+en dos renglones deja de servir para comparar de un vistazo, que es justo para
+lo que existe. Por eso el icono se achica según la fila más larga en vez de
+envolverse.
 
 **Sin archivos.** Emoji y CSS sobre marcado normal: nada que descargar, ningún
 temporizador de JavaScript que pueda quedar corriendo. Con
