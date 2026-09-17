@@ -101,22 +101,26 @@ export async function getGradeExercises(
     .order("num", { ascending: true });
   if (evidencesError) throw new Error(evidencesError.message);
   if (!evidences || evidences.length === 0) return [];
-  const evidenceOrder = new Map(evidences.map((e) => [e.id, { dbaRank: dbaOrder.get(e.dba_id) ?? 0, num: e.num }]));
+  const dbaDeEvidencia = new Map(evidences.map((e) => [e.id, dbaOrder.get(e.dba_id) ?? 0]));
 
   const { data: exercises, error: exercisesError } = await supabase
     .from("exercises")
-    .select("id, type, prompt, config, evidence_id, order_in_evidence")
+    .select("id, type, prompt, config, evidence_id, order_in_lesson")
     .in("evidence_id", evidences.map((e) => e.id));
   if (exercisesError) throw new Error(exercisesError.message);
 
+  // Dentro de una lección manda `order_in_lesson`, no el número de evidencia.
+  // La evidencia dice QUÉ mide el ejercicio (clasificación curricular del MEN);
+  // ordenar por ella ponía los ejercicios en el orden del documento, que no es
+  // una rampa de dificultad. El orden pedagógico —de lo concreto a lo
+  // abstracto— se decide al sembrar el contenido.
   return (exercises ?? [])
     .slice()
     .sort((a, b) => {
-      const ea = evidenceOrder.get(a.evidence_id)!;
-      const eb = evidenceOrder.get(b.evidence_id)!;
-      if (ea.dbaRank !== eb.dbaRank) return ea.dbaRank - eb.dbaRank;
-      if (ea.num !== eb.num) return ea.num - eb.num;
-      return a.order_in_evidence - b.order_in_evidence;
+      const da = dbaDeEvidencia.get(a.evidence_id)!;
+      const db = dbaDeEvidencia.get(b.evidence_id)!;
+      if (da !== db) return da - db;
+      return a.order_in_lesson - b.order_in_lesson;
     })
     .map(({ id, type, prompt, config }) => ({ id, type, prompt, config })) as Exercise[];
 }

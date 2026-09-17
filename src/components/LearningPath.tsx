@@ -71,17 +71,21 @@ export function LearningPath({ grade, nodes }: { grade: number; nodes: PathNode[
     setProgreso(leerProgreso());
   }, []);
 
-  /* Una estación se abre cuando la ANTERIOR CON CONTENIDO quedó terminada. Los
-     temas sin ejercicios no cuentan: si contaran, un tema vacío en medio
-     cerraría la ruta para siempre. */
-  let anteriorHecha = true; // No hay anterior: la primera siempre está abierta.
-  const estados: { estado: Estado; estrellas: number }[] = nodes.map((n) => {
-    if (n.exerciseCount === 0) return { estado: "sin-contenido", estrellas: 0 };
-    const hecho = progreso[claveLeccion(grade, n.num)];
-    const abierta = anteriorHecha;
-    anteriorHecha = Boolean(hecho);
-    if (hecho) return { estado: "hecha", estrellas: hecho.estrellas };
-    return { estado: abierta ? "abierta" : "bloqueada", estrellas: 0 };
+  /* Una estación se abre cuando la ANTERIOR CON CONTENIDO quedó APROBADA (al
+     menos una estrella). Jugarla y reprobarla no basta: se puede repetir las
+     veces que haga falta, pero la ruta no avanza.
+
+     Los temas sin ejercicios no cuentan para el bloqueo: si contaran, un tema
+     vacío en medio cerraría la ruta para siempre. */
+  let anteriorAprobada = true; // No hay anterior: la primera siempre está abierta.
+  const estados: { estado: Estado; estrellas: number; intentada: boolean }[] = nodes.map((n) => {
+    if (n.exerciseCount === 0) return { estado: "sin-contenido", estrellas: 0, intentada: false };
+    const intento = progreso[claveLeccion(grade, n.num)];
+    const aprobada = Boolean(intento && intento.estrellas > 0);
+    const abierta = anteriorAprobada;
+    anteriorAprobada = aprobada;
+    if (aprobada) return { estado: "hecha", estrellas: intento!.estrellas, intentada: true };
+    return { estado: abierta ? "abierta" : "bloqueada", estrellas: 0, intentada: Boolean(intento) };
   });
 
   const jugables = nodes.filter((n) => n.exerciseCount > 0).length;
@@ -132,7 +136,7 @@ export function LearningPath({ grade, nodes }: { grade: number; nodes: PathNode[
         {nodes.map((node, i) => {
           const p = pts[i];
           const tono = TONOS_TEMA[i % TONOS_TEMA.length];
-          const { estado, estrellas } = estados[i];
+          const { estado, estrellas, intentada } = estados[i];
           const comun = "absolute flex items-center justify-center rounded-full no-select";
           const pos = { left: p.x - NODE / 2, top: p.y - NODE / 2, width: NODE, height: NODE };
 
@@ -150,7 +154,7 @@ export function LearningPath({ grade, nodes }: { grade: number; nodes: PathNode[
                   title={
                     sinContenido
                       ? `${node.enunciado} — próximamente`
-                      : `${node.enunciado} — termina el tema anterior para abrirlo`
+                      : `${node.enunciado} — aprueba el tema anterior para abrirlo`
                   }
                 >
                   <Candado />
@@ -188,7 +192,9 @@ export function LearningPath({ grade, nodes }: { grade: number; nodes: PathNode[
                 <span className="sr-only">{node.enunciado}</span>
               </Link>
 
-              {estado === "hecha" && (
+              {/* Las estrellas también aparecen —vacías— cuando se jugó y no se
+                  aprobó: así se ve que ya se intentó y que falta repetirla. */}
+              {(estado === "hecha" || intentada) && (
                 <div
                   className="absolute z-10"
                   style={{ left: p.x, top: p.y + NODE / 2 - 2, transform: "translateX(-50%)" }}
@@ -209,7 +215,7 @@ export function LearningPath({ grade, nodes }: { grade: number; nodes: PathNode[
         <ol className="flex flex-col gap-2">
           {nodes.map((node, i) => {
             const tono = TONOS_TEMA[i % TONOS_TEMA.length];
-            const { estado, estrellas } = estados[i];
+            const { estado, estrellas, intentada } = estados[i];
             const jugable = estado === "hecha" || estado === "abierta";
             return (
               <li
@@ -228,15 +234,17 @@ export function LearningPath({ grade, nodes }: { grade: number; nodes: PathNode[
                 <div className="min-w-0 flex-1 pt-0.5">
                   <p className="font-sans text-sm font-bold leading-snug text-ink">{node.enunciado}</p>
                   <div className="mt-1 flex items-center gap-2">
-                    {estado === "hecha" && <Estrellas n={estrellas} size={13} />}
+                    {(estado === "hecha" || intentada) && <Estrellas n={estrellas} size={13} />}
                     <span className="font-sans text-xs font-bold text-ink-faint">
                       {estado === "hecha"
-                        ? "Completado"
-                        : estado === "abierta"
-                          ? `${node.exerciseCount} ejercicios`
-                          : estado === "bloqueada"
-                            ? "Termina el tema anterior"
-                            : "Próximamente"}
+                        ? "Aprobado"
+                        : intentada
+                          ? "Te faltó poco, inténtalo otra vez"
+                          : estado === "abierta"
+                            ? `${node.exerciseCount} ejercicios`
+                            : estado === "bloqueada"
+                              ? "Aprueba el tema anterior"
+                              : "Próximamente"}
                     </span>
                   </div>
                 </div>

@@ -18,17 +18,41 @@
 export type ProgresoLeccion = { estrellas: number; aciertos: number; total: number };
 export type Progreso = Record<string, ProgresoLeccion>;
 
-const CLAVE = "aprende-en-casa:progreso:v1";
+/* La versión va en la clave a propósito. Las estrellas guardadas se calcularon
+   con una escala concreta; si la escala cambia, los registros viejos dejan de
+   significar lo mismo y hay que empezar de cero. Subir el número aquí es la
+   forma de decirlo. v2 = escala 100/90/70, con reprobación por debajo de 70. */
+const CLAVE = "aprende-en-casa:progreso:v2";
 
 export function claveLeccion(grade: number, tema: number): string {
   return `matematicas-${grade}-${tema}`;
 }
 
-/** Las mismas cotas que muestra la pantalla final del ejercicio. */
+/* Cotas de calificación. En una lección de 10 preguntas se leen así:
+     10/10 → 3 estrellas
+      9/10 → 2 estrellas
+    8 y 7  → 1 estrella
+   menos de 7 → no aprueba, y la estación NO abre la siguiente.
+
+   Van en porcentaje y no en número de errores porque las lecciones no miden
+   todas lo mismo (entre 7 y 12 preguntas): la exigencia tiene que ser
+   proporcional. Ojo con el borde: en una lección de 7, un solo error da 85%,
+   o sea 1 estrella, mientras que en una de 10 un error da 2. Si se prefiere
+   que un error valga lo mismo en todas, la regla se cambia aquí. */
+export const PORCENTAJE_APROBACION = 70;
+
 export function estrellasPara(aciertos: number, total: number): number {
   if (total === 0) return 0;
   const pct = (aciertos / total) * 100;
-  return pct >= 90 ? 3 : pct >= 60 ? 2 : pct > 0 ? 1 : 0;
+  if (pct >= 100) return 3;
+  if (pct >= 90) return 2;
+  if (pct >= PORCENTAJE_APROBACION) return 1;
+  return 0;
+}
+
+/** Sin estrellas no hay aprobación: la lección queda pendiente. */
+export function aprobo(aciertos: number, total: number): boolean {
+  return estrellasPara(aciertos, total) > 0;
 }
 
 export function leerProgreso(): Progreso {

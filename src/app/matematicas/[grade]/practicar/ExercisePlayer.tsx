@@ -6,7 +6,7 @@ import type { Exercise, MultipleChoiceConfig, TrueFalseConfig } from "@/lib/exer
 import { shuffleExerciseOptions } from "@/lib/exercises";
 import { playCorrect, playIncorrect, playFinish } from "@/lib/sound";
 import { Mascota, personajeParaId } from "@/components/Mascota";
-import { claveLeccion, estrellasPara, guardarLeccion } from "@/lib/progress";
+import { claveLeccion, estrellasPara, guardarLeccion, PORCENTAJE_APROBACION } from "@/lib/progress";
 
 type Feedback = "correct" | "incorrect" | null;
 
@@ -118,9 +118,11 @@ export default function ExercisePlayer({
 
   /* ------------------------------------------------------------- terminó */
   if (done) {
-    const pct = Math.round((score / total) * 100);
-    const perfecto = score === total;
-    const estrellas = pct >= 90 ? 3 : pct >= 60 ? 2 : pct > 0 ? 1 : 0;
+    // Una sola fuente para las cotas: si la pantalla final calculara las suyas,
+    // podría felicitar por una lección que el progreso guarda como reprobada.
+    const estrellas = estrellasPara(score, total);
+    const paso = estrellas > 0;
+    const minimo = Math.ceil((total * PORCENTAJE_APROBACION) / 100);
 
     return (
       <div className="fixed inset-0 z-50 flex flex-col bg-canvas">
@@ -129,7 +131,7 @@ export default function ExercisePlayer({
               con la que el niño acaba de jugar. */}
           <Mascota
             personaje={personajeParaId(playExercises[total - 1].id)}
-            animo={pct >= 60 ? "happy" : "idle"}
+            animo={paso ? "happy" : "idle"}
             size={132}
           />
 
@@ -151,12 +153,19 @@ export default function ExercisePlayer({
               <span className="text-ink-faint"> / {total}</span>
             </p>
             <p className="mt-1 font-sans text-sm font-extrabold text-ink-muted">
-              {perfecto
+              {estrellas === 3
                 ? "¡Perfecto! No fallaste ni una."
-                : pct >= 60
-                  ? "¡Muy bien! Sigue así."
-                  : "Cada intento cuenta. ¡Otra vez!"}
+                : estrellas === 2
+                  ? "¡Muy bien! Casi perfecto."
+                  : estrellas === 1
+                    ? "¡Aprobaste! Sigue así."
+                    : `Te faltó poco. Necesitas ${minimo} para pasar.`}
             </p>
+            {!paso && (
+              // Si no pasó hay que decirlo sin rodeos: si no, el niño vuelve a
+              // la ruta, ve el candado y no entiende por qué.
+              <p className="mt-2 font-display text-sm text-coral">Inténtalo otra vez</p>
+            )}
           </div>
         </div>
 
