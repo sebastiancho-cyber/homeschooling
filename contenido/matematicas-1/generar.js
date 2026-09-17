@@ -181,7 +181,7 @@ const DBAS = {
         // Antes las opciones eran Sumo / Resto / Cuento hacia atrás / No hago
         // nada: las dos del medio significan lo mismo, así que caían juntas, y
         // la cuarta no la marca nadie. Quedaba una sola opción viva.
-        { p: "Al bus se suben 3 niños. Para saber cuántos hay ahora:", o: ["Sumo", "Resto", "Cuento los que se bajaron", "Vuelvo a contar desde uno"], c: 0 },
+        { p: "Al bus se suben 3 niños. Para saber cuántos hay ahora:", o: ["Sumo", "Resto", "Cuento los que se bajaron", "Cuento los asientos del bus"], c: 0 },
         { p: "Del bus se bajan 3 niños. Para saber cuántos quedan:", o: ["Resto", "Sumo", "Cuento los que se subieron", "Cuento las sillas"], c: 0 },
         { p: "Metes 2 lápices más a la cartuchera. Para saber cuántos hay:", o: ["Sumo", "Resto", "Cuento los que metí", "Cuento las cartucheras"], c: 0 },
       ]},
@@ -190,8 +190,10 @@ const DBAS = {
       // pide justamente esto: distinguir con cuáles números se puede operar.
       // Es la ranura más difícil del tema y por eso va de últimas.
       { e: 2, v: [
-        { p: "Dos jugadores tienen las camisetas 7 y 9. Sumarlas da:", o: ["Un dato que no sirve", "El número de otro jugador", "Los goles del equipo", "La edad de los dos"], c: 0 },
-        { p: "Sumas el número de tu casa y el de tu bus. El total es:", o: ["Un dato que no sirve", "Una dirección nueva", "Una ruta nueva", "Una edad cualquiera"], c: 0 },
+        // "Dato" está fuera del vocabulario de seis años, y los dos distractores
+        // se podían defender: 7 + 9 = 16 sí puede ser la camiseta de otro.
+        { p: "Dos jugadores tienen las camisetas 7 y 9. Sumarlas da:", o: ["Un número que no sirve para nada", "Los goles del equipo", "Cuántos jugadores hay", "La edad de los dos"], c: 0 },
+        { p: "Sumas el número de tu casa y el de tu bus. El total es:", o: ["Un número que no sirve para nada", "El número de tu cuadra", "El número de otro bus", "El número de tu colegio"], c: 0 },
         { p: "Sumar dos números de teléfono sirve para:", o: ["No sirve para nada", "Llamar a los dos", "Saber quién llama", "Hacer una llamada larga"], c: 0 },
       ]},
       { e: 2, v: [
@@ -387,7 +389,11 @@ const DBAS = {
       // material, donde el más grande siempre gana.
       { e: 3, v: [
         { p: "Cajas iguales con algodón, arroz y plastilina. ¿Cuál pesa más?", o: ["La de plastilina", "La de algodón", "La de arroz", "Todas pesan igual"], c: 0 },
-        { p: "Caja chiquita de plastilina o caja grande de algodón. ¿Cuál pesa más?", o: ["La chiquita de plastilina", "La grande de algodón", "Las dos cajas pesan igual", "No se puede saber"], c: 0 },
+        // La versión vieja no era determinable: una caja bastante más grande de
+        // algodón sí pesa más que una chiquita de plastilina, y "No se puede
+        // saber" estaba entre las opciones marcada como falsa. Con piedras y
+        // bombas infladas la diferencia sí es segura.
+        { p: "Caja grande de bombas o caja chiquita de piedras. ¿Cuál pesa más?", o: ["La caja de las piedras", "La caja de las bombas", "La caja pesa igual que la otra", "No se puede saber"], c: 0 },
         { p: "Bola de icopor grande o bola de metal pequeña. ¿Cuál pesa más?", o: ["La bola de metal", "La bola de icopor", "Las dos bolas pesan igual", "No se puede saber"], c: 0 },
       ]},
       { e: 2, v: [
@@ -439,18 +445,21 @@ const DBAS = {
       ]},
       { e: 2, v: [
         { p: "Mira las dos cintas, medidas en clips. ¿Cómo son?", op: "Roja 8 · Azul 8", o: ["Igual de largas", "La roja más larga", "La azul más larga", "No se pueden comparar"], c: 0 },
-        { p: "¿Cuál cinta es más larga? (medidas en clips)", op: "Roja 9 · Azul 6", o: ["La roja", "La azul", "Son iguales", "No se sabe"], c: 0 },
-        { p: "¿Cuál cuerda es más corta? (medidas en cuartas)", op: "Verde 4 · Café 7", o: ["La verde", "La café", "Son iguales", "No se sabe"], c: 0 },
+        { p: "¿Cuál cinta es más larga? (medidas en clips)", op: "Roja 9 · Azul 6", o: ["La roja", "La azul", "Son iguales", "No se puede saber"], c: 0 },
+        // Aquí solo hay una medida. Que la respuesta sea "no se puede saber"
+        // no es un truco: es lo que hay que contestar, y es lo que enseña a no
+        // decidir con datos que no alcanzan.
+        { p: "¿Cuál cuerda es más corta? Solo midieron una.", op: "Verde 4 · Café sin medir", o: ["No se puede saber", "La verde", "La café", "Son iguales"], c: 0 },
       ]},
       { e: 2, v: [
-        { p: "Cada jarra llenó estos vasos. ¿Cuál tiene MÁS agua?", op: "Jarra A 4 · Jarra B 7", o: ["La jarra B", "La jarra A", "Las dos igual", "No se sabe"], c: 0 },
-        { p: "Cada balde llenó estos vasos. ¿Cuál tiene MENOS agua?", op: "Balde A 3 · Balde B 9", o: ["El balde A", "El balde B", "Los dos igual", "No se sabe"], c: 0 },
-        { p: "Cada olla lleva estos pocillos. ¿Cuál es más grande?", op: "Olla A 6 · Olla B 10", o: ["La olla B", "La olla A", "Las dos igual", "No se sabe"], c: 0 },
+        { p: "Cada jarra llenó estos vasos. ¿Cuál jarra tenía MÁS agua?", op: "Jarra A 4 · Jarra B 7", o: ["La jarra B", "La jarra A", "Las dos igual", "No se puede saber"], c: 0 },
+        { p: "Cada balde llenó estos vasos. ¿Cuál balde tenía MENOS agua?", op: "Balde A 3 · Balde B 9", o: ["El balde A", "El balde B", "Los dos igual", "No se puede saber"], c: 0 },
+        { p: "En cada olla caben estos pocillos. ¿Cuál olla es más grande?", op: "Olla A 6 · Olla B 10", o: ["La olla B", "La olla A", "Las dos igual", "No se puede saber"], c: 0 },
       ]},
       { e: 1, v: [
         { p: "¿Cuántos clips más largo es el lápiz azul que el rojo?", op: "Rojo 3 · Azul 5", o: ["2", "8", "1", "4"], c: 0 },
         { p: "¿Cuántos clips más larga es la cinta verde que la café?", op: "Café 4 · Verde 9", o: ["5", "13", "4", "7"], c: 0 },
-        { p: "¿Cuántas cuartas más larga es la mesa grande que la chica?", op: "Chica 5 · Grande 8", o: ["3", "13", "2", "5"], c: 0 },
+        { p: "¿Cuántas cuartas más larga es la mesa grande que la chiquita?", op: "Chiquita 5 · Grande 8", o: ["3", "13", "2", "5"], c: 0 },
       ]},
       { e: 3, v: [
         falta(6, 10, "Necesitas 10 clips de cinta y tienes 6."),
@@ -520,7 +529,7 @@ const DBAS = {
         { p: "Tiene 3 lados iguales. Es un:", o: ["Triángulo", "Cuadrado", "Círculo", "Rectángulo"], c: 0 },
       ]},
       { e: 2, v: [
-        { p: "¿Cuál de estas cosas tiene el borde CURVO?", o: ["Un plato", "Una regla", "Un cuaderno", "Un libro"], c: 0 },
+        { p: "¿Cuál de estas cosas tiene las esquinas en punta?", o: ["Un libro", "Un plato", "Una moneda", "Un anillo"], c: 0 },
         { p: "¿Cuál de estas cosas tiene el borde RECTO?", o: ["Una regla", "Un plato", "Una moneda", "Un anillo"], c: 0 },
         { p: "¿Cuál de estas cosas es redonda?", o: ["Una moneda", "Un libro", "Una caja", "Una puerta"], c: 0 },
       ]},
@@ -559,12 +568,12 @@ const DBAS = {
         // plano y no mostrarlo deja al niño buscando algo que no está.
         { p: "Dos caminos al parque, medidos en pasos. ¿Cuál es MÁS LARGO?", op: "Por la tienda 30 · Por el puente 12", o: ["Por la tienda", "Por el puente", "Miden igual", "No se puede saber"], c: 0 },
         { p: "Dos caminos al colegio, medidos en pasos. ¿Cuál es MÁS CORTO?", op: "Por el puente 6 · Por la loma 14", o: ["Por el puente", "Por la loma", "Miden igual", "No se puede saber"], c: 0 },
-        { p: "En el plano, los dos caminos miden lo mismo. Entonces:", op: "Camino A 9 · Camino B 9", o: ["Da igual cuál tomes", "El A es más corto", "El B es más corto", "No se pueden comparar"], c: 0 },
+        { p: "Los dos caminos miden lo mismo, en pasos. Entonces:", op: "Camino A 9 · Camino B 9", o: ["Puedes tomar cualquiera", "El A es más corto", "El B es más corto", "No se pueden comparar"], c: 0 },
       ]},
       { e: 4, v: [
-        { p: "Desde tu casa, en pasos. ¿Cuál queda MÁS CERCA?", op: "Tienda 10 · Parque 25", o: ["La tienda", "El parque", "Quedan igual", "No se sabe"], c: 0 },
-        { p: "Desde tu casa, en pasos. ¿Cuál queda MÁS LEJOS?", op: "Colegio 40 · Panadería 15", o: ["El colegio", "La panadería", "Quedan igual", "No se sabe"], c: 0 },
-        { p: "Desde tu casa, en cuadras. ¿Cuál queda MÁS CERCA?", op: "Iglesia 2 · Parque 5", o: ["La iglesia", "El parque", "Quedan igual", "No se sabe"], c: 0 },
+        { p: "Desde tu casa, en pasos. ¿Cuál queda MÁS CERCA?", op: "Tienda 10 · Parque 25", o: ["La tienda", "El parque", "Quedan igual", "No se puede saber"], c: 0 },
+        { p: "Desde tu casa, en pasos. ¿Cuál queda MÁS LEJOS?", op: "Colegio 40 · Panadería 15", o: ["El colegio", "La panadería", "Quedan igual", "No se puede saber"], c: 0 },
+        { p: "Desde tu casa. ¿Cuál queda MÁS CERCA?", op: "Iglesia 2 cuadras · Parque 5 pasos", o: ["No se puede saber", "La iglesia", "El parque", "Quedan igual"], c: 0 },
       ]},
       { e: 4, v: [
         { p: "Un camino de 3 cuadras es ___ que uno de 6 cuadras.", o: ["Más corto", "Más largo", "Igual de largo", "El doble de largo"], c: 0 },
@@ -599,15 +608,17 @@ const DBAS = {
         { p: "Tu puesto está en la última fila. Para llegar:", o: ["Camino hasta el fondo", "Me quedo en la puerta", "Voy al tablero", "Salgo del salón"], c: 0 },
       ]},
       { e: 2, v: [
-        { p: "El parque queda más lejos que la tienda. Llegar allá toma:", o: ["Más tiempo", "Menos tiempo", "El mismo tiempo", "Nada de tiempo"], c: 0 },
-        { p: "El colegio queda más cerca que la finca. Llegar toma:", o: ["Menos tiempo", "Más tiempo", "El mismo tiempo", "Nada de tiempo"], c: 0 },
+        { p: "El parque queda más lejos que la tienda. Llegar al parque toma:", o: ["Más tiempo que a la tienda", "Menos tiempo que a la tienda", "El mismo tiempo", "La mitad del tiempo"], c: 0 },
+        { p: "El colegio queda más cerca que la finca. Llegar al colegio toma:", o: ["Menos tiempo que a la finca", "Más tiempo que a la finca", "El mismo tiempo", "El doble del tiempo"], c: 0 },
         { p: "Dos casas quedan a la misma distancia. Llegar toma:", o: ["Lo mismo para las dos", "Más tiempo para una", "Menos tiempo para una", "No se puede saber"], c: 0 },
       ]},
       { e: 2, v: [
         // Con la cifra solo en la correcta, se acertaba buscando el número.
         // Ahora ninguna la lleva y lo que las separa es si dicen PARA DÓNDE.
-        { p: "¿Cuál indicación sirve para llegar a un lugar?", o: ["Camina y gira en la esquina", "Camina hasta que llegues", "Queda por allá derechito", "Es la casa más bonita"], c: 0 },
-        { p: "¿Cuál indicación es más clara?", o: ["Sube al tercer piso y gira", "Queda por ahí arribita", "Está en un piso de arriba", "Es la puerta más bonita"], c: 0 },
+        // "indicación" es palabra alta para seis años, y la correcta tampoco
+        // decía para dónde girar, que es justo lo que la hace buena.
+        { p: "¿Cuál explicación sirve para llegar a un lugar?", o: ["Camina y gira a la derecha", "Camina hasta que llegues", "Queda por allá derechito", "Es la casa más bonita"], c: 0 },
+        { p: "¿Cuál explicación es más clara?", o: ["Sube y gira a la izquierda", "Queda por ahí arribita", "Está en un piso de arriba", "Es la puerta más bonita"], c: 0 },
         { p: "Para explicar un camino sirve decir:", o: ["Cuántas cuadras y para dónde", "Que queda lejos", "Que es bonito", "Que es de color azul"], c: 0 },
       ]},
     ],
@@ -620,36 +631,39 @@ const DBAS = {
     ],
     slots: [
       { e: 1, v: [
-        { p: "Un vaso tenía 2 bolas. Ahora tiene 5. ¿Qué pasó?", o: ["Le pusieron más", "Le quitaron", "No cambió nada", "Se hicieron grandes"], c: 0 },
-        { p: "Había 8 galletas. Ahora hay 3. ¿Qué pasó?", o: ["Quitaron algunas", "Pusieron más", "No cambió nada", "Se partieron a la mitad"], c: 0 },
-        { p: "El frasco tenía 4 dulces. Ahora tiene 9. ¿Qué pasó?", o: ["Echaron más dulces", "Sacaron dulces", "No cambió nada", "Se derritieron"], c: 0 },
+        // El cuarto distractor era un chiste ("Se hicieron grandes"), así que la
+        // pregunta tenía tres opciones. Ahora es un error posible: alguien que
+        // piense que poner y quitar lo mismo deja el vaso distinto.
+        { p: "Un vaso tenía 2 bolas. Ahora tiene 5. ¿Qué pasó?", o: ["Le pusieron más", "Le quitaron algunas", "No cambió nada", "Le pusieron y le quitaron igual"], c: 0 },
+        { p: "Había 8 galletas. Ahora hay 3. ¿Qué pasó?", o: ["Quitaron algunas", "Pusieron más", "No cambió nada", "Pusieron y quitaron igual"], c: 0 },
+        { p: "El frasco tenía 9 dulces. Echaron 2 y sacaron 2. Ahora tiene:", o: ["9 dulces", "13 dulces", "5 dulces", "11 dulces"], c: 0 },
       ]},
       { e: 1, v: [
         { p: "Tenías 10 dulces. Ahora tienes 6. Entonces:", o: ["Te faltan 4", "Te sobran 4", "Te faltan 6", "No cambió nada"], c: 0 },
-        { p: "Tenías 7 fichas. Ahora tienes 9. Entonces:", o: ["Ganaste 2", "Perdiste 2", "Ganaste 9", "No cambió nada"], c: 0 },
+        { p: "Tenías 7 fichas. Ahora tienes 7. Entonces:", o: ["No cambió nada", "Ganaste algunas", "Perdiste algunas", "Perdiste todas"], c: 0 },
         { p: "Había 12 sillas. Ahora hay 8. Entonces:", o: ["Quitaron 4", "Pusieron 4", "Quitaron 8", "No cambió nada"], c: 0 },
       ]},
       { e: 1, v: [
         { p: "Un grupo tiene 4 bolas y el otro tiene 4 bolas. Son:", o: ["Iguales en cantidad", "El primero tiene más", "El segundo tiene más", "No se puede saber"], c: 0 },
-        { p: "Un grupo tiene 5 fichas y el otro 8. Entonces:", o: ["El segundo tiene más", "El primero tiene más", "Son iguales", "No se sabe"], c: 0 },
-        { p: "Un grupo tiene 9 lápices y el otro 6. Entonces:", o: ["El primero tiene más", "El segundo tiene más", "Son iguales", "No se sabe"], c: 0 },
+        { p: "Un grupo tiene 5 fichas y el otro 8. Entonces:", o: ["El segundo tiene más", "El primero tiene más", "Son iguales", "No se puede saber"], c: 0 },
+        { p: "Un grupo tiene 7 lápices y el otro 7. Entonces:", o: ["Son iguales", "El primero tiene más", "El segundo tiene más", "No se puede saber"], c: 0 },
       ]},
       { e: 2, v: [
         // El enunciado menciona ahora el agua y los patos, que son las otras
         // dos opciones: así ninguna palabra sobresale.
-        { p: "Un grupo tiene 3 patos en el agua. El otro, 3 patos con sombrero.", o: ["Se diferencian en el sombrero", "Se diferencian en cuántos patos hay", "No se diferencian en nada", "Se diferencian en el agua"], c: 0 },
-        { p: "Dos perros iguales, uno grande y uno chiquito.", o: ["Se diferencian en el tamaño", "Se diferencian en la cantidad", "No se diferencian", "Se diferencian en el nombre"], c: 0 },
-        { p: "Dos vasos iguales, uno lleno y otro vacío.", o: ["Se diferencian en el agua", "Se diferencian en la forma", "No se diferencian", "Se diferencian en el color"], c: 0 },
+        { p: "3 patos y 3 patos con gorra. ¿En qué se diferencian?", o: ["En la gorra", "En cuántos patos hay", "En el color de los patos", "En nada"], c: 0 },
+        { p: "Dos perros del mismo color, uno grande y uno chiquito:", o: ["Se diferencian en el tamaño", "Se diferencian en el color", "Se diferencian en cuántos son", "No se diferencian"], c: 0 },
+        { p: "Dos vasos del mismo tamaño, los dos llenos de agua:", o: ["No se diferencian", "Se diferencian en el tamaño", "Se diferencian en el agua", "Se diferencian en la forma"], c: 0 },
       ]},
       { e: 2, v: [
         { p: "¿En qué se diferencian estos dos grupos?", op: "🔴🔴🔴 · 🔴🔴🔴🔴🔴", o: ["Uno tiene más bolas", "Uno tiene otro color", "Uno tiene otra forma", "No se diferencian"], c: 0 },
         { p: "¿En qué se diferencian estos dos grupos?", op: "⭐⭐ · ⭐⭐⭐⭐⭐⭐", o: ["Uno tiene más estrellas", "Uno tiene otro color", "Uno tiene otro tamaño", "No se diferencian"], c: 0 },
-        { p: "¿Cuál grupo tiene más?", op: "🟦🟦🟦🟦 · 🟦🟦", o: ["El grupo 1", "El grupo 2", "Los dos igual", "No se sabe"], c: 0 },
+        { p: "¿Cuál grupo tiene más?", op: "🟦🟦🟦🟦 · 🟦🟦", o: ["El grupo 1", "El grupo 2", "Los dos igual", "No se puede saber"], c: 0 },
       ]},
       { e: 3, v: [
         { p: "Sacas agua de la jarra para llenar vasos. En la jarra:", o: ["Queda menos agua", "Queda más agua", "Queda la misma agua", "Queda el doble de agua"], c: 0 },
         { p: "Le echas más agua al balde. En el balde:", o: ["Hay más agua", "Hay menos agua", "Queda igual", "El agua se seca"], c: 0 },
-        { p: "Repartes las galletas del paquete. En el paquete:", o: ["Quedan menos", "Quedan más", "Quedan igual", "Se hacen grandes"], c: 0 },
+        { p: "Sacas un vaso de agua de la jarra y lo devuelves. En la jarra:", o: ["Queda igual", "Queda menos agua", "Queda más agua", "Queda el doble"], c: 0 },
       ]},
       { e: 3, v: [
         { p: "Suben más personas al bus. Los puestos libres:", o: ["Son menos", "Son más", "Son los mismos", "Son el doble"], c: 0 },
@@ -657,14 +671,14 @@ const DBAS = {
         { p: "Llegan más niños al salón. Las sillas vacías:", o: ["Son menos", "Son más", "Son las mismas", "Se rompen"], c: 0 },
       ]},
       { e: 3, v: [
-        { p: "Mientras más crece un árbol, el árbol es:", o: ["Más alto", "Más bajito", "Igual de alto", "Más delgado"], c: 0 },
+        { p: "Mientras más crece un árbol, queda:", o: ["Más alto", "Más bajito", "Igual de alto", "Más delgado"], c: 0 },
         { p: "Mientras más crece un niño, su ropa le queda:", o: ["Más apretada", "Más grande", "Igual", "Más suave"], c: 0 },
         { p: "Mientras más inflas un globo, se pone:", o: ["Más grande", "Más pequeño", "Igual", "Más pesado"], c: 0 },
       ]},
       { e: 3, v: [
         { p: "Si caminas más rápido, llegas:", o: ["Más temprano", "Más tarde", "A la misma hora", "Al día siguiente"], c: 0 },
         { p: "Si caminas más despacio, llegas:", o: ["Más tarde", "Más temprano", "A la misma hora", "Nunca"], c: 0 },
-        { p: "Si el camino es más largo, te demoras:", o: ["Más tiempo", "Menos tiempo", "El mismo tiempo", "Nada"], c: 0 },
+        { p: "Si el camino es más largo, te demoras:", o: ["Más tiempo", "Menos tiempo", "El mismo tiempo", "La mitad del tiempo"], c: 0 },
       ]},
       // El ejemplo oficial del DBA 8 es un dispensador: al pasar agua, DOS
       // cosas cambian a la vez y hay que explicar la relación entre ellas.
@@ -711,9 +725,16 @@ const DBAS = {
       // El ejemplo oficial del DBA 9 llena cadenas para que den igual y luego
       // pide INDAGAR OTRAS SOLUCIONES. Que haya muchas es el punto.
       { e: 2, v: [
-        { p: "En 3 + ? = 4 + ?, ¿cuántas parejas sirven?", o: ["Muchas", "Solo una", "Ninguna", "Solo dos"], c: 0 },
+        // Estaba escrito "3 + ? = 4 + ?" con el MISMO signo dos veces. Con la
+        // convención de siempre —un símbolo, un número— eso no tiene solución, y
+        // la respuesta marcada era "Muchas": el ejercicio enseñaba lo contrario
+        // de lo que quería enseñar. Con dos figuras distintas ya se lee bien.
+        // Escribirlo con símbolos obliga a inventar dos figuras raras que cada
+        // teléfono dibuja como quiere. Dicho con palabras se entiende igual y no
+        // depende de qué tipografía tenga el aparato.
+        { p: "Un lado es 3 + algo y el otro 4 + otra cosa. ¿Cuántas parejas sirven?", o: ["Muchas", "Solo una", "Ninguna", "Solo dos"], c: 0 },
         { p: "Si el lado izquierdo crece 2, el derecho tiene que:", o: ["Crecer 2 también", "Quedarse igual", "Bajar 2", "Crecer 4"], c: 0 },
-        { p: "En 5 + ? = 2 + ?, el hueco de la derecha tiene que ser:", o: ["3 más que el de la izquierda", "Igual al de la izquierda", "3 menos que el de la izquierda", "Cualquier número"], c: 0 },
+        { p: "Si un lado empieza en 5 y el otro en 2, al de 2 hay que sumarle:", o: ["3 más que al de 5", "Lo mismo que al de 5", "3 menos que al de 5", "Cualquier número"], c: 0 },
       ]},
       // ev3 — la propiedad transitiva, que tenía una sola ranura. Primero con
       // objetos, que es donde un niño de seis años la ve; después con números.
@@ -733,7 +754,7 @@ const DBAS = {
       ]},
       { e: 2, v: [
         { p: "El signo = dice que los dos lados:", o: ["Valen igual", "Se suman", "Son distintos", "Se restan"], c: 0 },
-        { p: "Si los dos lados valen lo mismo, se escribe:", o: ["El signo =", "El signo +", "El signo −", "Nada"], c: 0 },
+        { p: "Si los dos lados valen lo mismo, se escribe:", o: ["El signo =", "El signo +", "El signo −", "El signo de mayor"], c: 0 },
         { p: "En 3 + 2 = 5, el signo = dice que:", o: ["3 + 2 vale lo mismo que 5", "3 + 2 es mayor que 5", "3 + 2 es menor que 5", "3 + 2 hay que restarlo"], c: 0 },
       ]},
       { e: 2, v: [
@@ -759,26 +780,26 @@ const DBAS = {
       { e: 3, v: [
         // El dibujo tiene que MOSTRAR el sabor. Con helados genéricos, preguntar
         // "¿cuántos quieren fresa?" pide un dato que el dibujo no tiene.
-        { p: "Cada chocolate es 1 niño. ¿Cuántos lo quieren?", op: "🍫🍫🍫🍫", o: ["4", "3", "5", "8"], c: 0 },
-        { p: "Cada fresa es 1 niño. ¿Cuántos la quieren?", op: "🍓🍓🍓🍓🍓🍓", o: ["6", "5", "7", "12"], c: 0 },
-        { p: "Cada banano es 1 niño. ¿Cuántos lo quieren?", op: "🍌🍌🍌", o: ["3", "2", "4", "6"], c: 0 },
+        { p: "Cada chocolate vale por 1 niño. ¿Cuántos lo quieren?", op: "🍫🍫🍫🍫", o: ["4", "3", "5", "8"], c: 0 },
+        { p: "Cada fresa vale por 1 niño. ¿Cuántos la quieren?", op: "🍓🍓🍓🍓🍓🍓", o: ["6", "5", "7", "12"], c: 0 },
+        { p: "Cada banano vale por 1 niño. ¿Cuántos lo quieren?", op: "🍌🍌🍌", o: ["3", "2", "4", "6"], c: 0 },
       ]},
       { e: 3, v: [
-        { p: "Cada dibujo es 1 perro. ¿Cuántos perros hay?", op: "🐶🐶🐶🐶🐶🐶", o: ["6", "5", "7", "12"], c: 0 },
-        { p: "Cada dibujo es 1 gato. ¿Cuántos gatos hay?", op: "🐱🐱🐱🐱🐱", o: ["5", "4", "6", "10"], c: 0 },
-        { p: "Cada dibujo es 1 pájaro. ¿Cuántos pájaros hay?", op: "🐦🐦🐦🐦🐦🐦🐦", o: ["7", "6", "8", "14"], c: 0 },
+        { p: "Cada dibujo vale por 1 perro. ¿Cuántos perros hay?", op: "🐶🐶🐶🐶🐶🐶", o: ["6", "5", "7", "12"], c: 0 },
+        { p: "Cada dibujo vale por 1 gato. ¿Cuántos gatos hay?", op: "🐱🐱🐱🐱🐱", o: ["5", "4", "6", "10"], c: 0 },
+        { p: "Cada dibujo vale por 1 pájaro. ¿Cuántos pájaros hay?", op: "🐦🐦🐦🐦🐦🐦🐦", o: ["7", "6", "8", "14"], c: 0 },
       ]},
       // El ejemplo oficial del DBA 10 es la encuesta de sabores de helado, y
       // pide ORGANIZAR los datos, no solo leerlos. Eso tenía una sola ranura.
       { e: 2, v: [
-        { p: "5 niños quieren fresa. En el pictograma dibujas:", o: ["5 fresas", "1 fresa", "5 niños y 5 fresas", "Nada"], c: 0 },
+        { p: "5 niños quieren fresa. En el pictograma dibujas:", o: ["5 fresas", "1 fresa", "5 niños y 5 fresas", "10 fresas"], c: 0 },
         { p: "En el dibujo de la votación, cada dibujito vale:", o: ["Uno", "Dos", "Cinco", "Diez"], c: 0 },
         { p: "En la tabla, cada sabor de helado va:", o: ["En su propia fila", "Todos en una fila", "Sin nombre", "En cualquier fila"], c: 0 },
       ]},
       { e: 2, v: [
         { p: "En una tabla de conteo, las rayitas sirven para:", o: ["Contar cuántos hay", "Saber quién votó", "Saber qué día fue", "Adornar la tabla"], c: 0 },
         { p: "Si haces 5 rayitas en la tabla, eso quiere decir:", o: ["Que hay 5", "Que hay 1", "Que hay 10", "Que no hay"], c: 0 },
-        { p: "Para anotar cada voto en la tabla, haces:", o: ["Una rayita", "Un círculo grande", "Una letra", "Nada"], c: 0 },
+        { p: "Para anotar cada voto en la tabla, haces:", o: ["Una rayita", "Dos rayitas", "Un dibujo del niño", "El nombre del niño"], c: 0 },
       ]},
       { e: 1, v: [
         // Las cuatro empiezan igual y nombran el mismo tema: lo que las separa
@@ -797,7 +818,7 @@ const DBAS = {
         // contexto: sin la situación, el niño no sabe qué le preguntan.
         { p: "Votamos el color favorito. ¿Cuál ganó?", op: "Rojo 3 · Azul 5 · Verde 2", o: ["Azul", "Rojo", "Verde", "Hubo empate"], c: 0 },
         { p: "En la votación de colores, ¿cuál ganó?", op: "Rojo 6 · Azul 2 · Verde 4", o: ["Rojo", "Azul", "Verde", "Hubo empate"], c: 0 },
-        { p: "Votamos el animal favorito. ¿Cuál ganó?", op: "Perro 7 · Gato 7 · Pez 1", o: ["Hubo empate", "Perro", "Gato", "Pez"], c: 0 },
+        { p: "Votamos el animal favorito. ¿Qué pasó?", op: "Perro 7 · Gato 7 · Pez 1", o: ["Empataron perro y gato", "Ganó el perro solo", "Ganó el gato solo", "Ganó el pez"], c: 0 },
       ]},
       { e: 4, v: [
         { p: "Votamos el color favorito. ¿Cuál tuvo menos?", op: "Rojo 3 · Azul 5 · Verde 2", o: ["Verde", "Rojo", "Azul", "Todos igual"], c: 0 },
@@ -1125,6 +1146,37 @@ for (const [dba, d] of Object.entries(DBAS)) {
       }
     });
   });
+}
+
+/* Las opciones que nunca son la respuesta.
+
+   Si una opción aparece muchas veces y JAMÁS es la correcta, el niño aprende a
+   descartarla sin leerla. Se mide sobre el banco entero, como el patrón
+   numérico: ejercicio por ejercicio no se ve nada raro.
+
+   Solo se miran las que llevan palabras. Que un número se repita entre los
+   distractores y no toque nunca ser la respuesta es casualidad, no un patrón
+   que alguien pueda aprender. */
+const vecesOpcion = {};
+const vecesCorrecta = {};
+for (const d of Object.values(DBAS)) {
+  for (const slot of d.slots) {
+    for (const v of slot.v) {
+      v.o.forEach((o, i) => {
+        vecesOpcion[o] = (vecesOpcion[o] ?? 0) + 1;
+        if (i === v.c) vecesCorrecta[o] = (vecesCorrecta[o] ?? 0) + 1;
+      });
+    }
+  }
+}
+for (const [texto, n] of Object.entries(vecesOpcion)) {
+  if (n < 4) continue;
+  if (/^[\d\s+\-−=?]+$/.test(texto)) continue; // los números se repiten solos
+  if (!vecesCorrecta[texto]) {
+    errores.push(
+      `«${texto}» aparece ${n} veces y nunca es la respuesta: el niño aprende a descartarla sin leerla`,
+    );
+  }
 }
 
 /* El patrón numérico: la fuga de mayor alcance que hemos tenido.

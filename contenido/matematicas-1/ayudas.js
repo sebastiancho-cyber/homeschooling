@@ -271,7 +271,7 @@ module.exports = {
     ],
     ojo: "Esto solo funciona porque las dos se midieron con lo MISMO.",
   },
-  "5|Cada jarra llenó estos vasos. ¿Cuál tiene MÁS agua?": {
+  "5|Cada jarra llenó estos vasos. ¿Cuál jarra tenía MÁS agua?": {
     pista: "El que llenó más vasos es el que tiene más adentro.",
     pasos: [
       "Para comparar cuánto le cabe a dos recipientes, se llenan los dos con lo mismo.",
@@ -354,7 +354,7 @@ module.exports = {
     ],
     ojo: "La palabra «iguales» es la que decide entre cuadrado y rectángulo.",
   },
-  "6|¿Cuál de estas cosas tiene el borde CURVO?": {
+  "6|¿Cuál de estas cosas tiene las esquinas en punta?": {
     pista: "Pasa el dedo por el borde de mentiras: si da la vuelta sin frenar, es curvo.",
     pasos: [
       "Un borde curvo se sigue con el dedo sin tropezar con ninguna esquina.",
@@ -464,7 +464,7 @@ module.exports = {
     ],
     ojo: "Quedarse quieto o irse para el otro lado no acerca a ninguna parte.",
   },
-  "7|El parque queda más lejos que la tienda. Llegar allá toma:": {
+  "7|El parque queda más lejos que la tienda. Llegar al parque toma:": {
     pista: "Más lejos es más camino, y más camino es más tiempo caminando.",
     pasos: [
       "Si dos lugares están a distinta distancia, llegar a ellos toma distinto tiempo.",
@@ -473,7 +473,7 @@ module.exports = {
     ],
     ojo: "Esto vale si vas igual de rápido a los dos lados.",
   },
-  "7|¿Cuál indicación sirve para llegar a un lugar?": {
+  "7|¿Cuál explicación sirve para llegar a un lugar?": {
     pista: "Una buena indicación dice CUÁNTO avanzar y PARA DÓNDE girar.",
     pasos: [
       "Para llegar a un sitio hay que saber dos cosas: cuánto caminar y hacia dónde.",
@@ -511,7 +511,7 @@ module.exports = {
     ],
     ojo: "Saber cuál tiene más no basta: hay que decir si es el primero o el segundo.",
   },
-  "8|Un grupo tiene 3 patos en el agua. El otro, 3 patos con sombrero.": {
+  "8|3 patos y 3 patos con gorra. ¿En qué se diferencian?": {
     pista: "Los dos grupos tienen lo mismo en cantidad. Busca en qué se ven distintos.",
     pasos: [
       "Dos cosas se pueden diferenciar en la cantidad o en cómo son.",
@@ -547,7 +547,7 @@ module.exports = {
     ],
     ojo: "Cuando una cosa sube, la otra baja. Lee bien por cuál de las dos preguntan.",
   },
-  "8|Mientras más crece un árbol, el árbol es:": {
+  "8|Mientras más crece un árbol, queda:": {
     pista: "Piensa qué le pasa a lo que está alrededor cuando la cosa se hace más grande.",
     pasos: [
       "Cuando algo crece, ocupa más espacio del que ocupaba antes.",
@@ -596,7 +596,7 @@ module.exports = {
   },
 
   /* ============ TEMA 10 · Contar para poder responder ================== */
-  "10|Cada chocolate es 1 niño. ¿Cuántos lo quieren?": {
+  "10|Cada chocolate vale por 1 niño. ¿Cuántos lo quieren?": {
     pista: "Cada dibujo vale 1 niño. Cuenta los dibujos, uno por uno.",
     pasos: [
       "En un pictograma, cada dibujo representa a alguien o a algo.",
@@ -605,7 +605,7 @@ module.exports = {
     ],
     ojo: "No hay que sumar ni multiplicar: cada dibujo vale exactamente uno.",
   },
-  "10|Cada dibujo es 1 perro. ¿Cuántos perros hay?": {
+  "10|Cada dibujo vale por 1 perro. ¿Cuántos perros hay?": {
     pista: "Cada dibujo vale 1. Cuéntalos tocándolos con el dedo.",
     pasos: [
       "Un pictograma cuenta con dibujos en vez de con números.",
@@ -742,7 +742,7 @@ module.exports = {
     ],
     ojo: "Contestar «solo baja en la jarra» se queda a mitad: el agua tuvo que irse para algún lado.",
   },
-  "9|En 3 + ? = 4 + ?, ¿cuántas parejas sirven?": {
+  "9|Un lado es 3 + algo y el otro 4 + otra cosa. ¿Cuántas parejas sirven?": {
     pista: "No busques UNA respuesta: mira si cambiando un lado puedes arreglar el otro.",
     pasos: [
       "Los dos lados tienen que valer lo mismo, pero nadie dijo cuánto.",
