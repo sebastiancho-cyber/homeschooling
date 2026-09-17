@@ -145,6 +145,8 @@
   --color-mint-deep: rgb(var(--mint-deep));
   --color-bubble: rgb(var(--bubble));
   --color-bubble-deep: rgb(var(--bubble-deep));
+  --color-rust: rgb(var(--rust));
+  --color-rust-deep: rgb(var(--rust-deep));
 
   --font-display: var(--font-fredoka), "Segoe UI", system-ui, sans-serif;
   --font-sans: var(--font-nunito), "Segoe UI", system-ui, sans-serif;
