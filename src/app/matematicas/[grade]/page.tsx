@@ -69,7 +69,7 @@ export default async function GradePage({ params }: { params: Promise<{ grade: s
                       qué bolita del camino es cada renglón. */}
                   <span
                     className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full font-display text-sm tabular-nums ${
-                      listo ? `${tono.dot} ${tono.fg}` : "bg-raised text-ink-faint"
+                      listo ? `texto-ficha ${tono.dot} ${tono.fg}` : "bg-raised text-ink-faint"
                     }`}
                   >
                     {node.num}

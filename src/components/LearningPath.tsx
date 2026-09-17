@@ -19,7 +19,7 @@ export const TONOS_TEMA = [
   { bg: "bg-tangerine", edge: "var(--tangerine-deep)", fg: "text-white", dot: "bg-tangerine" },
   { bg: "bg-mint", edge: "var(--mint-deep)", fg: "text-white", dot: "bg-mint" },
   { bg: "bg-bubble", edge: "var(--bubble-deep)", fg: "text-white", dot: "bg-bubble" },
-  { bg: "bg-sun", edge: "var(--sun-deep)", fg: "text-ink", dot: "bg-sun" },
+  { bg: "bg-sun", edge: "var(--sun-deep)", fg: "text-white", dot: "bg-sun" },
   { bg: "bg-grass", edge: "var(--grass-deep)", fg: "text-white", dot: "bg-grass" },
 ];
 
@@ -110,7 +110,7 @@ export function LearningPath({ grade, nodes }: { grade: number; nodes: PathNode[
             )}
             <Link
               href={`/matematicas/${grade}/practicar?tema=${node.num}`}
-              className={`btn3d ${comun} ${tono.bg} ${tono.fg}`}
+              className={`btn3d texto-ficha ${comun} ${tono.bg} ${tono.fg}`}
               style={{ ...pos, ["--btn-edge" as string]: tono.edge, ["--btn-depth" as string]: "6px" }}
               title={node.enunciado}
             >

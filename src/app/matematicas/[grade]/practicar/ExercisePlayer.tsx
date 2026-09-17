@@ -5,7 +5,7 @@ import Link from "next/link";
 import type { Exercise, MultipleChoiceConfig, TrueFalseConfig } from "@/lib/exercises";
 import { shuffleExerciseOptions } from "@/lib/exercises";
 import { playCorrect, playIncorrect, playFinish } from "@/lib/sound";
-import { Mascota } from "@/components/Mascota";
+import { Mascota, personajeParaId } from "@/components/Mascota";
 
 type Feedback = "correct" | "incorrect" | null;
 
@@ -111,9 +111,13 @@ export default function ExercisePlayer({
     return (
       <div className="fixed inset-0 z-50 flex flex-col bg-canvas">
         <div className="flex flex-1 flex-col items-center justify-center gap-5 px-6 text-center">
-          <span className="rec-pop text-7xl" aria-hidden>
-            {perfecto ? "🏆" : pct >= 60 ? "🎉" : "💪"}
-          </span>
+          {/* Celebra el personaje del último ejercicio: cierra con la misma cara
+              con la que el niño acaba de jugar. */}
+          <Mascota
+            personaje={personajeParaId(playExercises[total - 1].id)}
+            animo={pct >= 60 ? "happy" : "idle"}
+            size={132}
+          />
 
           <div className="flex gap-2" aria-hidden>
             {[0, 1, 2].map((i) => (
@@ -215,7 +219,13 @@ export default function ExercisePlayer({
         {/* La mascota y el globo: el enunciado no lo "muestra la pantalla", se lo
             dice alguien. Es la diferencia entre un formulario y un juego. */}
         <div className="flex items-end gap-1">
-          <Mascota animo={feedback === "correct" ? "happy" : feedback === "incorrect" ? "sad" : "idle"} />
+          {/* El personaje sale del id del ejercicio: cambia en cada pregunta pero
+              siempre es el mismo para esa pregunta, y no depende del azar (que
+              rompería la hidratación entre servidor y cliente). */}
+          <Mascota
+            personaje={personajeParaId(current.id)}
+            animo={feedback === "correct" ? "happy" : feedback === "incorrect" ? "sad" : "idle"}
+          />
           <div className="card3d relative mb-4 max-w-[13rem] px-4 py-3 text-left">
             {/* El pico del globo, apuntando a la mascota. */}
             <span

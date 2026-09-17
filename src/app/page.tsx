@@ -12,8 +12,7 @@ const TONOS = [
   { bg: "bg-tangerine", edge: "var(--tangerine-deep)", fg: "text-white" },
   { bg: "bg-mint", edge: "var(--mint-deep)", fg: "text-white" },
   { bg: "bg-bubble", edge: "var(--bubble-deep)", fg: "text-white" },
-  // El amarillo con letra blanca no se lee: ahí el texto va en tinta.
-  { bg: "bg-sun", edge: "var(--sun-deep)", fg: "text-ink" },
+  { bg: "bg-sun", edge: "var(--sun-deep)", fg: "text-white" },
   { bg: "bg-grass", edge: "var(--grass-deep)", fg: "text-white" },
 ];
 
@@ -92,7 +91,7 @@ export default async function Home() {
                 <Link
                   key={grade}
                   href={`/matematicas/${grade}`}
-                  className={`btn3d no-select aspect-square flex-col gap-0.5 ${tono.bg} ${tono.fg}`}
+                  className={`btn3d no-select texto-ficha aspect-square flex-col gap-0.5 ${tono.bg} ${tono.fg}`}
                   style={{ ["--btn-edge" as string]: tono.edge }}
                 >
                   <span className="font-display text-3xl leading-none tabular-nums">{grade}º</span>
@@ -121,8 +120,10 @@ export default async function Home() {
           </div>
         </section>
 
+        {/* Sin bandera: Windows no dibuja los emoji de bandera y 🇨🇴 sale como
+            un "CO" suelto. Se dice con palabras y funciona en todas partes. */}
         <p className="mt-10 text-center font-sans text-xs font-bold text-ink-faint">
-          Hecho para familias que aprenden en casa 🇨🇴
+          Hecho en Colombia para las familias que aprenden en casa
         </p>
       </div>
     </main>

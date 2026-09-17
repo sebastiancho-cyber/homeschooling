@@ -308,6 +308,13 @@ h3,
     -webkit-user-select: none;
   }
 
+  /* El texto blanco sobre las fichas de color va con una sombra mínima: sobre
+     los tonos claros (el amarillo, sobre todo) el blanco solo se sostiene si
+     tiene un borde de sombra que lo separe del fondo. */
+  .texto-ficha {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.22);
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .rec-pop, .rec-shake, .rec-rise, .rec-bounce, .rec-wiggle, .rec-toast, .rec-spark, .rec-float {
       animation: none !important;
