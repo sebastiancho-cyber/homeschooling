@@ -27,7 +27,9 @@ export const DEMO_GRADE_COUNTS: { grade: number; count: number }[] = [
   { grade: 11, count: 11 },
 ];
 
-export function demoDbas(grade: number): { id: string; num: number; enunciado: string }[] {
+export function demoDbas(
+  grade: number,
+): { id: string; num: number; enunciado: string; titulo: string | null; resumen: string | null }[] {
   const temas = [
     "Contar y comparar cantidades",
     "Leer y escribir números",
@@ -43,10 +45,15 @@ export function demoDbas(grade: number): { id: string; num: number; enunciado: s
     "Descubrir patrones y secuencias",
   ];
   const cuantos = DEMO_GRADE_COUNTS.find((g) => g.grade === grade)?.count ?? 10;
+  // En muestra el nombre del tema ya está en idioma de niño, así que sirve de
+  // título. No hay resumen: no vale la pena inventar contenido pedagógico para
+  // un repliegue que además va rotulado como muestra.
   return temas.slice(0, cuantos).map((t, i) => ({
     id: `demo-${grade}-${i + 1}`,
     num: i + 1,
     enunciado: t,
+    titulo: t,
+    resumen: null,
   }));
 }
 

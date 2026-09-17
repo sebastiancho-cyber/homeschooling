@@ -2,7 +2,16 @@ import { supabase } from "@/lib/supabase";
 import { DEMO_GRADE_COUNTS, demoDbas } from "@/lib/demo-data";
 
 export type GradeSummary = { grade: number; count: number };
-export type Dba = { id: string; num: number; enunciado: string };
+/* El tema tiene tres textos y cada uno es para alguien distinto: `titulo` y
+   `resumen` son para el niño, `enunciado` es el del MEN, literal, para el adulto
+   que acompaña y que algún día tiene que sustentar este trabajo ante un colegio. */
+export type Dba = {
+  id: string;
+  num: number;
+  enunciado: string;
+  titulo: string | null;
+  resumen: string | null;
+};
 
 /** `isDemo` es la señal de que esto NO vino de la base: la pantalla lo rotula. */
 export type Sourced<T> = { data: T; isDemo: boolean };
@@ -57,7 +66,7 @@ export async function getGradePath(grade: number): Promise<Sourced<PathNode[]>> 
     const id = await subjectId();
     const { data: dbas, error: dbasError } = await supabase
       .from("dbas")
-      .select("id, num, enunciado")
+      .select("id, num, enunciado, titulo, resumen")
       .eq("subject_id", id)
       .eq("grade", grade)
       .order("num", { ascending: true });
@@ -139,7 +148,7 @@ export async function getGradeDbas(grade: number): Promise<Sourced<Dba[]>> {
     const id = await subjectId();
     const { data, error } = await supabase
       .from("dbas")
-      .select("id, num, enunciado")
+      .select("id, num, enunciado, titulo, resumen")
       .eq("subject_id", id)
       .eq("grade", grade)
       .order("num", { ascending: true });

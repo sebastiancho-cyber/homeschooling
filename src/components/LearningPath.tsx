@@ -158,13 +158,13 @@ export function LearningPath({ grade, nodes }: { grade: number; nodes: PathNode[
                   style={pos}
                   title={
                     sinContenido
-                      ? `${node.enunciado} — próximamente`
-                      : `${node.enunciado} — aprueba el tema anterior para abrirlo`
+                      ? `${node.titulo ?? node.enunciado} — próximamente`
+                      : `${node.titulo ?? node.enunciado} — aprueba el tema anterior para abrirlo`
                   }
                 >
                   <Candado />
                   <span className="sr-only">
-                    {node.enunciado} ({sinContenido ? "próximamente" : "bloqueado"})
+                    {node.titulo ?? node.enunciado} ({sinContenido ? "próximamente" : "bloqueado"})
                   </span>
                 </div>
               </div>
@@ -191,10 +191,10 @@ export function LearningPath({ grade, nodes }: { grade: number; nodes: PathNode[
                 href={`/matematicas/${grade}/practicar?tema=${node.num}`}
                 className={`btn3d texto-ficha ${comun} ${tono.bg} ${tono.fg}`}
                 style={{ ...pos, ["--btn-edge" as string]: tono.edge, ["--btn-depth" as string]: "6px" }}
-                title={node.enunciado}
+                title={node.titulo ?? node.enunciado}
               >
                 <span className="font-display text-2xl leading-none tabular-nums">{node.num}</span>
-                <span className="sr-only">{node.enunciado}</span>
+                <span className="sr-only">{node.titulo ?? node.enunciado}</span>
               </Link>
 
               {/* Las estrellas también aparecen —vacías— cuando se jugó y no se
@@ -237,7 +237,18 @@ export function LearningPath({ grade, nodes }: { grade: number; nodes: PathNode[
                   {node.num}
                 </span>
                 <div className="min-w-0 flex-1 pt-0.5">
-                  <p className="font-sans text-sm font-bold leading-snug text-ink">{node.enunciado}</p>
+                  {/* El niño lee el nombre del tema y de qué se trata. El
+                      enunciado del MEN, que es ilegible a los seis años, vive
+                      en la burbuja de ayuda de la lección, donde lo busca el
+                      acudiente. */}
+                  <p className="font-display text-sm leading-snug text-ink">
+                    {node.titulo ?? node.enunciado}
+                  </p>
+                  {node.resumen && (
+                    <p className="mt-0.5 line-clamp-2 font-sans text-xs font-bold leading-snug text-ink-muted">
+                      {node.resumen}
+                    </p>
+                  )}
                   <div className="mt-1 flex items-center gap-2">
                     {(estado === "hecha" || intentada) && <Estrellas n={estrellas} size={13} />}
                     <span className="font-sans text-xs font-bold text-ink-faint">
