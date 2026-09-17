@@ -72,16 +72,27 @@ export async function getGradePath(grade: number): Promise<Sourced<PathNode[]>> 
 
     const evidenceIds = (evidences ?? []).map((e) => e.id);
     const { data: exercises, error: exError } = evidenceIds.length
-      ? await supabase.from("exercises").select("id, evidence_id").in("evidence_id", evidenceIds)
+      ? await supabase
+          .from("exercises")
+          .select("id, evidence_id, order_in_lesson")
+          .in("evidence_id", evidenceIds)
       : { data: [], error: null };
     if (exError) throw new Error(exError.message);
 
+    /* Se cuentan RANURAS, no filas. Cada pregunta tiene 3 versiones y solo se
+       juega una: contar filas diría "30 ejercicios" en una lección de 10. */
     const dbaOfEvidence = new Map((evidences ?? []).map((e) => [e.id, e.dba_id]));
-    const countByDba = new Map<string, number>();
+    const ranurasPorDba = new Map<string, Set<number>>();
     for (const ex of exercises ?? []) {
       const dbaId = dbaOfEvidence.get(ex.evidence_id);
-      if (dbaId) countByDba.set(dbaId, (countByDba.get(dbaId) ?? 0) + 1);
+      if (!dbaId) continue;
+      const set = ranurasPorDba.get(dbaId) ?? new Set<number>();
+      set.add(ex.order_in_lesson);
+      ranurasPorDba.set(dbaId, set);
     }
+    const countByDba = new Map<string, number>(
+      Array.from(ranurasPorDba, ([dbaId, ranuras]) => [dbaId, ranuras.size] as const),
+    );
 
     return {
       data: dbas.map((d) => ({ ...d, exerciseCount: countByDba.get(d.id) ?? 0 })),

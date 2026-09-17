@@ -53,6 +53,7 @@ export function demoDbas(grade: number): { id: string; num: number; enunciado: s
 export const DEMO_EXERCISES: Exercise[] = [
   {
     id: "demo-ex-1",
+    grupo: "demo-1",
     type: "multiple_choice",
     prompt: "¿Cuál de estos números indica una CANTIDAD?",
     config: {
@@ -67,24 +68,28 @@ export const DEMO_EXERCISES: Exercise[] = [
   },
   {
     id: "demo-ex-2",
+    grupo: "demo-2",
     type: "multiple_choice",
     prompt: "Tienes 4 manzanas y regalas 1. ¿Cuántas te quedan?",
     config: { options: ["3", "5", "2", "4"], correctIndex: 0, operation: "4 − 1 = ?" },
   },
   {
     id: "demo-ex-3",
+    grupo: "demo-3",
     type: "multiple_choice",
     prompt: "Cuenta de 2 en 2. ¿Qué número sigue?",
     config: { options: ["10", "9", "12", "7"], correctIndex: 0, operation: "4, 6, 8, ?" },
   },
   {
     id: "demo-ex-4",
+    grupo: "demo-4",
     type: "multiple_choice",
     prompt: "¿Cuál es el número que falta?",
     config: { options: ["4", "3", "5", "10"], correctIndex: 0, operation: "3 + ? = 7" },
   },
   {
     id: "demo-ex-5",
+    grupo: "demo-5",
     type: "multiple_choice",
     prompt: "¿Cuál de estos pesa MÁS?",
     config: {
@@ -94,18 +99,21 @@ export const DEMO_EXERCISES: Exercise[] = [
   },
   {
     id: "demo-ex-6",
+    grupo: "demo-6",
     type: "multiple_choice",
     prompt: "¿Cuánto es?",
     config: { options: ["35", "30", "26", "15"], correctIndex: 0, operation: "25 + 10 = ?" },
   },
   {
     id: "demo-ex-7",
+    grupo: "demo-7",
     type: "multiple_choice",
     prompt: "Un lápiz mide 3 clips y otro mide 5 clips. ¿Cuántos clips más largo es el segundo?",
     config: { options: ["2", "3", "8", "5"], correctIndex: 0, operation: "5 − 3 = ?" },
   },
   {
     id: "demo-ex-8",
+    grupo: "demo-8",
     type: "multiple_choice",
     prompt: "¿Qué figura tiene 3 lados?",
     config: { options: ["Triángulo", "Cuadrado", "Círculo", "Rectángulo"], correctIndex: 0 },

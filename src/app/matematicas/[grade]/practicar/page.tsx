@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { getGradeExercisesSafe, shuffleExerciseOptions } from "@/lib/exercises";
+import { elegirVariantes, getGradeExercisesSafe, shuffleExerciseOptions } from "@/lib/exercises";
 import ExercisePlayer from "./ExercisePlayer";
 
 export default async function PracticarPage({
@@ -22,9 +22,22 @@ export default async function PracticarPage({
   const dbaNum = Number.isInteger(temaNum) && temaNum > 0 ? temaNum : undefined;
 
   const { data, isDemo } = await getGradeExercisesSafe("matematicas", grade, dbaNum);
-  // Barajar en el servidor, no en el cliente: si el sorteo corriera en el render
-  // del cliente, el HTML del servidor y el del cliente no coincidirían.
-  const exercises = shuffleExerciseOptions(data);
+  // Los dos sorteos —qué versión de cada pregunta, y en qué orden van las
+  // opciones— corren en el SERVIDOR. Si corrieran en el render del cliente, el
+  // HTML del servidor y el del cliente no coincidirían.
+  const variantes = shuffleExerciseOptions(data);
+  const exercises = elegirVariantes(variantes);
 
-  return <ExercisePlayer grade={grade} exercises={exercises} tema={dbaNum} isDemo={isDemo} />;
+  return (
+    // `variantes` va completo para que "Jugar otra vez" pueda sortear de nuevo
+    // sin volver al servidor: es justo la repetición donde más importa que las
+    // preguntas cambien.
+    <ExercisePlayer
+      grade={grade}
+      exercises={exercises}
+      variantes={variantes}
+      tema={dbaNum}
+      isDemo={isDemo}
+    />
+  );
 }

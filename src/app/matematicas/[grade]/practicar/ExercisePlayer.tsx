@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import type { Exercise, MultipleChoiceConfig, TrueFalseConfig } from "@/lib/exercises";
-import { shuffleExerciseOptions } from "@/lib/exercises";
+import { elegirVariantes, shuffleExerciseOptions } from "@/lib/exercises";
 import { playCorrect, playIncorrect, playFinish } from "@/lib/sound";
 import { Mascota, personajeParaId } from "@/components/Mascota";
 import { claveLeccion, estrellasPara, guardarLeccion, PORCENTAJE_APROBACION } from "@/lib/progress";
@@ -29,11 +29,15 @@ const CHISPAS = [
 export default function ExercisePlayer({
   grade,
   exercises,
+  variantes,
   tema,
   isDemo = false,
 }: {
   grade: number;
+  /** Las versiones ya sorteadas por el servidor: lo que se juega ahora. */
   exercises: Exercise[];
+  /** TODAS las versiones, para volver a sortear al repetir la lección. */
+  variantes: Exercise[];
   /** Número del tema de la ruta. Sin él se practica el grado entero y no hay
    *  estación que marcar, así que tampoco se guarda progreso. */
   tema?: number;
@@ -86,7 +90,10 @@ export default function ExercisePlayer({
   }
 
   function reiniciar() {
-    setPlayExercises(shuffleExerciseOptions(exercises));
+    // Se sortean otra vez las DOS cosas: qué versión de cada pregunta sale y en
+    // qué orden van sus opciones. Va dentro de un manejador de evento, así que
+    // el azar aquí no rompe nada.
+    setPlayExercises(shuffleExerciseOptions(elegirVariantes(variantes)));
     setIndex(0);
     setScore(0);
     setFeedback(null);

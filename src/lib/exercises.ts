@@ -17,7 +17,26 @@ export type Exercise = {
   type: ExerciseType;
   prompt: string;
   config: MultipleChoiceConfig | MultipleResponseConfig | NumericInputConfig | TrueFalseConfig;
+  /** Ranura de la lección a la que pertenece. Los ejercicios que comparten
+   *  `grupo` son versiones de la misma pregunta y solo se juega una. */
+  grupo: string;
 };
+
+/** Sortea una versión por ranura, conservando el orden de la lección.
+ *  Se llama en el servidor al abrir la lección (para que el HTML del servidor y
+ *  el del cliente coincidan) y en el cliente al darle "Jugar otra vez" —ahí ya
+ *  no hay hidratación que romper y el sorteo es lo que evita que repetir sea
+ *  repasar de memoria. */
+export function elegirVariantes(exercises: Exercise[]): Exercise[] {
+  const porGrupo = new Map<string, Exercise[]>();
+  for (const ex of exercises) {
+    const lista = porGrupo.get(ex.grupo);
+    if (lista) lista.push(ex);
+    else porGrupo.set(ex.grupo, [ex]);
+  }
+  // El Map conserva el orden de inserción, que es el de la lección.
+  return Array.from(porGrupo.values()).map((v) => v[Math.floor(Math.random() * v.length)]);
+}
 
 // Baraja las opciones de cada ejercicio (y ajusta correctIndex) para que la respuesta
 // correcta no caiga siempre en la misma posición. Se aplica en el servidor, antes de
@@ -114,6 +133,8 @@ export async function getGradeExercises(
   // ordenar por ella ponía los ejercicios en el orden del documento, que no es
   // una rampa de dificultad. El orden pedagógico —de lo concreto a lo
   // abstracto— se decide al sembrar el contenido.
+  const dbaIdDeEvidencia = new Map(evidences.map((e) => [e.id, e.dba_id]));
+
   return (exercises ?? [])
     .slice()
     .sort((a, b) => {
@@ -122,5 +143,14 @@ export async function getGradeExercises(
       if (da !== db) return da - db;
       return a.order_in_lesson - b.order_in_lesson;
     })
-    .map(({ id, type, prompt, config }) => ({ id, type, prompt, config })) as Exercise[];
+    .map(({ id, type, prompt, config, evidence_id, order_in_lesson }) => ({
+      id,
+      type,
+      prompt,
+      config,
+      // La ranura es (tema, posición). Lleva el DBA porque `order_in_lesson` se
+      // repite entre temas: sin él, la ranura 1 de todos los temas sería la
+      // misma al practicar el grado entero.
+      grupo: `${dbaIdDeEvidencia.get(evidence_id)}|${order_in_lesson}`,
+    })) as Exercise[];
 }
