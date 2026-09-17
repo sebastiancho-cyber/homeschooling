@@ -6,6 +6,7 @@ import type { Exercise, MultipleChoiceConfig, TrueFalseConfig } from "@/lib/exer
 import { shuffleExerciseOptions } from "@/lib/exercises";
 import { playCorrect, playIncorrect, playFinish } from "@/lib/sound";
 import { Mascota, personajeParaId } from "@/components/Mascota";
+import { claveLeccion, estrellasPara, guardarLeccion } from "@/lib/progress";
 
 type Feedback = "correct" | "incorrect" | null;
 
@@ -28,10 +29,14 @@ const CHISPAS = [
 export default function ExercisePlayer({
   grade,
   exercises,
+  tema,
   isDemo = false,
 }: {
   grade: number;
   exercises: Exercise[];
+  /** Número del tema de la ruta. Sin él se practica el grado entero y no hay
+   *  estación que marcar, así que tampoco se guarda progreso. */
+  tema?: number;
   isDemo?: boolean;
 }) {
   const [playExercises, setPlayExercises] = useState(exercises);
@@ -45,11 +50,20 @@ export default function ExercisePlayer({
   const done = index >= playExercises.length;
   const total = playExercises.length;
 
-  // El sonido de cierre suena una vez, al llegar — no en cada render de la
-  // pantalla final (un re-render volvería a dispararlo).
+  // Al llegar al final: fanfarria y se guarda la estación. Va en un efecto y no
+  // en el render porque escribir en disco durante el render es un efecto
+  // secundario — React puede repetir un render y guardaríamos dos veces.
   useEffect(() => {
-    if (done && total > 0) playFinish();
-  }, [done, total]);
+    if (!done || total === 0) return;
+    playFinish();
+    if (tema) {
+      guardarLeccion(claveLeccion(grade, tema), {
+        estrellas: estrellasPara(score, total),
+        aciertos: score,
+        total,
+      });
+    }
+  }, [done, total, tema, grade, score]);
 
   useEffect(
     () => () => {

@@ -26,5 +26,5 @@ export default async function PracticarPage({
   // del cliente, el HTML del servidor y el del cliente no coincidirían.
   const exercises = shuffleExerciseOptions(data);
 
-  return <ExercisePlayer grade={grade} exercises={exercises} isDemo={isDemo} />;
+  return <ExercisePlayer grade={grade} exercises={exercises} tema={dbaNum} isDemo={isDemo} />;
 }

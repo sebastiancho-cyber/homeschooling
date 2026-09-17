@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getGradePath } from "@/lib/curriculum";
-import { LearningPath, TONOS_TEMA } from "@/components/LearningPath";
+import { LearningPath } from "@/components/LearningPath";
 import { DemoBanner } from "@/components/DemoBanner";
 
 export default async function GradePage({ params }: { params: Promise<{ grade: string }> }) {
@@ -52,50 +52,6 @@ export default async function GradePage({ params }: { params: Promise<{ grade: s
         {isDemo && <DemoBanner />}
 
         <LearningPath grade={grade} nodes={nodes} />
-
-        {/* --- El detalle, para quien acompaña ---------------------------- */}
-        <section className="mt-12">
-          <h2 className="mb-3 px-1 font-display text-lg text-ink">Lo que vas a aprender</h2>
-          <ol className="flex flex-col gap-2">
-            {nodes.map((node, i) => {
-              const tono = TONOS_TEMA[i % TONOS_TEMA.length];
-              const listo = node.exerciseCount > 0;
-              return (
-                <li
-                  key={node.id}
-                  className={`card3d flex items-start gap-3 px-3 py-3 ${listo ? "" : "opacity-55"}`}
-                >
-                  {/* El mismo color y el mismo número que en la ruta: así se sabe
-                      qué bolita del camino es cada renglón. */}
-                  <span
-                    className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full font-display text-sm tabular-nums ${
-                      listo ? `texto-ficha ${tono.dot} ${tono.fg}` : "bg-raised text-ink-faint"
-                    }`}
-                  >
-                    {node.num}
-                  </span>
-                  <div className="min-w-0 flex-1 pt-0.5">
-                    <p className="font-sans text-sm font-bold leading-snug text-ink">
-                      {node.enunciado}
-                    </p>
-                    <p className="mt-0.5 font-sans text-xs font-bold text-ink-faint">
-                      {listo ? `${node.exerciseCount} ejercicios` : "Próximamente"}
-                    </p>
-                  </div>
-                  {listo && (
-                    <Link
-                      href={`/matematicas/${grade}/practicar?tema=${node.num}`}
-                      className="btn3d shrink-0 self-center bg-grass px-4 py-2 text-xs text-white"
-                      style={{ ["--btn-edge" as string]: "var(--grass-deep)", ["--btn-depth" as string]: "4px" }}
-                    >
-                      Jugar
-                    </Link>
-                  )}
-                </li>
-              );
-            })}
-          </ol>
-        </section>
 
         {/* --- Saltar de grado -------------------------------------------- */}
         <nav className="mt-8 flex gap-2">
