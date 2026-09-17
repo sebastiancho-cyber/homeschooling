@@ -97,6 +97,27 @@ function Rasgos({ animo, cy, spread, r, mouthY, sinBoca }: Cara & { animo: Animo
   );
 }
 
+/* Polígono con las esquinas redondeadas. El truco: pintar el mismo color en el
+   relleno Y en el trazo, con unión redonda. El trazo "infla" la figura y le come
+   los picos, así que una oreja triangular sale con punta mullida en vez de
+   afilada. `radio` es el grosor del trazo: cuanto más, más redondo.
+
+   Existe porque en este elenco no puede haber un solo ángulo en punta: un pico
+   afilado lee como agresivo, y estos personajes acompañan a un niño que acaba
+   de equivocarse. */
+function Redondeado({ d, color, radio = 9 }: { d: string; color: string; radio?: number }) {
+  return (
+    <path
+      d={d}
+      fill={color}
+      stroke={color}
+      strokeWidth={radio}
+      strokeLinejoin="round"
+      strokeLinecap="round"
+    />
+  );
+}
+
 type Personaje = {
   nombre: string;
   base: string; // token del cuerpo
@@ -141,8 +162,8 @@ export const ELENCO: Personaje[] = [
     cara: { cy: 60, spread: 15, r: 9.5, mouthY: 78 },
     cuerpo: (c, d) => (
       <>
-        <path d="M26 44 L24 14 L50 30 Z" fill={d} strokeLinejoin="round" stroke={d} strokeWidth="6" />
-        <path d="M94 44 L96 14 L70 30 Z" fill={d} strokeLinejoin="round" stroke={d} strokeWidth="6" />
+        <Redondeado d="M29 42 L27 18 L48 31 Z" color={d} radio={11} />
+        <Redondeado d="M91 42 L93 18 L72 31 Z" color={d} radio={11} />
         <ellipse cx="60" cy="68" rx="43" ry="41" fill={c} />
         {barriga}
         {cachetes}
@@ -160,7 +181,7 @@ export const ELENCO: Personaje[] = [
         {/* La nariz en triángulo invertido: sin ella no es un gato, es una bola
             naranja con orejas. Va sobre la boca, no en su lugar, para que el
             gesto de acierto y error se siga leyendo. */}
-        <path d="M54 70 L66 70 L60 77 Z" fill={TINTA} />
+        <Redondeado d="M55 70 L65 70 L60 76 Z" color={TINTA} radio={4} />
       </>
     ),
   },
@@ -205,7 +226,7 @@ export const ELENCO: Personaje[] = [
     ),
     frente: (_, d) => (
       // Pico en vez de boca: por eso este personaje va con `sinBoca`.
-      <path d="M53 72 L67 72 L60 84 Z" fill={d} />
+      <Redondeado d="M54 73 L66 73 L60 82 Z" color={d} radio={5} />
     ),
   },
   {
@@ -217,10 +238,18 @@ export const ELENCO: Personaje[] = [
     cara: { cy: 56, spread: 15, r: 10, mouthY: 82, sinBoca: true },
     cuerpo: (c, d) => (
       <>
-        {/* Orejas caídas hacia afuera: el único del elenco cuyas orejas no
-            apuntan hacia arriba, que es media silueta ganada. */}
-        <path d="M12 30 L44 26 L30 58 Z" fill={d} />
-        <path d="M108 30 L76 26 L90 58 Z" fill={d} />
+        {/* Orejas: lóbulos redondeados e inclinados, no triángulos. Un triángulo
+            detrás de la cabeza solo asoma por un lado y el corte contra el
+            cráneo se ve como una oreja partida; una forma redonda asoma entera.
+            Van inclinadas hacia afuera, que es lo que las hace de cerdo. */}
+        <g fill={d}>
+          <ellipse cx="27" cy="35" rx="17" ry="13" transform="rotate(-38 27 35)" />
+          <ellipse cx="93" cy="35" rx="17" ry="13" transform="rotate(38 93 35)" />
+        </g>
+        <g fill={ROSA}>
+          <ellipse cx="26" cy="33" rx="9" ry="6" transform="rotate(-38 26 33)" />
+          <ellipse cx="94" cy="33" rx="9" ry="6" transform="rotate(38 94 33)" />
+        </g>
         <ellipse cx="60" cy="66" rx="42" ry="40" fill={c} />
         <ellipse cx="60" cy="78" rx="28" ry="22" fill="rgba(255,255,255,0.2)" />
         <ellipse cx="26" cy="66" rx="8" ry="6" fill={ROSA} />
@@ -265,9 +294,10 @@ export const ELENCO: Personaje[] = [
         {/* Antena */}
         <path d="M60 30 L60 18" stroke={d} strokeWidth="4" strokeLinecap="round" />
         <circle cx="60" cy="14" r="6" fill={d} />
-        {/* Cabeza cuadrada: el único del elenco que no es redondo. */}
-        <rect x="20" y="30" width="80" height="72" rx="20" fill={c} />
-        <rect x="30" y="44" width="60" height="46" rx="14" fill="rgba(255,255,255,0.2)" />
+        {/* Cabeza cuadrada, pero de esquinas muy generosas: sigue leyendo como
+            robot y no rompe la regla de que aquí no hay ángulos vivos. */}
+        <rect x="20" y="30" width="80" height="72" rx="28" fill={c} />
+        <rect x="31" y="45" width="58" height="44" rx="20" fill="rgba(255,255,255,0.2)" />
         {/* Orejeras */}
         <rect x="10" y="56" width="10" height="22" rx="5" fill={d} />
         <rect x="100" y="56" width="10" height="22" rx="5" fill={d} />
@@ -284,11 +314,11 @@ export const ELENCO: Personaje[] = [
         {/* Cresta de púas. Ojo con la altura: el cuerpo empieza en y≈30, así que
             una púa que no pase de ahí queda enterrada y el dino es una bola. */}
         {[
-          [36, 22],
-          [60, 8],
-          [84, 22],
+          [36, 26],
+          [60, 14],
+          [84, 26],
         ].map(([x, y], i) => (
-          <path key={i} d={`M${x - 11} 48 L${x} ${y} L${x + 11} 48 Z`} fill={d} />
+          <Redondeado key={i} d={`M${x - 10} 48 L${x} ${y} L${x + 10} 48 Z`} color={d} radio={10} />
         ))}
         <ellipse cx="60" cy="70" rx="43" ry="40" fill={c} />
         <ellipse cx="60" cy="82" rx="27" ry="20" fill="rgba(255,255,255,0.22)" />
@@ -306,11 +336,13 @@ export const ELENCO: Personaje[] = [
     cara: { cy: 56, spread: 14, r: 9, mouthY: 86 },
     cuerpo: (c, d) => (
       <>
-        <path d="M24 46 L20 10 L52 30 Z" fill={c} />
-        <path d="M96 46 L100 10 L68 30 Z" fill={c} />
-        {/* Puntas oscuras: marca de zorro, y contraste que el gato no tiene. */}
-        <path d="M23 27 L20 10 L35 19 Z" fill={d} />
-        <path d="M97 27 L100 10 L85 19 Z" fill={d} />
+        <Redondeado d="M27 44 L24 16 L49 32 Z" color={c} radio={11} />
+        <Redondeado d="M93 44 L96 16 L71 32 Z" color={c} radio={11} />
+        {/* Puntas oscuras: marca de zorro, y contraste que el gato no tiene. Van
+            metidas hacia adentro porque el redondeo infla la figura y si no se
+            desbordarían por fuera de la oreja. */}
+        <Redondeado d="M27 29 L25 18 L36 24 Z" color={d} radio={6} />
+        <Redondeado d="M93 29 L95 18 L84 24 Z" color={d} radio={6} />
         <ellipse cx="60" cy="66" rx="42" ry="40" fill={c} />
         {/* La máscara blanca de la media cara de abajo. Va DETRÁS de los rasgos
             para que la boca se dibuje encima y el gesto siga cambiando. */}
