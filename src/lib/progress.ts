@@ -54,6 +54,16 @@ export function estrellasDe(leccion: ProgresoLeccion | undefined): number {
   return leccion ? estrellasPara(leccion.aciertos, leccion.total) : 0;
 }
 
+/** Borra todo el avance. Sin esto, arreglar un progreso equivocado exige abrir
+ *  las herramientas de desarrollo, que es pedirle demasiado a una familia. */
+export function borrarProgreso(): void {
+  try {
+    localStorage.removeItem(CLAVE);
+  } catch {
+    // Si no se puede escribir, tampoco había nada guardado.
+  }
+}
+
 /** Sin estrellas no hay aprobación: la lección queda pendiente. */
 export function aprobo(aciertos: number, total: number): boolean {
   return estrellasPara(aciertos, total) > 0;

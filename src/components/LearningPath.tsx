@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import type { PathNode } from "@/lib/curriculum";
-import { claveLeccion, estrellasDe, leerProgreso, type Progreso } from "@/lib/progress";
+import { borrarProgreso, claveLeccion, estrellasDe, leerProgreso, type Progreso } from "@/lib/progress";
 
 /* La ruta: el mapa del grado. Los temas no son una lista, son estaciones de un
    camino que sube, y se abren de a una: hasta no terminar la estación actual no
@@ -66,10 +66,13 @@ function Candado({ size = 24 }: { size?: number }) {
 
 export function LearningPath({ grade, nodes }: { grade: number; nodes: PathNode[] }) {
   const [progreso, setProgreso] = useState<Progreso>({});
+  const [confirmando, setConfirmando] = useState(false);
 
   useEffect(() => {
     setProgreso(leerProgreso());
   }, []);
+
+  const hayProgreso = Object.keys(progreso).length > 0;
 
   /* Una estación se abre cuando la ANTERIOR CON CONTENIDO quedó APROBADA (al
      menos una estrella). Jugarla y reprobarla no basta: se puede repetir las
@@ -264,6 +267,47 @@ export function LearningPath({ grade, nodes }: { grade: number; nodes: PathNode[
           })}
         </ol>
       </section>
+
+      {/* Para el adulto que acompaña, no para el niño: por eso va al final, en
+          letra pequeña y con confirmación. Borrar no se puede deshacer. */}
+      {hayProgreso && (
+        <div className="mt-8 text-center">
+          {confirmando ? (
+            <div className="flex flex-col items-center gap-2">
+              <p className="font-sans text-xs font-bold text-ink-muted">
+                Se borran las estrellas de todos los grados. No se puede deshacer.
+              </p>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => {
+                    borrarProgreso();
+                    setProgreso({});
+                    setConfirmando(false);
+                  }}
+                  className="btn3d bg-coral px-4 py-2 text-xs text-white"
+                  style={{ ["--btn-edge" as string]: "var(--coral-deep)", ["--btn-depth" as string]: "4px" }}
+                >
+                  Sí, borrar todo
+                </button>
+                <button
+                  onClick={() => setConfirmando(false)}
+                  className="btn3d bg-surface px-4 py-2 text-xs text-ink-muted"
+                  style={{ ["--btn-depth" as string]: "4px" }}
+                >
+                  Cancelar
+                </button>
+              </div>
+            </div>
+          ) : (
+            <button
+              onClick={() => setConfirmando(true)}
+              className="font-sans text-xs font-bold text-ink-faint underline hover:text-ink-muted"
+            >
+              Reiniciar mi progreso
+            </button>
+          )}
+        </div>
+      )}
     </>
   );
 }
