@@ -80,11 +80,54 @@ export function shuffleExerciseOptions(exercises: Exercise[]): Exercise[] {
   });
 }
 
+/* Arma una lección de REPASO.
+
+   Un repaso no tiene preguntas propias: toma las de los temas que repasa. Eso
+   no es pereza, es lo que mantiene el repaso honesto. Si se copiaran las
+   preguntas, corregir un ejercicio dejaría al repaso preguntando la versión
+   vieja, y nadie se daría cuenta hasta que un niño reclamara.
+
+   Reparte parejo entre los temas —dos de cada uno— porque un repaso que saliera
+   con seis preguntas del tema 3 no estaría repasando nada. */
+export function armarRepaso(exercises: Exercise[], porTema = 2): Exercise[] {
+  // La ranura lleva el tema adentro: "${dba_id}|${order_in_lesson}".
+  const temaDe = (ex: Exercise) => ex.grupo.split("|")[0];
+
+  const ranurasPorTema = new Map<string, Map<string, Exercise[]>>();
+  for (const ex of exercises) {
+    const tema = temaDe(ex);
+    if (!ranurasPorTema.has(tema)) ranurasPorTema.set(tema, new Map());
+    const ranuras = ranurasPorTema.get(tema)!;
+    const lista = ranuras.get(ex.grupo);
+    if (lista) lista.push(ex);
+    else ranuras.set(ex.grupo, [ex]);
+  }
+
+  const escogidas: Exercise[] = [];
+  for (const ranuras of ranurasPorTema.values()) {
+    const claves = Array.from(ranuras.keys());
+    // Se barajan las ranuras del tema y se toman las primeras.
+    for (let i = claves.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [claves[i], claves[j]] = [claves[j], claves[i]];
+    }
+    for (const clave of claves.slice(0, porTema)) {
+      const versiones = ranuras.get(clave)!;
+      escogidas.push(versiones[Math.floor(Math.random() * versiones.length)]);
+    }
+  }
+
+  // Se devuelven en el orden del currículo, no en el del sorteo: el repaso
+  // sigue yendo de lo primero que se aprendió a lo último.
+  const posicion = new Map(exercises.map((ex, i) => [ex.id, i]));
+  return escogidas.sort((a, b) => posicion.get(a.id)! - posicion.get(b.id)!);
+}
+
 /** Igual que `Sourced` en curriculum.ts: avisa si el contenido es de muestra. */
 export async function getGradeExercisesSafe(
   subjectSlug: string,
   grade: number,
-  dbaNum?: number,
+  dbaNum?: number | number[],
 ): Promise<{ data: Exercise[]; isDemo: boolean }> {
   try {
     const data = await getGradeExercises(subjectSlug, grade, dbaNum);
@@ -98,11 +141,12 @@ export async function getGradeExercisesSafe(
   }
 }
 
-/** `dbaNum` limita la tanda a un solo tema (una lección corta de la ruta). */
+/** `dbaNum` limita la tanda a un tema (una lección de la ruta) o a varios
+ *  (una lección de repaso). Sin él se practica el grado entero. */
 export async function getGradeExercises(
   subjectSlug: string,
   grade: number,
-  dbaNum?: number,
+  dbaNum?: number | number[],
 ): Promise<Exercise[]> {
   const { data: subject, error: subjectError } = await supabase
     .from("subjects")
@@ -126,8 +170,8 @@ export async function getGradeExercises(
   if (dbasError) throw new Error(dbasError.message);
   if (!dbas || dbas.length === 0) return [];
 
-  // Una lección de la ruta es UN tema; sin `dbaNum` se practica el grado entero.
-  const scoped = dbaNum ? dbas.filter((d) => d.num === dbaNum) : dbas;
+  const pedidos = dbaNum === undefined ? null : new Set([dbaNum].flat());
+  const scoped = pedidos ? dbas.filter((d) => pedidos.has(d.num)) : dbas;
   if (scoped.length === 0) return [];
   const dbaOrder = new Map(scoped.map((d, i) => [d.id, i]));
 

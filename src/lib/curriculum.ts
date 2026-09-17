@@ -11,6 +11,13 @@ export type Dba = {
   enunciado: string;
   titulo: string | null;
   resumen: string | null;
+  /* Una estación de la ruta es casi siempre un DBA del MEN. Las de tipo
+     "repaso" no: no tienen ejercicios propios y arman su lección con preguntas
+     de los temas que listan en `repasa`. Ver armarRepaso() en lib/exercises. */
+  tipo: "dba" | "repaso";
+  orden: number;
+  repasa: number[] | null;
+  ranuras: number | null;
 };
 
 /** `isDemo` es la señal de que esto NO vino de la base: la pantalla lo rotula. */
@@ -66,10 +73,12 @@ export async function getGradePath(grade: number): Promise<Sourced<PathNode[]>> 
     const id = await subjectId();
     const { data: dbas, error: dbasError } = await supabase
       .from("dbas")
-      .select("id, num, enunciado, titulo, resumen")
+      .select("id, num, enunciado, titulo, resumen, tipo, orden, repasa, ranuras")
       .eq("subject_id", id)
       .eq("grade", grade)
-      .order("num", { ascending: true });
+      // Manda `orden`, no `num`: es lo que deja meter un repaso en la mitad
+      // de la ruta sin renumerar los temas que ya existen.
+      .order("orden", { ascending: true });
     if (dbasError) throw new Error(dbasError.message);
     if (!dbas || dbas.length === 0) throw new Error("Sin DBA.");
 
@@ -104,7 +113,12 @@ export async function getGradePath(grade: number): Promise<Sourced<PathNode[]>> 
     );
 
     return {
-      data: dbas.map((d) => ({ ...d, exerciseCount: countByDba.get(d.id) ?? 0 })),
+      // Un repaso no tiene ejercicios propios, así que su tamaño lo declara él
+      // mismo; si se contaran sus filas daría cero y la ruta lo apagaría.
+      data: dbas.map((d) => ({
+        ...d,
+        exerciseCount: d.tipo === "repaso" ? (d.ranuras ?? 0) : (countByDba.get(d.id) ?? 0),
+      })),
       isDemo: false,
     };
   } catch (error) {
@@ -148,10 +162,10 @@ export async function getGradeDbas(grade: number): Promise<Sourced<Dba[]>> {
     const id = await subjectId();
     const { data, error } = await supabase
       .from("dbas")
-      .select("id, num, enunciado, titulo, resumen")
+      .select("id, num, enunciado, titulo, resumen, tipo, orden, repasa, ranuras")
       .eq("subject_id", id)
       .eq("grade", grade)
-      .order("num", { ascending: true });
+      .order("orden", { ascending: true });
     if (error) throw new Error(error.message);
     if (!data || data.length === 0) throw new Error("Sin DBA.");
     return { data, isDemo: false };

@@ -140,7 +140,13 @@ export function LearningPath({ grade, nodes }: { grade: number; nodes: PathNode[
 
         {nodes.map((node, i) => {
           const p = pts[i];
-          const tono = TONOS_TEMA[i % TONOS_TEMA.length];
+          /* Un repaso no es un tema más: mezcla varios y cierra una etapa. Va
+             en coral y con una estrella en vez de número, para que se vea desde
+             lejos que ahí la ruta cambia de cosa. */
+          const esRepaso = node.tipo === "repaso";
+          const tono = esRepaso
+            ? { bg: "bg-coral", edge: "var(--coral-deep)", fg: "text-white", dot: "bg-coral" }
+            : TONOS_TEMA[i % TONOS_TEMA.length];
           const { estado, estrellas, intentada } = estados[i];
           const comun = "absolute flex items-center justify-center rounded-full no-select";
           const pos = { left: p.x - NODE / 2, top: p.y - NODE / 2, width: NODE, height: NODE };
@@ -193,7 +199,9 @@ export function LearningPath({ grade, nodes }: { grade: number; nodes: PathNode[
                 style={{ ...pos, ["--btn-edge" as string]: tono.edge, ["--btn-depth" as string]: "6px" }}
                 title={node.titulo ?? node.enunciado}
               >
-                <span className="font-display text-2xl leading-none tabular-nums">{node.num}</span>
+                <span className="font-display text-2xl leading-none tabular-nums" aria-hidden>
+                  {esRepaso ? "★" : node.num}
+                </span>
                 <span className="sr-only">{node.titulo ?? node.enunciado}</span>
               </Link>
 
@@ -219,7 +227,10 @@ export function LearningPath({ grade, nodes }: { grade: number; nodes: PathNode[
         <h2 className="mb-3 px-1 font-display text-lg text-ink">Lo que vas a aprender</h2>
         <ol className="flex flex-col gap-2">
           {nodes.map((node, i) => {
-            const tono = TONOS_TEMA[i % TONOS_TEMA.length];
+            const esRepaso = node.tipo === "repaso";
+            const tono = esRepaso
+              ? { bg: "bg-coral", edge: "var(--coral-deep)", fg: "text-white", dot: "bg-coral" }
+              : TONOS_TEMA[i % TONOS_TEMA.length];
             const { estado, estrellas, intentada } = estados[i];
             const jugable = estado === "hecha" || estado === "abierta";
             return (
@@ -234,7 +245,7 @@ export function LearningPath({ grade, nodes }: { grade: number; nodes: PathNode[
                     jugable ? `texto-ficha ${tono.dot} ${tono.fg}` : "bg-raised text-ink-faint"
                   }`}
                 >
-                  {node.num}
+                  {esRepaso ? "★" : node.num}
                 </span>
                 <div className="min-w-0 flex-1 pt-0.5">
                   {/* El niño lee el nombre del tema y de qué se trata. El

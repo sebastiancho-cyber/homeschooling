@@ -29,7 +29,17 @@ export const DEMO_GRADE_COUNTS: { grade: number; count: number }[] = [
 
 export function demoDbas(
   grade: number,
-): { id: string; num: number; enunciado: string; titulo: string | null; resumen: string | null }[] {
+): {
+  id: string;
+  num: number;
+  enunciado: string;
+  titulo: string | null;
+  resumen: string | null;
+  tipo: "dba";
+  orden: number;
+  repasa: number[] | null;
+  ranuras: number | null;
+}[] {
   const temas = [
     "Contar y comparar cantidades",
     "Leer y escribir números",
@@ -54,6 +64,10 @@ export function demoDbas(
     enunciado: t,
     titulo: t,
     resumen: null,
+    tipo: "dba" as const,
+    orden: (i + 1) * 10,
+    repasa: null,
+    ranuras: null,
   }));
 }
 

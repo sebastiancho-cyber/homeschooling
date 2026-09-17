@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import type { Exercise, MultipleChoiceConfig, TrueFalseConfig } from "@/lib/exercises";
-import { elegirVariantes, shuffleExerciseOptions } from "@/lib/exercises";
+import { armarRepaso, elegirVariantes, shuffleExerciseOptions } from "@/lib/exercises";
 import { playCorrect, playIncorrect, playFinish } from "@/lib/sound";
 import { Mascota, personajeParaId } from "@/components/Mascota";
 import { Ilustracion } from "@/components/Ilustracion";
@@ -47,6 +47,7 @@ export default function ExercisePlayer({
   exercises,
   variantes,
   tema,
+  esRepaso = false,
   contextoTema,
   temasConContenido = [],
   isDemo = false,
@@ -59,6 +60,10 @@ export default function ExercisePlayer({
   /** Número del tema de la ruta. Sin él se practica el grado entero y no hay
    *  estación que marcar, así que tampoco se guarda progreso. */
   tema?: number;
+  /** Una estación de repaso arma su lección con preguntas de varios temas, así
+   *  que al repetirla hay que volver a escoger cuáles entran, no solo qué
+   *  versión de cada una. */
+  esRepaso?: boolean;
   /** El texto del tema para la burbuja de ayuda: el del niño y el del MEN. */
   contextoTema?: ContextoTema;
   /** Los temas del grado que tienen contenido, en orden. */
@@ -142,7 +147,8 @@ export default function ExercisePlayer({
     // Se sortean otra vez las DOS cosas: qué versión de cada pregunta sale y en
     // qué orden van sus opciones. Va dentro de un manejador de evento, así que
     // el azar aquí no rompe nada.
-    setPlayExercises(shuffleExerciseOptions(elegirVariantes(variantes)));
+    const otraVez = esRepaso ? armarRepaso(variantes) : elegirVariantes(variantes);
+    setPlayExercises(shuffleExerciseOptions(otraVez));
     setIndex(0);
     setScore(0);
     setFeedback(null);
