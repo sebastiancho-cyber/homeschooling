@@ -109,6 +109,31 @@ export async function getGradePath(grade: number): Promise<Sourced<PathNode[]>> 
   }
 }
 
+/* El tema tiene tres textos y cada uno es para alguien distinto: `titulo` y
+   `resumen` son para el niño, `enunciado` es el del MEN, literal, para el adulto
+   que acompaña y que algún día tiene que sustentar este trabajo ante un colegio. */
+export type ContextoTema = { titulo: string | null; resumen: string | null; enunciado: string };
+
+export async function getContextoTema(grade: number, num: number): Promise<ContextoTema | null> {
+  try {
+    const id = await subjectId();
+    const { data, error } = await supabase
+      .from("dbas")
+      .select("titulo, resumen, enunciado")
+      .eq("subject_id", id)
+      .eq("grade", grade)
+      .eq("num", num)
+      .single();
+    if (error || !data) throw new Error(error?.message ?? "Sin tema.");
+    return data;
+  } catch (error) {
+    // Sin contexto la ayuda se degrada a los pasos del ejercicio, que ya es
+    // bastante. No vale la pena tumbar la lección por esto.
+    avisarCaida("getContextoTema", error);
+    return null;
+  }
+}
+
 export async function getGradeDbas(grade: number): Promise<Sourced<Dba[]>> {
   try {
     const id = await subjectId();

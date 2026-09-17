@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { elegirVariantes, getGradeExercisesSafe, shuffleExerciseOptions } from "@/lib/exercises";
-import { getGradePath } from "@/lib/curriculum";
+import { getContextoTema, getGradePath } from "@/lib/curriculum";
 import ExercisePlayer from "./ExercisePlayer";
 
 export default async function PracticarPage({
@@ -30,6 +30,10 @@ export default async function PracticarPage({
      haber llegado todavía no ensucia el avance. */
   const { data: nodos } = await getGradePath(grade);
   const temasConContenido = nodos.filter((n) => n.exerciseCount > 0).map((n) => n.num);
+
+  // El texto del tema, para la burbuja de ayuda. Practicando el grado entero no
+  // hay un tema del que hablar, así que no se pide.
+  const contextoTema = dbaNum ? await getContextoTema(grade, dbaNum) : null;
   // Los dos sorteos —qué versión de cada pregunta, y en qué orden van las
   // opciones— corren en el SERVIDOR. Si corrieran en el render del cliente, el
   // HTML del servidor y el del cliente no coincidirían.
@@ -45,6 +49,7 @@ export default async function PracticarPage({
       exercises={exercises}
       variantes={variantes}
       tema={dbaNum}
+      contextoTema={contextoTema ?? undefined}
       temasConContenido={temasConContenido}
       isDemo={isDemo}
     />

@@ -7,6 +7,8 @@ import { elegirVariantes, shuffleExerciseOptions } from "@/lib/exercises";
 import { playCorrect, playIncorrect, playFinish } from "@/lib/sound";
 import { Mascota, personajeParaId } from "@/components/Mascota";
 import { Ilustracion } from "@/components/Ilustracion";
+import { BotonAyuda, HojaAyuda, Pasos, useAyuda, type ContextoTema } from "@/components/Ayuda";
+import { ayudaPara } from "@/lib/ayuda";
 import {
   claveLeccion,
   estrellasDe,
@@ -18,8 +20,13 @@ import {
 
 type Feedback = "correct" | "incorrect" | null;
 
-// Cuánto se ve el resultado antes de avanzar solo. Ni tan corto que no dé tiempo
+// Cuánto se ve el ACIERTO antes de avanzar solo. Ni tan corto que no dé tiempo
 // a leerlo, ni tan largo que se sienta una espera.
+//
+// Solo aplica al acierto. Cuando el niño falla NO se avanza solo: se le explica
+// y se espera a que toque "Entendido". Avanzar en 1,3 segundos después de un
+// error es la diferencia entre una app que evalúa y una que enseña, y quien
+// estudia en casa no tiene a nadie más que se lo explique.
 const ADVANCE_MS = 1300;
 
 // Las chispas del acierto: ocho puntos que salen en abanico desde el centro.
@@ -39,6 +46,7 @@ export default function ExercisePlayer({
   exercises,
   variantes,
   tema,
+  contextoTema,
   temasConContenido = [],
   isDemo = false,
 }: {
@@ -50,6 +58,8 @@ export default function ExercisePlayer({
   /** Número del tema de la ruta. Sin él se practica el grado entero y no hay
    *  estación que marcar, así que tampoco se guarda progreso. */
   tema?: number;
+  /** El texto del tema para la burbuja de ayuda: el del niño y el del MEN. */
+  contextoTema?: ContextoTema;
   /** Los temas del grado que tienen contenido, en orden. */
   temasConContenido?: number[];
   isDemo?: boolean;
@@ -60,6 +70,7 @@ export default function ExercisePlayer({
   const [chosenIndex, setChosenIndex] = useState<number | null>(null);
   const [score, setScore] = useState(0);
   const advanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const hoja = useAyuda();
 
   const current = playExercises[index];
   const done = index >= playExercises.length;
@@ -105,6 +116,13 @@ export default function ExercisePlayer({
     [],
   );
 
+  function avanzar() {
+    if (advanceTimer.current) clearTimeout(advanceTimer.current);
+    setFeedback(null);
+    setChosenIndex(null);
+    setIndex((i) => i + 1);
+  }
+
   function pick(choiceIndex: number, isCorrect: boolean) {
     if (feedback) return;
     setChosenIndex(choiceIndex);
@@ -112,14 +130,11 @@ export default function ExercisePlayer({
     if (isCorrect) {
       setScore((s) => s + 1);
       playCorrect();
-    } else {
-      playIncorrect();
+      advanceTimer.current = setTimeout(avanzar, ADVANCE_MS);
+      return;
     }
-    advanceTimer.current = setTimeout(() => {
-      setFeedback(null);
-      setChosenIndex(null);
-      setIndex((i) => i + 1);
-    }, ADVANCE_MS);
+    // Al fallar se para el juego. El niño lee por qué y sigue cuando quiera.
+    playIncorrect();
   }
 
   function reiniciar() {
@@ -236,6 +251,7 @@ export default function ExercisePlayer({
     : (current.config as MultipleChoiceConfig).correctIndex;
   const operation = isTrueFalse ? undefined : (current.config as MultipleChoiceConfig).operation;
   const visual = isTrueFalse ? undefined : (current.config as MultipleChoiceConfig).visual;
+  const ayuda = ayudaPara(operation);
 
   // La barra avanza al CONTESTAR, no al pasar de pregunta: el premio llega con
   // el clic, que es lo que hace el niño.
@@ -264,6 +280,10 @@ export default function ExercisePlayer({
           <span aria-hidden>⭐</span>
           {score}
         </span>
+
+        {/* Pedir ayuda no cuesta nada y no se castiga. Un niño que la abre
+            está tratando de entender, que es exactamente lo que queremos. */}
+        <BotonAyuda onClick={hoja.abrir} />
       </div>
 
       {isDemo && (
@@ -274,8 +294,15 @@ export default function ExercisePlayer({
 
       {/* ------------------------------------------------------- la pregunta */}
       {/* El `pb-14` sesga el centrado hacia arriba: centrado exacto deja la
-          pregunta flotando demasiado lejos del pulgar en pantallas altas. */}
-      <div className="relative flex min-h-0 flex-1 flex-col items-center justify-center gap-3 px-6 pb-14 text-center">
+          pregunta flotando demasiado lejos del pulgar en pantallas altas. Ese
+          sesgo se quita cuando aparece la explicación del error, que necesita
+          todo el alto que pueda: en un teléfono, si no, empuja las opciones
+          fuera de la pantalla. */}
+      <div
+        className={`relative flex min-h-0 flex-1 flex-col items-center justify-center gap-3 px-6 text-center ${
+          feedback === "incorrect" ? "pb-1" : "pb-14"
+        }`}
+      >
         {/* La mascota y el globo: el enunciado no lo "muestra la pantalla", se lo
             dice alguien. Es la diferencia entre un formulario y un juego. */}
         <div className="flex items-end gap-1">
@@ -322,44 +349,79 @@ export default function ExercisePlayer({
           </div>
         )}
 
-        {/* El resultado flota sobre la pregunta y se disuelve solo: no empuja
-            nada y no hay que cerrarlo. `key={index}` remonta el nodo en cada
+        {/* El acierto flota sobre la pregunta y se disuelve solo: no empuja nada
+            y no hay que cerrarlo. `key={index}` remonta el nodo en cada
             ejercicio para que la animación vuelva a correr desde cero. */}
-        {feedback && (
+        {feedback === "correct" && (
           <div
             key={`fb-${index}`}
             className="pointer-events-none absolute bottom-2 left-1/2 -translate-x-1/2"
           >
             <div className="relative">
-              {feedback === "correct" &&
-                CHISPAS.map((s, i) => (
-                  <span
-                    key={i}
-                    aria-hidden
-                    className="rec-spark absolute left-1/2 top-1/2 h-2.5 w-2.5 rounded-full"
-                    style={{
-                      ["--a" as string]: s.a,
-                      ["--d" as string]: `${s.d}px`,
-                      background: `rgb(${s.c})`,
-                      animationDelay: "60ms",
-                    }}
-                  />
-                ))}
+              {CHISPAS.map((s, i) => (
+                <span
+                  key={i}
+                  aria-hidden
+                  className="rec-spark absolute left-1/2 top-1/2 h-2.5 w-2.5 rounded-full"
+                  style={{
+                    ["--a" as string]: s.a,
+                    ["--d" as string]: `${s.d}px`,
+                    background: `rgb(${s.c})`,
+                    animationDelay: "60ms",
+                  }}
+                />
+              ))}
               <div
-                className={`rec-toast relative whitespace-nowrap rounded-full px-6 py-3 font-display text-lg text-white shadow-lg ${
-                  feedback === "incorrect" ? "rec-shake" : ""
-                }`}
+                className="rec-toast relative whitespace-nowrap rounded-full px-6 py-3 font-display text-lg text-white shadow-lg"
                 style={{
                   ["--toast-life" as string]: `${ADVANCE_MS}ms`,
-                  background: feedback === "correct" ? "rgb(var(--grass))" : "rgb(var(--coral))",
+                  background: "rgb(var(--grass))",
                 }}
               >
-                {feedback === "correct" ? "¡Correcto! 🎉" : "Casi... 💪"}
+                ¡Correcto! 🎉
               </div>
             </div>
           </div>
         )}
       </div>
+
+      {/* ------------------------------- el error: aquí es donde se enseña */}
+      {feedback === "incorrect" && (
+        <div
+          key={`err-${index}`}
+          className="rec-rise mx-auto w-full max-w-md shrink-0 px-4 pb-2"
+          role="status"
+        >
+          {/* Se desplaza si hace falta: una explicación larga en un teléfono
+              pequeño no puede tapar el botón de seguir. */}
+          <div className="card3d flex max-h-[52vh] flex-col gap-3 overflow-y-auto px-4 py-3">
+            <p className="flex items-center gap-2 font-display text-base text-coral">
+              <span aria-hidden>💪</span>
+              La respuesta era{" "}
+              <span className="text-ink">&laquo;{options[correctIndex]}&raquo;</span>
+            </p>
+            {ayuda ? (
+              <Pasos ayuda={ayuda} />
+            ) : (
+              // Sin pasos derivados queda el contexto del tema, que siempre
+              // dice algo: es preferible a un "te equivocaste" a secas.
+              contextoTema?.resumen && (
+                <p className="text-left font-sans text-sm font-bold leading-snug text-ink-muted">
+                  {contextoTema.resumen}
+                </p>
+              )
+            )}
+            <button
+              type="button"
+              onClick={avanzar}
+              className="btn3d w-full bg-grass px-5 py-3 text-base text-white"
+              style={{ ["--btn-edge" as string]: "var(--grass-deep)" }}
+            >
+              Entendido
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* ------------------------------------------------------ las opciones */}
       <div className="mx-auto w-full max-w-md shrink-0 px-4 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-2">
@@ -395,6 +457,14 @@ export default function ExercisePlayer({
           })}
         </div>
       </div>
+
+      <HojaAyuda
+        abierta={hoja.abierta}
+        onCerrar={hoja.cerrar}
+        ayuda={ayuda}
+        tema={contextoTema}
+        yaRespondio={feedback !== null}
+      />
     </div>
   );
 }
