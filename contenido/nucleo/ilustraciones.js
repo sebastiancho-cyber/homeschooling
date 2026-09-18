@@ -104,6 +104,29 @@ function ilustrador(iconosExtra = []) {
       return { vis: { tipo: "lineas", clase: lineas[1] }, quitarOp: true };
     }
 
+    // "reloj 3:45": la hora se lee en las manecillas, no en cifras. Es el
+    // ejemplo del DBA 5, que pide señalar la pareja de relojes de la hora de
+    // llegada. Escribir 3:45 al lado sería dar la respuesta.
+    const reloj = op.match(/^reloj (\d{1,2}):(\d{2})$/);
+    if (reloj) {
+      return { vis: { tipo: "reloj", hora: Number(reloj[1]), minuto: Number(reloj[2]) }, quitarOp: true };
+    }
+
+    // "cadena 4 | +3 | +5 | −2 | ?": el ejemplo del DBA 8. Entra un número,
+    // pasa por operaciones en fila y sale otro; el hueco puede estar a la
+    // entrada o a la salida, y ahí está la gracia — la cadena se recorre en
+    // los dos sentidos.
+    const cadena = op.match(/^cadena (.+)$/);
+    if (cadena) {
+      const partes = cadena[1].split("|").map((t) => t.trim());
+      if (partes.length >= 3) {
+        return {
+          vis: { tipo: "cadena", entrada: partes[0], pasos: partes.slice(1, -1), salida: partes[partes.length - 1] },
+          quitarOp: true,
+        };
+      }
+    }
+
     /* La figura del enunciado, cuando lo que se mide es CONTAR sus lados, sus
        puntas o sus esquinas. Ahí el dibujo no regala nada: es el ejercicio.
 

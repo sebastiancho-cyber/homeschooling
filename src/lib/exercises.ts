@@ -19,6 +19,13 @@ export type MultipleChoiceConfig = {
    *  "escoger la palabra triángulo" de "mirar cuál de estos tiene 3 lados".
    *  Va en paralelo a `options` y se baraja con ella. */
   figuras?: (string | null)[];
+  /** La operación de la cual DERIVAR la explicación, cuando la operación no se
+   *  muestra porque el dibujo ocupó su lugar. Una cadena numérica se ve como
+   *  cajas y flechas, no como texto, pero sus pasos salen igual de bien de la
+   *  línea que la describe. Sin esto, todo ejercicio con dibujo que reemplaza
+   *  la línea queda obligado a llevar ayuda escrita, aunque la app supiera
+   *  explicarlo solo. */
+  ayudaOp?: string;
 };
 // A diferencia de multiple_choice (una sola respuesta correcta), aquí puede haber varias —
 // o ninguna: el estudiante marca todas las que apliquen y comprueba con un botón, no al

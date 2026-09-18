@@ -9,7 +9,7 @@
 
 const fs = require("fs");
 const crypto = require("crypto");
-const { revisar } = require("./calidad.js");
+const { revisar, DERIVABLES } = require("./calidad.js");
 
 /** Un uuid estable a partir de un texto. Mismo texto, mismo identificador.
  *  Es lo que hace que dos corridas del generador den el MISMO SQL y que al
@@ -49,6 +49,7 @@ function sembrar({
   derivables,
   limites,
 }) {
+  const derivablesUsadas = derivables ?? DERIVABLES;
   const { errores, totalEv, totalSlots, totalEx, maxP, maxO, medida } = revisar({
     DBAS, AYUDAS, EXCEPCIONES, visualPara, derivables, limites,
   });
@@ -89,6 +90,13 @@ end $$;
         const config = { options: v.o, correctIndex: v.c };
         const ilustracion = visualPara(v);
         if (v.op && !(ilustracion && ilustracion.quitarOp)) config.operation = v.op;
+        /* El dibujo ocupó el lugar de la línea, pero la línea sigue siendo algo
+           que la app sabe explicar: se manda aparte. Así una cadena numérica se
+           ve como cajas y flechas y de todos modos trae sus pasos derivados,
+           que cambian con los números. */
+        if (v.op && ilustracion && ilustracion.quitarOp && derivablesUsadas.some((re) => re.test(v.op))) {
+          config.ayudaOp = v.op;
+        }
         if (ilustracion) {
           config.visual = ilustracion.vis;
           conVisual++;
@@ -144,7 +152,8 @@ begin
     join subjects s on s.id = d.subject_id and s.slug = '${area}'
    where d.grade = ${grado}
      and e.config->'ayuda' is null
-     and e.config->'operation' is null;
+     and e.config->'operation' is null
+     and e.config->'ayudaOp' is null;
   if n_ev <> ${totalEv} then raise exception 'evidencias: % (esperadas ${totalEv})', n_ev; end if;
   if n_ex <> ${totalEx} then raise exception 'ejercicios: % (esperados ${totalEx})', n_ex; end if;
   if n_malas <> 0 then raise exception '% ejercicios mal formados', n_malas; end if;

@@ -38,7 +38,11 @@ export type Visual =
   /** Dibujos que valen VARIOS. La escala se declara y se muestra abajo. */
   | { tipo: "pictograma"; icono: string; escala: number; unidad: string; datos: { etiqueta: string; valor: number }[] }
   /** Líneas: horizontal, vertical, paralelas, perpendiculares. */
-  | { tipo: "lineas"; clase: "horizontal" | "vertical" | "paralelas" | "perpendiculares" };
+  | { tipo: "lineas"; clase: "horizontal" | "vertical" | "paralelas" | "perpendiculares" }
+  /** Un reloj de manecillas. La hora se LEE, no se escribe con cifras. */
+  | { tipo: "reloj"; hora: number; minuto: number }
+  /** Cadena numérica: un número entra, pasa por operaciones y sale otro. */
+  | { tipo: "cadena"; entrada: string; pasos: string[]; salida: string };
 
 type Lado = { etiqueta: string; cantidad: number };
 
@@ -91,6 +95,20 @@ function Icono({
       aria-hidden
     >
       {children}
+    </span>
+  );
+}
+
+/* Una caja de la cadena numérica. Va aquí arriba y no dentro del render:
+   un componente definido dentro de otro se vuelve a crear en cada pintada y
+   React lo trata como un componente distinto, así que pierde su estado y su
+   animación vuelve a empezar. */
+function Caja({ texto, tono }: { texto: string; tono: string }) {
+  return (
+    <span
+      className={`rec-aparecer flex h-10 min-w-10 items-center justify-center rounded-xl border-2 px-2 font-display text-lg tabular-nums ${tono}`}
+    >
+      {texto}
     </span>
   );
 }
@@ -319,6 +337,59 @@ export function Ilustracion({ visual }: { visual: Visual }) {
             <span className={`${barra} bottom-3 left-1/2 top-3 w-1.5 -translate-x-1/2`} style={{ animationDelay: "220ms" }} />
           </>
         )}
+      </div>
+    );
+  }
+
+  if (visual.tipo === "reloj") {
+    // Las manecillas van en grados: la de los minutos avanza 6° por minuto y
+    // la de las horas 30° por hora MÁS medio grado por minuto, que es lo que
+    // hace que a las 3:30 no apunte al 3 sino entre el 3 y el 4. Un reloj que
+    // no hiciera eso enseñaría a leer la hora mal.
+    const gradosMin = visual.minuto * 6;
+    const gradosHora = (visual.hora % 12) * 30 + visual.minuto * 0.5;
+    return (
+      <div className="rec-aparecer relative h-28 w-28 rounded-full border-4 border-hairline bg-surface" aria-hidden>
+        {Array.from({ length: 12 }, (_, i) => (
+          <span
+            key={i}
+            className="absolute left-1/2 top-1/2 h-full w-0.5 -translate-x-1/2 -translate-y-1/2"
+            style={{ transform: `translate(-50%, -50%) rotate(${i * 30}deg)` }}
+          >
+            <span className={`absolute left-1/2 top-1 block w-0.5 -translate-x-1/2 rounded-full ${i % 3 === 0 ? "h-2.5 bg-ink-muted" : "h-1.5 bg-hairline"}`} />
+          </span>
+        ))}
+        {/* La de las horas es corta y gruesa; la de los minutos, larga y fina.
+            Esa diferencia ES la lectura: sin ella no se sabe cuál es cuál. */}
+        <span
+          className="absolute bottom-1/2 left-1/2 h-8 w-1.5 origin-bottom rounded-full bg-ink"
+          style={{ transform: `translateX(-50%) rotate(${gradosHora}deg)` }}
+        />
+        <span
+          className="absolute bottom-1/2 left-1/2 h-11 w-1 origin-bottom rounded-full bg-sky"
+          style={{ transform: `translateX(-50%) rotate(${gradosMin}deg)` }}
+        />
+        <span className="absolute left-1/2 top-1/2 h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-ink" />
+      </div>
+    );
+  }
+
+  if (visual.tipo === "cadena") {
+    // El ejemplo oficial del DBA 8: un número entra, pasa por operaciones en
+    // fila y sale otro. Dibujarlo importa porque la cadena se puede recorrer
+    // en los dos sentidos, y ver las flechas es lo que hace pensable el
+    // camino de vuelta.
+    return (
+      <div className="flex max-w-full flex-wrap items-center justify-center gap-1.5">
+        <Caja texto={visual.entrada} tono="border-sky bg-sky/10 text-ink" />
+        {visual.pasos.map((paso, i) => (
+          <span key={i} className="flex items-center gap-1.5">
+            <span className="font-display text-lg text-ink-faint" aria-hidden>→</span>
+            <Caja texto={paso} tono="border-hairline bg-transparent text-ink-muted" />
+          </span>
+        ))}
+        <span className="font-display text-lg text-ink-faint" aria-hidden>→</span>
+        <Caja texto={visual.salida} tono="border-tangerine bg-tangerine/10 text-ink" />
       </div>
     );
   }

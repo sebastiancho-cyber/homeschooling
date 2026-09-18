@@ -134,6 +134,72 @@ export function ayudaPara(operation: string | undefined): Ayuda | null {
   if (!operation) return null;
   const op = operation.replace(/\s+/g, " ").trim();
 
+  /* -------------------------------------------------- cadena numérica */
+  /* El ejemplo oficial del DBA 8 del grado 2: un número entra, pasa por
+     operaciones en fila y sale otro. Lo importante no es la cuenta: es que la
+     cadena se puede recorrer al revés, y recorrerla al revés obliga a cambiar
+     cada operación por la contraria. Eso es, literalmente, la primera
+     evidencia del DBA — "establece relaciones de reversibilidad entre la suma
+     y la resta". */
+  const cadena = op.match(/^cadena (.+)$/);
+  if (cadena) {
+    const partes = cadena[1].split("|").map((t) => t.trim());
+    const pasos = partes.slice(1, -1);
+    const aplicar = (n: number, paso: string, alReves = false) => {
+      const m = paso.match(/^([+−-])\s*(\d+)$/);
+      if (!m) return null;
+      const suma = m[1] === "+";
+      return suma === !alReves ? n + Number(m[2]) : n - Number(m[2]);
+    };
+    const contrario = (paso: string) => (paso.startsWith("+") ? paso.replace("+", "−") : paso.replace(/^[−-]/, "+"));
+    // "4 +3" se lee mal; el signo necesita su espacio, como en todo lo demás.
+    const espaciado = (paso: string) => paso.replace(/^([+−-])\s*/, "$1 ").replace("-", "−");
+
+    // Hacia adelante: se conoce la entrada.
+    if (partes[partes.length - 1] === "?" && /^\d+$/.test(partes[0])) {
+      let n = Number(partes[0]);
+      const cuenta: string[] = [];
+      for (const paso of pasos) {
+        const antes = n;
+        const sig = aplicar(n, paso);
+        if (sig === null) return null;
+        n = sig;
+        cuenta.push(`${antes} ${espaciado(paso)} = ${n}`);
+      }
+      return {
+        pista: "Entra un número por la izquierda y va cambiando en cada paso. Hazlos en orden, uno por uno.",
+        pasos: [
+          `Empieza con ${partes[0]} y aplica los pasos en orden, sin saltarte ninguno.`,
+          cuenta.join(", luego "),
+          `Sale ${n}.`,
+        ],
+        ojo: "Si haces los pasos en otro orden con sumas y restas llegas al mismo sitio, pero es más fácil perderse.",
+      };
+    }
+
+    // Al revés: se conoce la salida y se busca la entrada.
+    if (partes[0] === "?" && /^\d+$/.test(partes[partes.length - 1])) {
+      let n = Number(partes[partes.length - 1]);
+      const cuenta: string[] = [];
+      for (const paso of [...pasos].reverse()) {
+        const antes = n;
+        const sig = aplicar(n, paso, true);
+        if (sig === null) return null;
+        n = sig;
+        cuenta.push(`${antes} ${espaciado(contrario(paso))} = ${n}`);
+      }
+      return {
+        pista: "Aquí conoces la salida, no la entrada: recorre la cadena al revés y cambia cada paso por el contrario.",
+        pasos: [
+          `De la salida hacia atrás, cada paso se deshace: lo que sumaba ahora resta, y lo que restaba ahora suma.`,
+          `Empieza en ${partes[partes.length - 1]}: ${cuenta.join(", luego ")}.`,
+          `La entrada era ${n}.`,
+        ],
+        ojo: "Deshacer no es repetir: si el paso decía sumar, para volver hay que restar.",
+      };
+    }
+  }
+
   /* ------------------------------------------------------ multiplicación */
   const multi = op.match(/^(\d+) × (\d+) = \?$/);
   if (multi) {

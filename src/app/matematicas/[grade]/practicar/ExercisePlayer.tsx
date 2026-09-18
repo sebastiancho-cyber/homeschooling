@@ -266,7 +266,8 @@ export default function ExercisePlayer({
      escrita por ranura donde hay una idea. */
   const ayuda = isTrueFalse
     ? null
-    : ((current.config as MultipleChoiceConfig).ayuda ?? ayudaPara(operation));
+    : ((current.config as MultipleChoiceConfig).ayuda ??
+      ayudaPara((current.config as MultipleChoiceConfig).ayudaOp ?? operation));
 
   // La barra avanza al CONTESTAR, no al pasar de pregunta: el premio llega con
   // el clic, que es lo que hace el niño.

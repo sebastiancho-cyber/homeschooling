@@ -33,6 +33,9 @@ const DERIVABLES = [
   /^\d+ ÷ \d+ = \?$/,
   /^\d+ × \? = \d+$/,
   /^\? × \d+ = \d+$/,
+  // La cadena numérica del ejemplo oficial del DBA 8, en sus dos sentidos.
+  /^cadena \d+( \| [+−-] ?\d+)+ \| \?$/,
+  /^cadena \?( \| [+−-] ?\d+)+ \| \d+$/,
 ];
 
 /* Los topes. Son del núcleo porque salen de la PANTALLA, no de la materia: un
@@ -71,10 +74,19 @@ function revisar({ DBAS, AYUDAS, EXCEPCIONES, visualPara, derivables = DERIVABLE
     if (d.slots.length < L.minRanuras) errores.push(`DBA ${dba}: ${d.slots.length} ranuras, mínimo ${L.minRanuras}`);
     const porEvidencia = {};
     d.slots.forEach((slot) => (porEvidencia[slot.e] = (porEvidencia[slot.e] ?? 0) + 1));
+    /* El techo de 4 no puede ser fijo. El DBA 2 y el DBA 8 del grado 2 traen
+       SOLO DOS evidencias cada uno: con 4 como tope, la lección más larga
+       posible sería de 8 ranuras y el mínimo de 10 nunca se alcanzaría. El
+       chequeo se contradecía a sí mismo y no se vio hasta que un DBA real lo
+       pisó.
+
+       El techo sube lo justo para que 10 sea alcanzable, y ni una más. Con 3
+       evidencias o más no cambia nada, que es como estaba el grado 1. */
+    const techo = Math.max(L.maxRanurasPorEvidencia, Math.ceil(L.minRanuras / d.evidencias.length));
     d.evidencias.forEach((texto, k) => {
       const n = porEvidencia[k + 1] ?? 0;
       if (n < L.minRanurasPorEvidencia) errores.push(`DBA ${dba} ev${k + 1}: ${n} ranuras (mínimo ${L.minRanurasPorEvidencia}) — «${texto.slice(0, 52)}…»`);
-      if (n > L.maxRanurasPorEvidencia) errores.push(`DBA ${dba} ev${k + 1}: ${n} ranuras (máximo ${L.maxRanurasPorEvidencia}) — acapara la lección`);
+      if (n > techo) errores.push(`DBA ${dba} ev${k + 1}: ${n} ranuras (máximo ${techo} con ${d.evidencias.length} evidencias) — acapara la lección`);
     });
     d.slots.forEach((slot, i) => {
       totalSlots++;
@@ -126,8 +138,9 @@ function revisar({ DBAS, AYUDAS, EXCEPCIONES, visualPara, derivables = DERIVABLE
       // app reconoce. Con que una no, la ranura necesita ayuda escrita.
       const seExplicaSola = slot.v.every((v) => {
         if (!v.op) return false;
-        const ilus = visualPara(v);
-        if (ilus && ilus.quitarOp) return false; // el dibujo se comió la línea
+        // Que el dibujo se haya comido la línea ya no condena la ranura: si la
+        // línea es de una forma que la app sabe explicar, se le pasa aparte
+        // (config.ayudaOp) y la explicación sale derivada igual.
         return derivables.some((re) => re.test(v.op));
       });
       if (seExplicaSola) return;
