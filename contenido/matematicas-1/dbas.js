@@ -361,9 +361,15 @@ const DBAS = {
         { p: "¿Cuál dura MENOS?", o: ["Un salto", "Un recreo", "Una clase", "Una semana"], c: 0 },
       ]},
       { e: 2, v: [
-        { p: "¿Cuál pesa MENOS?", o: ["Una pluma", "Un libro", "Un zapato", "Una piedra"], c: 0 },
-        { p: "¿Cuál pesa MENOS?", o: ["Un algodón", "Una manzana", "Un ladrillo", "Una silla"], c: 0 },
-        { p: "¿Cuál pesa MÁS?", o: ["Una nevera", "Una silla", "Un plato", "Una cuchara"], c: 0 },
+        /* El tema 4 ya pregunta «¿cuál pesa más?» comparando a ojo, y aquí
+           salía otra vez con las mismas palabras: dos lecciones distintas se
+           sentían como la misma. Este tema es «medir con lo que tengas», así
+           que aquí se compara MIDIENDO — y la tercera versión enseña lo que de
+           verdad le pertenece: dos medidas no se pueden comparar si la unidad
+           no es la misma. */
+        { p: "La caja pesa 8 fichas y el libro 5 fichas. ¿Cuál pesa más?", o: ["La que da 8 fichas", "La que da 5 fichas", "Las dos dan igual", "Falta saber el tamaño de la ficha"], c: 0 },
+        { p: "El balde llena 6 vasos y la jarra 4 vasos. ¿Cuál lleva más?", o: ["El que llena 6 vasos", "El que llena 4 vasos", "Los dos llenan igual", "Falta saber el tamaño del vaso"], c: 0 },
+        { p: "La caja da 8 fichas y la otra da 8 tapas. ¿Cuál pesa más?", o: ["No se sabe: la unidad es otra", "La que da 8 fichas, más", "La que da 8 tapas, más", "Las dos pesan lo mismo"], c: 0 },
       ]},
       { e: 2, v: [
         { p: "Mira las dos cintas, medidas en cuartas. ¿Cómo son?", op: "Roja 8 · Azul 8", o: ["Igual de largas", "La roja más larga", "La azul más larga", "No se pueden comparar"], c: 0 },

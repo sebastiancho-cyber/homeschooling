@@ -194,6 +194,33 @@ function revisar({ DBAS, AYUDAS, EXCEPCIONES, visualPara, derivables = DERIVABLE
     }
   }
 
+  /* Ninguna ranura repite otra de OTRO tema.
+
+     Es la §3 al pie de la letra. «¿Cuál pesa MÁS?» salía con esas mismas
+     palabras en el tema 4 y en el tema 5 del grado 1: dos lecciones distintas
+     se sentían como la misma, y el niño que llega a la segunda cree que se
+     equivocó de pantalla.
+
+     Dentro de una misma ranura el enunciado SÍ se repite, y debe: sus tres
+     versiones preguntan lo mismo con datos distintos. Lo que no puede es
+     saltar de un tema a otro.
+
+     Lo encontró el director, que reconoció una pregunta de otra lección. */
+  const enunciadoDe = new Map();
+  for (const [dba, d] of Object.entries(DBAS)) {
+    d.slots.forEach((slot, i) => {
+      // Uno por RANURA: las tres versiones comparten enunciado a propósito.
+      const p = slot.v[0].p.trim();
+      const antes = enunciadoDe.get(p);
+      if (antes && antes.dba !== dba) {
+        errores.push(
+          `DBA ${dba} ranura ${i + 1}: «${p}» es el mismo enunciado del DBA ${antes.dba} ranura ${antes.ranura}. Dos temas distintos tienen que sentirse como dos cosas distintas`,
+        );
+      }
+      if (!antes) enunciadoDe.set(p, { dba, ranura: i + 1 });
+    });
+  }
+
   /* Un cálculo pelado no enseña nada: hace falta la situación.
 
      «¿Cuánto es? 368 + 214» es una cuenta sin mundo. La evidencia del DBA 2 del

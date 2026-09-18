@@ -253,14 +253,14 @@ module.exports = {
     ],
     ojo: "Lee si piden MÁS o MENOS. Aquí no siempre piden lo mismo.",
   },
-  "5|¿Cuál pesa MENOS?": {
-    pista: "Imagina que cargas cada cosa. Ordénalas de la más liviana a la más pesada.",
+  "5|La caja pesa 8 fichas y el libro 5 fichas. ¿Cuál pesa más?": {
+    pista: "Aquí no se compara a ojo: se compara lo que dio cada medida.",
     pasos: [
-      "Piensa en cada objeto con la mano: una pluma casi no se siente, una nevera no la levantas.",
-      "Ponlos en fila de mentiras, del más liviano al más pesado.",
-      "Elige la punta que te pide la pregunta.",
+      "Mira cuántas unidades dio cada cosa y compara esos dos números.",
+      "El que dio más unidades es el que pesa más, o el que lleva más.",
+      "Pero eso solo vale si las dos se midieron con la MISMA unidad.",
     ],
-    ojo: "Fíjate si piden el que MÁS pesa o el que MENOS pesa.",
+    ojo: "Ocho fichas y ocho tapas no se pueden comparar: el número es igual y la unidad no.",
   },
   "5|Mira las dos cintas, medidas en cuartas. ¿Cómo son?": {
     pista: "Mira las dos barras del dibujo: la más larga es la que mide más.",

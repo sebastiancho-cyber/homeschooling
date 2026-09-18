@@ -246,7 +246,21 @@ versiones mezclan situaciones que suben y que bajan.
 
 **Ninguna ranura repite otra de otro tema.** *"¿Cuánto le falta a 6 para llegar
 a 10?"* estaba idéntica en dos lecciones. Diez temas distintos tienen que
-sentirse como diez cosas distintas.
+sentirse como diez cosas distintas. Volvió a pasar con *"¿Cuál pesa MÁS?"*, en
+los temas 4 y 5 del grado 1 — y ahí está el remedio de fondo: no basta con
+cambiar las palabras, hay que darle a cada tema **su** ángulo. El tema 4 compara
+a ojo; el tema 5, que es el de medir, compara MIDIENDO y además enseña que dos
+medidas con distinta unidad no se pueden comparar. Hay un chequeo que lo bloquea.
+
+**Dentro de una ranura el enunciado sí se repite, y debe.** Sus tres versiones
+preguntan lo mismo con datos distintos: *"¿Qué hora marca el reloj?"* tres veces,
+con tres relojes. Lo que no puede es saltar de un tema a otro.
+
+**Un repaso vuelve a mostrar preguntas, y eso no es un defecto.** Es lo que un
+repaso es. La app sortea cuál de las tres versiones saca, así que dos de cada
+tres veces la pregunta llega con datos nuevos; la tercera llega igual. Si eso
+molesta, lo que hay que cambiar es que el repaso sepa cuáles ya se vieron, no
+las preguntas.
 
 ---
 
