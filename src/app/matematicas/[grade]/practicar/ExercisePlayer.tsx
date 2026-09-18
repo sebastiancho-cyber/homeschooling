@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import type { Exercise, MultipleChoiceConfig, TrueFalseConfig } from "@/lib/exercises";
 import { armarRepaso, elegirVariantes, shuffleExerciseOptions } from "@/lib/exercises";
+import { leerVistos, marcarVistos } from "@/lib/vistos";
 import { playCorrect, playIncorrect, playFinish } from "@/lib/sound";
 import { Mascota, personajeParaId } from "@/components/Mascota";
 import { Ilustracion } from "@/components/Ilustracion";
@@ -99,7 +100,27 @@ export default function ExercisePlayer({
     const anteriorAprobada =
       i === 0 || estrellasDe(guardado[claveLeccion(grade, orden[i - 1])]) > 0;
     setDesbloqueada(yaAprobada || anteriorAprobada);
-  }, [tema, grade, firmaTemas]);
+
+    /* Y de paso, el sorteo. El servidor lo hizo a ciegas —no ve localStorage—
+       así que pudo escoger una versión que el niño ya vio: una de cada tres
+       veces salía exactamente la misma que acababa de contestar, y eso no se
+       siente como un repaso sino como un error de la aplicación.
+
+       Solo se rehace si hace falta: si ninguna de las escogidas está vista, se
+       deja el HTML del servidor tal cual y en pantalla no cambia nada. Y no
+       puede hacerse durante el render, porque ahí el servidor y el cliente
+       dejarían de coincidir — el error de hidratación que ya nos costó una vez. */
+    if (!rehecho.current && playExercises.length > 0) {
+      rehecho.current = true;
+      const vistos = leerVistos();
+      if (playExercises.some((ex) => vistos.has(ex.id))) {
+        const otras = esRepaso ? armarRepaso(variantes, 2, vistos) : elegirVariantes(variantes, vistos);
+        setPlayExercises(shuffleExerciseOptions(otras));
+      }
+    }
+  }, [tema, grade, firmaTemas, playExercises, variantes, esRepaso]);
+
+  const rehecho = useRef(false);
 
   // Al llegar al final: fanfarria y se guarda la estación. Va en un efecto y no
   // en el render porque escribir en disco durante el render es un efecto
@@ -131,6 +152,10 @@ export default function ExercisePlayer({
 
   function pick(choiceIndex: number, isCorrect: boolean) {
     if (feedback) return;
+    /* Se anota como vista al RESPONDER, no al mostrarse: una pregunta que el
+       niño cerró sin contestar no la ha visto de verdad, y marcarla le quitaría
+       el turno a una versión que sí hace falta enseñar. */
+    if (current) marcarVistos([current.id]);
     setChosenIndex(choiceIndex);
     setFeedback(isCorrect ? "correct" : "incorrect");
     if (isCorrect) {
@@ -147,7 +172,8 @@ export default function ExercisePlayer({
     // Se sortean otra vez las DOS cosas: qué versión de cada pregunta sale y en
     // qué orden van sus opciones. Va dentro de un manejador de evento, así que
     // el azar aquí no rompe nada.
-    const otraVez = esRepaso ? armarRepaso(variantes) : elegirVariantes(variantes);
+    const vistos = leerVistos();
+    const otraVez = esRepaso ? armarRepaso(variantes, 2, vistos) : elegirVariantes(variantes, vistos);
     setPlayExercises(shuffleExerciseOptions(otraVez));
     setIndex(0);
     setScore(0);

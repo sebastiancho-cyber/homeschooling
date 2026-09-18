@@ -59,6 +59,9 @@ export function estrellasDe(leccion: ProgresoLeccion | undefined): number {
 export function borrarProgreso(): void {
   try {
     localStorage.removeItem(CLAVE);
+    // Y la memoria de qué ejercicios ya salieron: reiniciar el avance y
+    // arrancar con media ruta marcada como vista sería raro.
+    localStorage.removeItem("aprende-en-casa:vistos:v1");
   } catch {
     // Si no se puede escribir, tampoco había nada guardado.
   }

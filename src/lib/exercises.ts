@@ -49,7 +49,19 @@ export type Exercise = {
  *  el del cliente coincidan) y en el cliente al darle "Jugar otra vez" —ahí ya
  *  no hay hidratación que romper y el sorteo es lo que evita que repetir sea
  *  repasar de memoria. */
-export function elegirVariantes(exercises: Exercise[]): Exercise[] {
+/** De las versiones de una ranura, una al azar — pero PREFIRIENDO las que el
+ *  niño no ha visto. Cuando ya las vio todas vuelve a sortear entre todas, que
+ *  es lo correcto: repasar es volver a pasar por lo mismo.
+ *
+ *  `vistos` solo llega desde el cliente: el servidor no ve localStorage, y
+ *  pasárselo desde allá rompería la hidratación. */
+function unaDe(versiones: Exercise[], vistos?: Set<string>): Exercise {
+  const nuevas = vistos ? versiones.filter((ex) => !vistos.has(ex.id)) : [];
+  const donde = nuevas.length ? nuevas : versiones;
+  return donde[Math.floor(Math.random() * donde.length)];
+}
+
+export function elegirVariantes(exercises: Exercise[], vistos?: Set<string>): Exercise[] {
   const porGrupo = new Map<string, Exercise[]>();
   for (const ex of exercises) {
     const lista = porGrupo.get(ex.grupo);
@@ -57,7 +69,7 @@ export function elegirVariantes(exercises: Exercise[]): Exercise[] {
     else porGrupo.set(ex.grupo, [ex]);
   }
   // El Map conserva el orden de inserción, que es el de la lección.
-  return Array.from(porGrupo.values()).map((v) => v[Math.floor(Math.random() * v.length)]);
+  return Array.from(porGrupo.values()).map((v) => unaDe(v, vistos));
 }
 
 // Baraja las opciones de cada ejercicio (y ajusta correctIndex) para que la respuesta
@@ -96,7 +108,7 @@ export function shuffleExerciseOptions(exercises: Exercise[]): Exercise[] {
 
    Reparte parejo entre los temas —dos de cada uno— porque un repaso que saliera
    con seis preguntas del tema 3 no estaría repasando nada. */
-export function armarRepaso(exercises: Exercise[], porTema = 2): Exercise[] {
+export function armarRepaso(exercises: Exercise[], porTema = 2, vistos?: Set<string>): Exercise[] {
   // La ranura lleva el tema adentro: "${dba_id}|${order_in_lesson}".
   const temaDe = (ex: Exercise) => ex.grupo.split("|")[0];
 
@@ -119,8 +131,7 @@ export function armarRepaso(exercises: Exercise[], porTema = 2): Exercise[] {
       [claves[i], claves[j]] = [claves[j], claves[i]];
     }
     for (const clave of claves.slice(0, porTema)) {
-      const versiones = ranuras.get(clave)!;
-      escogidas.push(versiones[Math.floor(Math.random() * versiones.length)]);
+      escogidas.push(unaDe(ranuras.get(clave)!, vistos));
     }
   }
 
