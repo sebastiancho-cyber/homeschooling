@@ -20,7 +20,7 @@ const EXCEPCIONES = require("./excepciones.js");
 const { visualPara, figurasDeOpciones } = ilustrador([
   [/silla|puesto/i, "🪑"], [/huevo/i, "🥚"], [/flor/i, "🌸"], [/libro/i, "📗"],
   [/ladrillo/i, "🧱"], [/fruta/i, "🍎"], [/moneda/i, "🪙"], [/niñ[oa]/i, "🧒"],
-  [/voto/i, "🗳️"], [/perro/i, "🐶"], [/gato/i, "🐱"], [/pez|peces/i, "🐟"],
+  [/voto/i, "🟦"], [/perro/i, "🐶"], [/gato/i, "🐱"], [/pez|peces/i, "🐟"],
   [/tornillo/i, "🔩"], [/semilla/i, "🌱"], [/canica/i, "🔴"], [/punto/i, "🔵"],
   [/mariposa/i, "🦋"], [/árbol|arbol/i, "🌳"], [/pelota|balón|balon/i, "⚽"],
   [/paso/i, "👣"], [/clip/i, "📎"], [/cuaderno/i, "📓"],

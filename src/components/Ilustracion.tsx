@@ -106,7 +106,7 @@ function Icono({
 function Caja({ texto, tono }: { texto: string; tono: string }) {
   return (
     <span
-      className={`rec-aparecer flex h-10 min-w-10 items-center justify-center rounded-xl border-2 px-2 font-display text-lg tabular-nums ${tono}`}
+      className={`rec-aparecer flex h-9 min-w-9 shrink-0 items-center justify-center rounded-lg border-2 px-1.5 font-display text-base tabular-nums ${tono}`}
     >
       {texto}
     </span>
@@ -350,12 +350,12 @@ export function Ilustracion({ visual }: { visual: Visual }) {
     const gradosHora = (visual.hora % 12) * 30 + visual.minuto * 0.5;
     return (
       <div className="rec-aparecer relative h-28 w-28 rounded-full border-4 border-hairline bg-surface" aria-hidden>
+        {/* Cada marca va dentro de una capa que ocupa el reloj ENTERO (inset-0),
+            y esa capa es la que gira. Compuesto al revés —trasladar y después
+            rotar— el punto de giro queda en el borde de abajo y las marcas
+            salen volando fuera de la esfera: pasó, y se vio midiéndolas. */}
         {Array.from({ length: 12 }, (_, i) => (
-          <span
-            key={i}
-            className="absolute left-1/2 top-1/2 h-full w-0.5 -translate-x-1/2 -translate-y-1/2"
-            style={{ transform: `translate(-50%, -50%) rotate(${i * 30}deg)` }}
-          >
+          <span key={i} className="absolute inset-0" style={{ transform: `rotate(${i * 30}deg)` }}>
             <span className={`absolute left-1/2 top-1 block w-0.5 -translate-x-1/2 rounded-full ${i % 3 === 0 ? "h-2.5 bg-ink-muted" : "h-1.5 bg-hairline"}`} />
           </span>
         ))}
@@ -380,15 +380,17 @@ export function Ilustracion({ visual }: { visual: Visual }) {
     // en los dos sentidos, y ver las flechas es lo que hace pensable el
     // camino de vuelta.
     return (
-      <div className="flex max-w-full flex-wrap items-center justify-center gap-1.5">
+      // La cadena NO se envuelve: se lee de izquierda a derecha y partida en
+      // tres renglones deja de decir lo que tiene que decir.
+      <div className="flex max-w-full items-center justify-center gap-1">
         <Caja texto={visual.entrada} tono="border-sky bg-sky/10 text-ink" />
         {visual.pasos.map((paso, i) => (
-          <span key={i} className="flex items-center gap-1.5">
-            <span className="font-display text-lg text-ink-faint" aria-hidden>→</span>
+          <span key={i} className="flex items-center gap-1">
+            <span className="shrink-0 font-display text-base text-ink-faint" aria-hidden>→</span>
             <Caja texto={paso} tono="border-hairline bg-transparent text-ink-muted" />
           </span>
         ))}
-        <span className="font-display text-lg text-ink-faint" aria-hidden>→</span>
+        <span className="shrink-0 font-display text-base text-ink-faint" aria-hidden>→</span>
         <Caja texto={visual.salida} tono="border-tangerine bg-tangerine/10 text-ink" />
       </div>
     );
