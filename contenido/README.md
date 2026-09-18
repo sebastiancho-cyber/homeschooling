@@ -44,16 +44,27 @@ Escribe dos archivos:
 - `contenido/matematicas-1/0025_lo_que_sea.body.json` — el cuerpo de la
   petición, que no se commitea (está en el `.gitignore` de esta carpeta).
 
-Y se aplica con la Management API:
+Y se aplican con `aplicar.mjs`, en orden y deteniéndose en la primera que falle:
 
 ```bash
-curl -X POST "https://api.supabase.com/v1/projects/<ref>/database/query" \
-  -H "Authorization: Bearer $SUPABASE_PAT" -H "Content-Type: application/json" \
-  --data-binary "@contenido/matematicas-1/0025_lo_que_sea.body.json"
+node contenido/aplicar.mjs 0025_contexto 0026_lo_que_sea
 ```
 
-El `--data-binary "@archivo"` no es un capricho: pasar el SQL por la línea de
-comandos corrompe las tildes y las comillas.
+**El token se guarda UNA vez en `.env.local` y no se vuelve a pedir:**
+
+```
+SUPABASE_PAT=sbp_...
+```
+
+Ese archivo ya guarda las llaves del proyecto, está en el `.gitignore` y no se
+sube. Antes el token vivía en el chat de una sesión y se perdía al terminarla,
+así que había que pedirlo otra vez cada vez: eso es lo que esto cierra.
+
+El SQL viaja dentro de un JSON armado en memoria, porque pasarlo por la línea de
+comandos corrompe las tildes y las comillas. Al terminar, el script vuelve a
+leer la base con la misma llave pública que usa la aplicación y dice qué quedó:
+las aserciones de adentro comprueban la transacción, pero no que la app vea lo
+que creemos que ve.
 
 ## Tres cosas que conviene saber antes de tocarlo
 
