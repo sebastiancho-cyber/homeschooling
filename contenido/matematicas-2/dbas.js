@@ -318,7 +318,7 @@ const DBAS = {
         v: [
           multiplicacion(6, 4, "Un bus lleva 6 filas de 4 puestos. ¿Cuántos puestos tiene?"),
           multiplicacion(7, 3, "Una semana tiene 7 días. ¿Cuántos días hay en 3 semanas?"),
-          multiplicacion(5, 8, "En la finca hay 5 corrales con 8 gallinas. ¿Cuántas son?"),
+          multiplicacion(5, 8, "En la finca hay 5 corrales con 8 gallinas. ¿Cuántas gallinas son?"),
         ],
       },
       {
@@ -328,17 +328,17 @@ const DBAS = {
            arreglo dibujado entero y preguntado por su total se contesta
            contando, y eso ya se sabía desde primero. */
         v: [
-          v("Hay 3 filas de 5 frutas. Si pones una fila más, ¿cuántas son?", "arreglo 3×5", opcionesMulti(20, 4, 5, 354)),
-          v("Hay 2 filas de 6 fichas. Si pones una fila más, ¿cuántas son?", "arreglo 2×6", opcionesMulti(18, 3, 6, 263)),
-          v("Hay 3 filas de 7 puntos. Si pones una fila más, ¿cuántas son?", "arreglo 3×7", opcionesMulti(28, 4, 7, 374)),
+          v("Hay 3 filas de 5 frutas. Con una fila más, ¿cuántas frutas son?", "arreglo 3×5", opcionesMulti(20, 4, 5, 354)),
+          v("Hay 2 filas de 6 fichas. Con una fila más, ¿cuántas fichas son?", "arreglo 2×6", opcionesMulti(18, 3, 6, 263)),
+          v("Hay 3 filas de 7 puntos. Con una fila más, ¿cuántos puntos son?", "arreglo 3×7", opcionesMulti(28, 4, 7, 374)),
         ],
       },
       {
         e: 2,
         v: [
-          reparto(24, 4, "Reparte 24 galletas entre 4 niños. ¿Cuántas le tocan?"),
-          reparto(35, 5, "Reparte 35 lápices entre 5 mesas. ¿Cuántos le tocan?"),
-          reparto(27, 3, "Reparte 27 fichas entre 3 grupos. ¿Cuántas le tocan?"),
+          reparto(24, 4, "Reparte 24 galletas entre 4 niños. ¿Cuántas le tocan a cada uno?"),
+          reparto(35, 5, "Reparte 35 lápices entre 5 mesas. ¿Cuántos le tocan a cada una?"),
+          reparto(27, 3, "Reparte 27 fichas entre 3 grupos. ¿Cuántas le tocan a cada uno?"),
         ],
       },
       {
@@ -361,9 +361,9 @@ const DBAS = {
       {
         e: 2,
         v: [
-          suma(247, 135, "El colegio tiene 247 niños y 135 niñas. ¿Cuántos son?"),
-          suma(368, 214, "Entraron 368 personas en la mañana y 214 en la tarde."),
-          suma(156, 273, "La finca tiene 156 naranjos y 273 limoneros. ¿Cuántos son?"),
+          suma(247, 135, "El colegio tiene 247 niños y 135 niñas. ¿Cuántos alumnos son?"),
+          suma(368, 214, "En la mañana entraron 368 personas y en la tarde 214. ¿Cuántas son?"),
+          suma(156, 273, "La finca tiene 156 naranjos y 273 limoneros. ¿Cuántos árboles son?"),
         ],
       },
     ],
@@ -659,21 +659,25 @@ const DBAS = {
             "Que las dos sean del mismo color",
             "Que las peses el mismo día",
           ]),
-          v("Para medir cuánto dura un juego, ¿qué cuidas?", null, [
-            "Que mires el reloj al empezar",
-            "Que mires el reloj al terminar",
-            "Que el juego te guste mucho",
-            "Que juegues con tres amigos",
+          // Antes esta decía «¿qué cuidas?» y la respuesta era «que mires el
+          // reloj al empezar», con «al terminar» de distractor. Pero hay que
+          // mirarlo las DOS veces: el distractor era la otra mitad de la
+          // respuesta, y el que sabía medir fallaba igual.
+          v("Para medir cuánto dura un juego, ¿qué necesitas?", null, [
+            "La hora de empezar y la de terminar",
+            "La hora de terminar solamente",
+            "La hora de empezar solamente",
+            "La hora que marca el reloj ahora",
           ]),
         ],
       },
       {
         e: 2,
         v: [
-          v("Mides una cinta con clips y te sobra un pedacito.", null, [
-            "Digo «casi 7 clips»",
-            "Digo «exactamente 7 clips»",
-            "Digo «ningún clip»",
+          v("Mides una cinta con cuartas y te sobra un pedacito.", null, [
+            "Digo «casi 7 cuartas»",
+            "Digo «exactamente 7 cuartas»",
+            "Digo «ninguna cuarta»",
             "Digo «el pedacito no cuenta»",
           ]),
           v("Mides con cuartas y a tu amigo le dan más cuartas.", null, [
@@ -716,9 +720,9 @@ const DBAS = {
       {
         e: 3,
         v: [
-          v("Un lápiz da 9 clips y un borrador 3 clips. ¿Cuántos más?", "9 − 3 = ?", opciones(6, 12, 39)),
-          v("Una cinta da 14 clips y otra 6 clips. ¿Cuántos más?", "14 − 6 = ?", opciones(8, 20, 62)),
-          v("Un cuaderno da 11 clips y una tarjeta 4. ¿Cuántos más?", "11 − 4 = ?", opciones(7, 15, 47)),
+          v("Un lápiz mide 9 cm y un borrador 3 cm. ¿Cuántos cm más?", "9 − 3 = ?", opciones(6, 12, 39)),
+          v("Una cinta mide 14 cm y otra 6 cm. ¿Cuántos cm más?", "14 − 6 = ?", opciones(8, 20, 62)),
+          v("Un cuaderno mide 11 cm y una tarjeta 4 cm. ¿Cuántos cm más?", "11 − 4 = ?", opciones(7, 15, 47)),
         ],
       },
       {
@@ -910,17 +914,17 @@ const DBAS = {
            que pide la evidencia. Las dos tiras se midieron con el mismo
            cuadrado, así que sus números sí se pueden restar. */
         v: [
-          resta(12, 8, "La tira roja da 12 cuadrados y la azul 8. ¿Cuántos más?"),
-          resta(15, 9, "La cinta verde da 15 cuadrados y la gris 9. ¿Cuántos más?"),
-          resta(14, 5, "La cuerda larga da 14 cuadrados y la corta 5. ¿Cuántos más?"),
+          resta(12, 8, "La tira roja mide 12 cuadrados y la azul 8. ¿Cuántos más mide?"),
+          resta(15, 9, "La cinta verde mide 15 cuadrados y la gris 9. ¿Cuántos más mide?"),
+          resta(14, 5, "La cuerda larga mide 14 cuadrados y la corta 5. ¿Cuántos más mide?"),
         ],
       },
       {
         e: 2,
         v: [
-          multiplicacion(4, 3, "Cada paso mide 4 baldosas. ¿Cuántas en 3 pasos?"),
-          multiplicacion(5, 4, "Cada cuarta mide 5 clips. ¿Cuántos en 4 cuartas?"),
-          multiplicacion(6, 3, "Cada vaso llena 6 pocillos. ¿Cuántos en 3 vasos?"),
+          multiplicacion(4, 3, "Cada paso mide 4 baldosas. ¿Cuántas baldosas son 3 pasos?"),
+          multiplicacion(5, 4, "Cada cuadrado mide 5 cm. ¿Cuántos cm son 4 cuadrados?"),
+          multiplicacion(6, 3, "Cada vaso llena 6 pocillos. ¿Cuántos pocillos llenan 3 vasos?"),
         ],
       },
       {
@@ -1811,9 +1815,9 @@ const DBAS = {
       {
         e: 2,
         v: [
-          v("Anotaste con palitos: IIII IIII II. ¿Cuántos son?", null, ["10", "3", "11", "2"]),
-          v("Anotaste con palitos: IIII III. ¿Cuántos son?", null, ["7", "2", "8", "4"]),
-          v("Anotaste con palitos: IIII IIII IIII. ¿Cuántos son?", null, ["12", "3", "13", "4"]),
+          v("Anotaste los votos con palitos: IIII IIII II. ¿Cuántos son?", null, ["10", "3", "11", "2"]),
+          v("Anotaste los votos con palitos: IIII III. ¿Cuántos son?", null, ["7", "2", "8", "4"]),
+          v("Anotaste los votos con palitos: IIII IIII IIII. ¿Cuántos son?", null, ["12", "3", "13", "4"]),
         ],
       },
       {

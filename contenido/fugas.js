@@ -178,4 +178,8 @@ function equivalentes(v) {
 }
 const DETECTORES = [ecoLexico, concordancia, longitud, formaDistinta, simboloExclusivo, equivalentes];
 
-module.exports = { DETECTORES, ecoLexico, concordancia, longitud, formaDistinta, simboloExclusivo, equivalentes };
+/* Se exportan tambien `palabras` y `mismaRaiz` porque el control de calidad
+   los necesita para lo mismo que aqui: decidir de que habla un texto. Estan
+   probados contra casos conocidos desde el grado 1; escribir otros iguales al
+   lado seria empezar de cero con las mismas trampas. */
+module.exports = { DETECTORES, palabras, mismaRaiz, ecoLexico, concordancia, longitud, formaDistinta, simboloExclusivo, equivalentes };

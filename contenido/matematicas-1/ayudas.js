@@ -240,7 +240,7 @@ module.exports = {
     pasos: [
       "Para medir no siempre hace falta una regla: sirve la mano, el pie o cualquier objeto repetido.",
       "Una cuarta es la mano abierta, del pulgar al meñique.",
-      "El nombre de la medida delata con qué se midió: pasos con los pies, clips con clips.",
+      "El nombre de la medida delata con qué se midió: pasos con los pies, cuartas con la mano.",
     ],
     ojo: "La unidad tiene que servir para lo que se mide: con un reloj no se mide una mesa.",
   },
@@ -262,7 +262,7 @@ module.exports = {
     ],
     ojo: "Fíjate si piden el que MÁS pesa o el que MENOS pesa.",
   },
-  "5|Mira las dos cintas, medidas en clips. ¿Cómo son?": {
+  "5|Mira las dos cintas, medidas en cuartas. ¿Cómo son?": {
     pista: "Mira las dos barras del dibujo: la más larga es la que mide más.",
     pasos: [
       "Las dos cosas están medidas con la misma unidad, así que se pueden comparar.",
@@ -280,7 +280,7 @@ module.exports = {
     ],
     ojo: "No se compara por el tamaño de afuera: se compara por lo que le cupo.",
   },
-  "5|¿Cuántos clips más largo es el lápiz azul que el rojo?": {
+  "5|¿Cuántos cm más largo es el lápiz azul que el rojo?": {
     pista: "Para saber cuánto MÁS mide uno que otro, se resta la medida pequeña de la grande.",
     pasos: [
       "Mira las dos barras y fíjate cuál es la más larga.",
@@ -303,7 +303,7 @@ module.exports = {
     pasos: [
       "El objeto no cambia de tamaño: lo que cambia es con qué lo mides.",
       "Si la unidad es grande —pasos largos, cuartas grandes— necesitas pocas para cubrirlo.",
-      "Si la unidad es pequeña —clips, pasos cortos— necesitas muchas más.",
+      "Si la unidad es pequeña —cuadraditos, pasos cortos— necesitas muchas más.",
     ],
     ojo: "Es al revés de lo que parece: unidad más grande, número más pequeño.",
   },

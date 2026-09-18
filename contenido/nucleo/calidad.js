@@ -10,7 +10,7 @@
    después de mirarlo resulta ser un falso positivo, se anota en el
    `excepciones.js` del grado con el motivo escrito. */
 
-const { DETECTORES } = require("../fugas.js");
+const { DETECTORES, palabras, mismaRaiz } = require("../fugas.js");
 
 /* Las formas de operación que la app SÍ sabe explicar sola. Es un espejo de
    `ayudaPara()` en src/lib/ayuda.ts: si allá se agrega una forma, aquí también.
@@ -63,6 +63,8 @@ const claveAyuda = (dba, slot) => `${dba}|${slot.v[0].p}`;
 function revisar({ DBAS, AYUDAS, EXCEPCIONES, visualPara, derivables = DERIVABLES, limites = {} }) {
   const L = { ...LIMITES, ...limites };
   const errores = [];
+  /* Lo que hay que MIRAR, no lo que impide generar. Se imprime siempre. */
+  const avisos = [];
   let totalEv = 0, totalSlots = 0, totalEx = 0, maxP = 0, maxO = 0;
 
   for (const [dba, d] of Object.entries(DBAS)) {
@@ -285,6 +287,65 @@ function revisar({ DBAS, AYUDAS, EXCEPCIONES, visualPara, derivables = DERIVABLE
     if (!Array.isArray(a.pasos) || a.pasos.length < 2) errores.push(`ayuda ${k}: menos de 2 pasos`);
   }
 
+  /* La ayuda escrita que solo le sirve a UNA de sus versiones.
+
+     Una ayuda es de la RANURA y la comparten sus tres versiones. Cuando la
+     ranura mezcla cosas distintas —un largo medido con pasos, un peso con
+     balanza, una duración con reloj— y la ayuda habla solo de la primera, a
+     dos de cada tres niños se les explica algo que no tiene nada que ver con
+     lo que acaban de fallar. No es que no ayude: MIENTE.
+
+     Ha pasado dos veces y las dos las encontró el director jugando: una ayuda
+     que decía «si cada una tiene 4» con el dibujo mostrando filas de 5, y otra
+     que hablaba de pasos largos y cortos en una pregunta sobre un reloj.
+
+     Lo que se acusa: que las palabras propias de la ayuda salgan TODAS de una
+     sola versión. Si la ayuda enumera los tres casos —que es como se arregla—
+     sus palabras se reparten entre las tres y no se acusa nada. */
+  for (const [dba, d] of Object.entries(DBAS)) {
+    d.slots.forEach((slot, i) => {
+      const ayuda = AYUDAS[claveAyuda(dba, slot)];
+      if (!ayuda || slot.v.length < 3) return;
+      // DISTINTAS: la misma palabra repetida en la ayuda no son dos señales, es
+      // una dicha dos veces. Sin esto el chequeo acusaba «mismo, mismo».
+      const deLaAyuda = [...new Set(palabras([ayuda.pista, ...ayuda.pasos, ayuda.ojo ?? ""].join(" ")))];
+      const textos = slot.v.map((v) => palabras(v.p + " " + v.o.join(" ")));
+      // Una palabra es EXCLUSIVA de una versión si sale ahí y en ninguna otra.
+      const exclusivas = textos.map((_, k) =>
+        deLaAyuda.filter(
+          (w) =>
+            textos[k].some((x) => mismaRaiz(x, w)) &&
+            textos.every((t, m) => m === k || !t.some((x) => mismaRaiz(x, w))),
+        ),
+      );
+      /* Se compara por PESO y no exigiendo cero en las otras: una palabra común
+         puede caer en otra versión por casualidad —«misma» lo hizo— y eso no
+         quiere decir que la ayuda le hable. Se acusa cuando una versión se
+         queda con más palabras propias que todas las demás juntas. */
+      const cuantas = exclusivas.map((e) => e.length);
+      const mayor = Math.max(...cuantas);
+      const soloDeUna = cuantas.indexOf(mayor);
+      const lasOtras = cuantas.reduce((t, n, k) => t + (k === soloDeUna ? 0 : n), 0);
+      /* Tres palabras propias, y más que todas las demás juntas. Con dos
+         saltaban ayudas que solo estaban poniendo un ejemplo —«por ejemplo, el
+         teléfono»—, que es legítimo y está en las reglas. Tres ya no es un
+         ejemplo: es que la ayuda se quedó viviendo en una sola versión. */
+      if (mayor >= 3 && mayor >= 2 + lasOtras) {
+        /* Se AVISA, no se bloquea, y el motivo es honesto: de los 19 que
+           encuentra hoy, unos son de verdad —una ayuda sobre paralelas en una
+           ranura que también pregunta por perpendiculares— y otros son una
+           ayuda correcta que ilustra con un caso. Distinguirlos es leerlos, y
+           bloquear sin haberlos leído sería fingir rigor.
+
+           Va en la lista de avisos, que el generador imprime entera en cada
+           corrida: un aviso que hay que ir a buscar no lo lee nadie. */
+        avisos.push(
+          `DBA ${dba} ranura ${i + 1}: la ayuda parece hablar solo de la versión ${soloDeUna + 1} (${exclusivas[soloDeUna].join(", ")})`,
+        );
+      }
+    });
+  }
+
   /* FUGAS: pistas que dejan acertar sin saber la materia.
 
      Un enunciado que repite su propia respuesta, una correcta que es la única con
@@ -377,7 +438,7 @@ function revisar({ DBAS, AYUDAS, EXCEPCIONES, visualPara, derivables = DERIVABLE
     }
   }
 
-  return { errores, totalEv, totalSlots, totalEx, maxP, maxO, medida };
+  return { errores, avisos, totalEv, totalSlots, totalEx, maxP, maxO, medida };
 }
 
 module.exports = { revisar, claveAyuda, DERIVABLES, LIMITES };

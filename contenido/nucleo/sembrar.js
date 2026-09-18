@@ -50,7 +50,7 @@ function sembrar({
   limites,
 }) {
   const derivablesUsadas = derivables ?? DERIVABLES;
-  const { errores, totalEv, totalSlots, totalEx, maxP, maxO, medida } = revisar({
+  const { errores, avisos, totalEv, totalSlots, totalEx, maxP, maxO, medida } = revisar({
     DBAS, AYUDAS, EXCEPCIONES, visualPara, derivables, limites,
   });
 
@@ -170,6 +170,11 @@ end $$;
   console.log(`con figuras en las opciones: ${conFiguras}`);
   console.log(`con ayuda escrita: ${conAyuda} de ${totalEx} (${Object.keys(AYUDAS).length} ranuras)`);
   console.log(`enunciado más largo: ${maxP} car. | opción más larga: ${maxO} car.`);
+  if (avisos.length) {
+    console.log(`
+Para mirar (${avisos.length}), no impiden sembrar:`);
+    for (const a of avisos) console.log("  · " + a);
+  }
   if (medida) {
     console.log(`· cálculo: ${medida.n} ejercicios · la correcta cae en la misma posición como máximo el ${Math.round(medida.peor * 100)} %`);
     console.log(`· con un número suelto descartable: ${Math.round(medida.conSuelto * 100)} %`);

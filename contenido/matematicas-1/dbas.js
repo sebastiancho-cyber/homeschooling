@@ -72,14 +72,14 @@ const DBAS = {
         { p: "¿Qué cuenta muestra el dibujo? Los grises ya se fueron.", op: "🎈🎈🎈🎈🎈 − 🎈", o: ["5 − 1", "5 + 1", "4 − 1", "5 − 4"], c: 0 },
       ]},
       { e: 4, v: [
-        suma(3, 2, "Ana tiene 3 bombas. Le regalan 2."),
-        suma(4, 3, "Luis tiene 4 carritos. Le dan 3."),
-        suma(5, 2, "Hay 5 pájaros. Llegan 2 más."),
+        suma(3, 2, "Ana tiene 3 bombas. Le regalan 2. ¿Cuántas tiene ahora?"),
+        suma(4, 3, "Luis tiene 4 carritos. Le dan 3. ¿Cuántos tiene ahora?"),
+        suma(5, 2, "Hay 5 pájaros. Llegan 2 más. ¿Cuántos hay ahora?"),
       ]},
       { e: 4, v: [
-        resta(4, 1, "Tienes 4 manzanas. Regalas 1."),
-        resta(7, 2, "Tienes 7 dulces. Regalas 2."),
-        resta(6, 2, "Hay 6 globos. Se revientan 2."),
+        resta(4, 1, "Tienes 4 manzanas. Regalas 1. ¿Cuántas te quedan?"),
+        resta(7, 2, "Tienes 7 dulces. Regalas 2. ¿Cuántos te quedan?"),
+        resta(6, 2, "Hay 6 globos. Se revientan 2. ¿Cuántos quedan?"),
       ]},
 
       { e: 4, v: [
@@ -140,22 +140,22 @@ const DBAS = {
         secuencia([10, 12, 14], 16, [15, 18, 13], "Cuenta de 2 en 2. ¿Qué sigue?"),
       ]},
       { e: 2, v: [
-        { p: "Hay 4 pares de medias. Cuéntalas de 2 en 2.", op: "2 + 2 + 2 + 2 = ?", o: ["8", "6", "4", "10"], c: 0 },
-        { p: "Hay 3 pares de zapatos. Cuéntalos de 2 en 2.", op: "2 + 2 + 2 = ?", o: ["6", "5", "3", "8"], c: 0 },
-        { p: "Hay 5 pares de guantes. Cuéntalos de 2 en 2.", op: "2 + 2 + 2 + 2 + 2 = ?", o: ["10", "7", "5", "12"], c: 0 },
+        { p: "Hay 4 pares de medias. De 2 en 2, ¿cuántas medias son?", op: "2 + 2 + 2 + 2 = ?", o: ["8", "6", "4", "10"], c: 0 },
+        { p: "Hay 3 pares de zapatos. De 2 en 2, ¿cuántos zapatos son?", op: "2 + 2 + 2 = ?", o: ["6", "5", "3", "8"], c: 0 },
+        { p: "Hay 5 pares de guantes. De 2 en 2, ¿cuántos guantes son?", op: "2 + 2 + 2 + 2 + 2 = ?", o: ["10", "7", "5", "12"], c: 0 },
       ]},
       { e: 2, v: [
         // Antes decía "tres manos abiertas" y el dibujo salían quince manos, no
         // tres manos de cinco dedos. Ahora el montón y lo que se cuenta son la
         // misma cosa: bolsas con dulces adentro.
-        { p: "Hay 3 bolsas con 5 dulces cada una.", op: "5 + 5 + 5 = ?", o: ["15", "8", "10", "20"], c: 0 },
-        { p: "Hay 2 cajas con 5 crayolas cada una.", op: "5 + 5 = ?", o: ["10", "7", "5", "15"], c: 0 },
-        { p: "Hay 4 platos con 5 uvas cada uno.", op: "5 + 5 + 5 + 5 = ?", o: ["20", "9", "15", "25"], c: 0 },
+        { p: "Hay 3 bolsas con 5 dulces cada una. ¿Cuántos dulces son?", op: "5 + 5 + 5 = ?", o: ["15", "8", "10", "20"], c: 0 },
+        { p: "Hay 2 cajas con 5 crayolas cada una. ¿Cuántas crayolas son?", op: "5 + 5 = ?", o: ["10", "7", "5", "15"], c: 0 },
+        { p: "Hay 4 platos con 5 uvas cada uno. ¿Cuántas uvas son?", op: "5 + 5 + 5 + 5 = ?", o: ["20", "9", "15", "25"], c: 0 },
       ]},
       { e: 3, v: [
         suma(5, 3, "Tienes 5 canicas y encuentras 3. ¿Cuántas tienes?"),
         suma(6, 2, "Había 6 pájaros y llegaron 2. ¿Cuántos hay ahora?"),
-        suma(4, 5, "Juntas 4 fichas rojas y 5 azules. ¿Cuántas son?"),
+        suma(4, 5, "Juntas 4 fichas rojas y 5 azules. ¿Cuántas fichas son?"),
       ] },
       { e: 3, v: [
         resta(9, 3, "Tenías 9 stickers y pegaste 3. ¿Cuántos te quedan?"),
@@ -245,9 +245,9 @@ const DBAS = {
         suma(9, 5, "Tienes 9 monedas y te dan 5. ¿Cuántas tienes?"),
       ] },
       { e: 3, v: [
-        { p: "En la caja hay 25 clavos y echan 10 más. ¿Cuántos son?", op: "25 + 10 = ?", o: ["35", "26", "15", "45"], c: 0 },
-        { p: "El álbum tiene 42 láminas y pegas 10 más. ¿Cuántas son?", op: "42 + 10 = ?", o: ["52", "43", "32", "62"], c: 0 },
-        { p: "La mata tiene 17 hojas y le salen 10 más. ¿Cuántas son?", op: "17 + 10 = ?", o: ["27", "18", "7", "37"], c: 0 },
+        { p: "En la caja hay 25 clavos y echan 10 más. ¿Cuántos clavos son?", op: "25 + 10 = ?", o: ["35", "26", "15", "45"], c: 0 },
+        { p: "El álbum tiene 42 láminas y pegas 10 más. ¿Cuántas láminas son?", op: "42 + 10 = ?", o: ["52", "43", "32", "62"], c: 0 },
+        { p: "La mata tiene 17 hojas y le salen 10 más. ¿Cuántas hojas son?", op: "17 + 10 = ?", o: ["27", "18", "7", "37"], c: 0 },
       ]},
       { e: 3, v: [
         { p: "Había 40 panes y se vendieron 10. ¿Cuántos quedan?", op: "40 − 10 = ?", o: ["30", "39", "50", "20"], c: 0 },
@@ -366,8 +366,8 @@ const DBAS = {
         { p: "¿Cuál pesa MÁS?", o: ["Una nevera", "Una silla", "Un plato", "Una cuchara"], c: 0 },
       ]},
       { e: 2, v: [
-        { p: "Mira las dos cintas, medidas en clips. ¿Cómo son?", op: "Roja 8 · Azul 8", o: ["Igual de largas", "La roja más larga", "La azul más larga", "No se pueden comparar"], c: 0 },
-        { p: "¿Cuál cinta es más larga? (medidas en clips)", op: "Roja 9 · Azul 6", o: ["La roja", "La azul", "Son iguales", "No se puede saber"], c: 0 },
+        { p: "Mira las dos cintas, medidas en cuartas. ¿Cómo son?", op: "Roja 8 · Azul 8", o: ["Igual de largas", "La roja más larga", "La azul más larga", "No se pueden comparar"], c: 0 },
+        { p: "¿Cuál cinta es más larga? (medidas en cuartas)", op: "Roja 9 · Azul 6", o: ["La roja", "La azul", "Son iguales", "No se puede saber"], c: 0 },
         // Aquí solo hay una medida. Que la respuesta sea "no se puede saber"
         // no es un truco: es lo que hay que contestar, y es lo que enseña a no
         // decidir con datos que no alcanzan.
@@ -379,28 +379,28 @@ const DBAS = {
         { p: "En cada olla caben estos pocillos. ¿Cuál olla es más grande?", op: "Olla A 6 · Olla B 10", o: ["La olla B", "La olla A", "Las dos igual", "No se puede saber"], c: 0 },
       ]},
       { e: 1, v: [
-        { p: "¿Cuántos clips más largo es el lápiz azul que el rojo?", op: "Rojo 3 · Azul 5", o: ["2", "8", "1", "4"], c: 0 },
-        { p: "¿Cuántos clips más larga es la cinta verde que la café?", op: "Café 4 · Verde 9", o: ["5", "13", "4", "7"], c: 0 },
+        { p: "¿Cuántos cm más largo es el lápiz azul que el rojo?", op: "Rojo 3 · Azul 5", o: ["2", "8", "1", "4"], c: 0 },
+        { p: "¿Cuántos cm más larga es la cinta verde que la café?", op: "Café 4 · Verde 9", o: ["5", "13", "4", "7"], c: 0 },
         { p: "¿Cuántas cuartas más larga es la mesa grande que la chiquita?", op: "Chiquita 5 · Grande 8", o: ["3", "13", "2", "5"], c: 0 },
       ]},
       { e: 3, v: [
-        falta(6, 10, "Necesitas 10 clips de cinta y tienes 6."),
-        falta(4, 9, "Necesitas 9 palitos y tienes 4."),
-        falta(7, 12, "Necesitas 12 cuartas de lana y tienes 7."),
+        falta(6, 10, "Necesitas 10 cm de cinta y tienes 6. ¿Cuántos faltan?"),
+        falta(4, 9, "Necesitas 9 palitos y tienes 4. ¿Cuántos faltan?"),
+        falta(7, 12, "Necesitas 12 cuartas de lana y tienes 7. ¿Cuántas faltan?"),
       ]},
       { e: 3, v: [
-        resta(12, 5, "Tienes una cinta de 12 clips y usas 5."),
-        resta(10, 4, "Tienes una lana de 10 cuartas y usas 4."),
-        resta(15, 6, "Tienes 15 palitos y usas 6."),
+        resta(12, 5, "Tienes una cinta de 12 cm y usas 5. ¿Cuántos quedan?"),
+        resta(10, 4, "Tienes una lana de 10 cuartas y usas 4. ¿Cuántas quedan?"),
+        resta(15, 6, "Tienes 15 palitos y usas 6. ¿Cuántos te quedan?"),
       ]},
       { e: 3, v: [
         { p: "Mide en cuartas. ¿Cabe la caja en el estante?", op: "Estante 6 · Caja 8", o: ["No, la caja es más grande", "Sí, la caja entra justo", "Sí, la caja deja espacio", "No se puede saber"], c: 0 },
         { p: "Mide en cuartas. ¿Cabe el libro en la maleta?", op: "Maleta 9 · Libro 4", o: ["Sí, el libro deja espacio", "Sí, el libro entra justo", "No, el libro es más grande", "No se puede saber"], c: 0 },
-        { p: "Mide en clips. ¿Alcanza la cinta para el regalo?", op: "Cinta 7 · Regalo 7", o: ["Sí, la cinta alcanza justo", "No, la cinta no alcanza", "Sí, y sobra mucha cinta", "No se puede saber"], c: 0 },
+        { p: "Mide con la regla. ¿Alcanza la cinta para el regalo?", op: "Cinta 7 · Regalo 7", o: ["Sí, la cinta alcanza justo", "No, la cinta no alcanza", "Sí, y sobra mucha cinta", "No se puede saber"], c: 0 },
       ]},
       { e: 1, v: [
         { p: "Si mides el salón con pasos GRANDES, das:", o: ["Menos pasos", "Más pasos", "Los mismos pasos", "El doble de pasos"], c: 0 },
-        { p: "Si mides la mesa con clips PEQUEÑOS, usas:", o: ["Más clips", "Menos clips", "Los mismos clips", "Ningún clip"], c: 0 },
+        { p: "Si mides la mesa con cuadrados PEQUEÑOS, usas:", o: ["Más cuadrados", "Menos cuadrados", "Los mismos cuadrados", "Ningún cuadrado"], c: 0 },
         { p: "Si mides con una cuarta más grande, el número sale:", o: ["Más pequeño", "Más grande", "Igual", "En cero"], c: 0 },
       ]},
     ],

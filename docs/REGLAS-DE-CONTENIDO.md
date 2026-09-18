@@ -163,6 +163,24 @@ contexto.** El tope existe para que quepa en el globo, no para exprimir el
 sentido. Si un enunciado necesita una frase más para significar algo, lleva esa
 frase.
 
+**La pregunta tiene que nombrar de qué habla.** «Cada vaso llena 6 pocillos.
+¿Cuántos en 3 vasos?» — ¿cuántos QUÉ. Esa pregunta no tiene verbo ni
+sustantivo: se apoya en que el niño adivine a qué se refiere. Pasó 41 veces en
+los dos grados, y siempre por el mismo motivo: apretar el enunciado para que
+cupiera en los 70 caracteres. No hacía falta — todas las versiones bien escritas
+caben de sobra. Es la misma regla de arriba dicha al revés: **corto no es lo
+mismo que sin contexto**.
+
+Dos formas legítimas que NO son esto:
+
+- **Pregunta completa:** «Cada vaso llena 6 pocillos. ¿Cuántos pocillos llenan
+  3 vasos?»
+- **Frase con dos puntos que las opciones completan:** «Diez más que 63 es:».
+  Aquí la pregunta no falta: está repartida entre el enunciado y las opciones.
+
+Lo que no vale es la tercera: una frase que ni pregunta ni termina en dos
+puntos, con opciones numéricas. Ahí la pregunta no está en ninguna parte.
+
 **Todo lo que el enunciado nombra tiene que estar en pantalla.** *"¿Cuántos
 clips más largo es el segundo lápiz?"* nombraba dos lápices que no existían en
 ninguna parte. Si la pregunta se refiere a algo, ese algo se dibuja, se lista o
@@ -563,6 +581,14 @@ la misma resta se explica completando: *de 45 a 50 son 5, de 50 a 80 son 30, de
 **Antes de escribir un cálculo, hay que mirar qué MÉTODO pide el grado, no solo
 qué números le caben.** Un ejercicio con los números correctos y el método
 equivocado enseña algo que el niño va a tener que desaprender.
+
+**Las unidades son las del país, y las que nombra el documento.** El MEN lista
+las no convencionales: «pasos, cuadrados o rectángulos, cuartas, metros». El
+clip no está ahí, y en Colombia nadie mide en clips — era un invento nuestro que
+llegó a aparecer 14 veces. Y el sistema métrico no es opcional: el DBA 5 del
+grado 2 pide «unidades e instrumentos **convencionales y no convencionales**», y
+la evidencia 1 del DBA 5 del grado 1 pide «unidades **estandarizadas** o no
+estandarizadas». El centímetro y el metro van desde primero.
 
 **Un número fuera de rango solo se permite como distractor deliberado o como
 código.** `502` está en el grado 1 porque es el error clásico de escribir

@@ -95,7 +95,7 @@ module.exports = {
     ],
     ojo: "Aquí sobra una barra. No todos los datos de un gráfico sirven para toda pregunta.",
   },
-  "2|Hay 3 filas de 5 frutas. Si pones una fila más, ¿cuántas son?": {
+  "2|Hay 3 filas de 5 frutas. Con una fila más, ¿cuántas frutas son?": {
     pista: "El dibujo enseña las filas que hay; la pregunta pide una más.",
     pasos: [
       "Mira cuántos hay en UNA fila: todas tienen lo mismo.",
@@ -234,16 +234,20 @@ module.exports = {
     ],
     ojo: "Un recipiente alto no siempre es el que más le cabe: también cuenta lo ancho.",
   },
+  /* Esta ayuda la comparten TRES versiones que miden cosas distintas —un largo,
+     un peso y una duración—, así que tiene que servirle a las tres. Antes
+     hablaba solo de pasos largos y cortos, y al que le tocaba la del reloj le
+     explicaban algo que no tenía nada que ver. */
   "4|Para medir el largo del salón con pasos, ¿qué cuidas?": {
-    pista: "Al medir con algo del cuerpo, lo importante es que esa medida no cambie de tamaño.",
+    pista: "Lo que se cuida al medir es que la manera de medir no cambie a mitad de camino.",
     pasos: [
-      "Si un paso es largo y el siguiente corto, el número que te da no significa nada.",
-      "La medida tiene que ser siempre la misma, de principio a fin.",
-      "Por eso se dice «pasos iguales»: es lo que hace que la cuenta sirva.",
+      "Si mides con algo del cuerpo, esa medida tiene que ser siempre del mismo tamaño.",
+      "Si comparas dos cosas, las dos se miden con el mismo instrumento.",
+      "Si mides cuánto dura algo, hacen falta los dos momentos: cuándo empieza y cuándo acaba.",
     ],
-    ojo: "Medir bien no es medir rápido: es medir siempre con la misma unidad.",
+    ojo: "Medir bien no es medir rápido: es medir siempre de la misma manera.",
   },
-  "4|Mides una cinta con clips y te sobra un pedacito.": {
+  "4|Mides una cinta con cuartas y te sobra un pedacito.": {
     pista: "Cuando la unidad no cabe un número exacto de veces, la medida es aproximada, no falsa.",
     pasos: [
       "Cuenta cuántas unidades completas caben.",
@@ -749,7 +753,7 @@ module.exports = {
     ],
     ojo: "Restar los DIBUJOS y no convertir a votos deja el resultado mucho más pequeño de lo real.",
   },
-  "10|Anotaste con palitos: IIII IIII II. ¿Cuántos son?": {
+  "10|Anotaste los votos con palitos: IIII IIII II. ¿Cuántos son?": {
     pista: "Los palitos se anotan en grupos: cuenta los grupos completos y súmale los sueltos.",
     pasos: [
       "Cada grupo completo vale lo mismo; cuenta cuántos grupos hay.",
