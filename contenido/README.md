@@ -17,6 +17,8 @@ contenido/
     calidad.js             todos los chequeos
     sembrar.js             arma el SQL y lo escribe
   fugas.js                 los detectores de respuestas que se delatan
+  estado.mjs               qué falta y qué está sembrado — se corre PRIMERO
+  aplicar.mjs              manda las migraciones a la base
   probar-ayuda.mjs         qué le dice la app al niño cuando falla
   matematicas-1/
     generar.js             ~40 líneas: junta las piezas
