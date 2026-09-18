@@ -58,22 +58,24 @@ const DBAS = {
       "Describe y resuelve situaciones variadas con las operaciones de suma y resta en problemas cuya estructura puede ser a + b = ?, a + ? = c, o ? + b = c.",
       "Reconoce en diferentes situaciones relaciones aditivas y multiplicativas y formula problemas a partir de ellas.",
     ],
+    /* El orden es una RAMPA DE DIFICULTAD, no el orden del documento.
+
+       Ordenado por evidencia, este tema empezaba con cuatro dibujos fáciles
+       seguidos y saltaba de golpe a 146 + 235: arrancaba en kínder y aterrizaba
+       en tercero. Ahora va de lo concreto a lo abstracto, y las evidencias caen
+       donde les toca por dificultad, entremezcladas.
+
+       El cálculo es de DOS cifras a propósito. El rango del grado llega a 999,
+       pero ese es el techo del AÑO: la suma en columna con reagrupación se
+       enseña en el tema 2, que se llama justamente «Varias maneras de sacar la
+       cuenta». Pedirla aquí es pedirla antes de enseñarla. */
     slots: [
-      // --- ev1: el diagrama ---
       {
         e: 1,
         v: [
-          arreglo(3, 4, "¿Cuántas galletas hay en la bandeja?"),
-          arreglo(4, 5, "¿Cuántas sillas hay en el salón?"),
-          arreglo(3, 6, "¿Cuántos huevos hay en la cubeta?"),
-        ],
-      },
-      {
-        e: 1,
-        v: [
-          arreglo(2, 7, "¿Cuántas flores sembraron en total?"),
-          arreglo(5, 3, "¿Cuántos libros caben en el estante?"),
-          arreglo(4, 4, "¿Cuántos ladrillos tiene el muro?"),
+          v("Tenías 12 dulces y te comes 5. ¿Cuántos quedan?", "12 − 5 = ?", opciones(7, 17, 27)),
+          v("Tenías 14 uvas y te comes 6. ¿Cuántas quedan?", "14 − 6 = ?", opciones(8, 20, 32)),
+          v("Tenías 11 arepas y se van 4. ¿Cuántas quedan?", "11 − 4 = ?", opciones(7, 15, 23)),
         ],
       },
       {
@@ -85,63 +87,6 @@ const DBAS = {
           v("¿Cuántos globos más tiene Ana que Luis?", "Ana 7 · Luis 4", opciones(3, 11, 74)),
           v("¿Cuántas fichas menos tiene Sara que Jorge?", "Jorge 9 · Sara 5", opciones(4, 14, 95)),
           v("¿Cuántos puntos más hizo el equipo azul?", "Azul 15 · Verde 8", opciones(7, 23, 158)),
-        ],
-      },
-      {
-        e: 1,
-        v: [
-          v("Tenías 12 dulces y te comes 5. ¿Cuántos quedan?", "12 − 5 = ?", opciones(7, 17, 27)),
-          v("Tenías 14 uvas y te comes 6. ¿Cuántas quedan?", "14 − 6 = ?", opciones(8, 20, 32)),
-          v("Tenías 11 arepas y se van 4. ¿Cuántas quedan?", "11 − 4 = ?", opciones(7, 15, 23)),
-        ],
-      },
-      // --- ev2: las tres estructuras ---
-      {
-        e: 2,
-        v: [
-          suma(146, 235, "Junta las dos cajas. ¿Cuántos tornillos son?"),
-          suma(238, 154, "Junta los dos frascos. ¿Cuántas semillas son?"),
-          suma(127, 346, "Junta las dos bolsas. ¿Cuántas canicas son?"),
-        ],
-      },
-      {
-        e: 2,
-        v: [
-          falta(45, 80, "Tienes 45 puntos y quieres llegar a 80. ¿Cuántos faltan?"),
-          falta(38, 90, "Tienes 38 puntos y quieres llegar a 90. ¿Cuántos faltan?"),
-          falta(64, 100, "Tienes 64 puntos y quieres llegar a 100. ¿Cuántos faltan?"),
-        ],
-      },
-      {
-        e: 2,
-        v: [
-          faltaIzq(30, 75, "Le pusiste 30 más y quedaron 75. ¿Cuántos había?"),
-          faltaIzq(40, 92, "Le pusiste 40 más y quedaron 92. ¿Cuántos había?"),
-          faltaIzq(25, 61, "Le pusiste 25 más y quedaron 61. ¿Cuántos había?"),
-        ],
-      },
-      // --- ev3: qué operación pide la situación (del ejemplo oficial) ---
-      {
-        e: 3,
-        v: [
-          v("Cada hora en la sala cuesta $2.000. ¿Cuál se resuelve multiplicando?", null, [
-            "Cuánto pago por 3 horas",
-            "Cuánto me sobra de $5.000",
-            "Cuánto le falta para $9.000",
-            "Cuántas horas más jugó Ana",
-          ]),
-          v("Un paquete trae 6 lápices. ¿Cuál se resuelve multiplicando?", null, [
-            "Cuántos lápices hay en 4 paquetes",
-            "Cuántos lápices sobran de 20",
-            "Cuántos lápices faltan para 30",
-            "Cuántos lápices más trae la caja",
-          ]),
-          v("Cada mesa tiene 5 puestos. ¿Cuál se resuelve multiplicando?", null, [
-            "Cuántos puestos hay en 6 mesas",
-            "Cuántos puestos sobran de 40",
-            "Cuántos puestos faltan para 25",
-            "Cuántos puestos más tiene la otra",
-          ]),
         ],
       },
       {
@@ -164,6 +109,113 @@ const DBAS = {
             "Junto lo gastado con lo que tenías",
             "Reparto lo gastado en partes iguales",
             "Repito lo gastado varias veces",
+          ]),
+        ],
+      },
+      {
+        e: 1,
+        /* El mismo dibujo de la primera ranura, pero preguntando por la CUENTA
+           y no por el total. Contar sirve para el total; para decir qué cuenta
+           lo resuelve hay que ver las filas. Sin esta ranura, el arreglo se
+           contesta contando de uno en uno y la relación multiplicativa —que es
+           lo que pide la evidencia— no se mide nunca.
+
+           Las opciones van en palabras y no en signos a propósito: la marca del
+           dibujo («arreglo 4×5») lleva un ×, y si la correcta fuera la única con
+           ese signo bastaría con emparejarlo sin entender nada. */
+        v: [
+          v("Hay 4 filas con 5 sillas cada una. ¿Qué cuenta da el total?", "arreglo 4×5", [
+            "4 veces 5",
+            "4 más 5",
+            "5 menos 4",
+            "5 entre 4",
+          ]),
+          v("Hay 3 filas con 6 galletas cada una. ¿Qué cuenta da el total?", "arreglo 3×6", [
+            "3 veces 6",
+            "3 más 6",
+            "6 menos 3",
+            "6 entre 3",
+          ]),
+          v("Hay 2 filas con 8 flores cada una. ¿Qué cuenta da el total?", "arreglo 2×8", [
+            "2 veces 8",
+            "2 más 8",
+            "8 menos 2",
+            "8 entre 2",
+          ]),
+        ],
+      },
+      {
+        e: 1,
+        /* Aquí NO va dibujo, y es a propósito.
+
+           Un arreglo dibujado entero siempre se puede contar de uno en uno, por
+           grande que sea el montón: agrandarlo no lo vuelve una multiplicación,
+           solo lo vuelve más molesto. Si el dibujo enseña todos los objetos, el
+           ejercicio mide contar.
+
+           Se muestra lo que trae UNA cubeta con palabras y se pregunta por
+           cuatro. No hay nada que contar: hay que repetir. */
+        v: [
+          multiplicacion(4, 6, "Cada cubeta trae 6 huevos. ¿Cuántos hay en 4 cubetas?"),
+          multiplicacion(3, 5, "Cada caja trae 5 lápices. ¿Cuántos hay en 3 cajas?"),
+          multiplicacion(5, 4, "Cada bolsa trae 4 panes. ¿Cuántos hay en 5 bolsas?"),
+        ],
+      },
+      {
+        e: 2,
+        v: [
+          suma(34, 25, "Junta las dos cajas. ¿Cuántos tornillos son?"),
+          suma(46, 23, "Junta los dos frascos. ¿Cuántas semillas son?"),
+          suma(52, 37, "Junta las dos bolsas. ¿Cuántas canicas son?"),
+        ],
+      },
+      {
+        e: 2,
+        v: [
+          falta(45, 80, "Tienes 45 puntos y quieres llegar a 80. ¿Cuántos faltan?"),
+          falta(38, 90, "Tienes 38 puntos y quieres llegar a 90. ¿Cuántos faltan?"),
+          falta(64, 100, "Tienes 64 puntos y quieres llegar a 100. ¿Cuántos faltan?"),
+        ],
+      },
+      {
+        e: 2,
+        v: [
+          faltaIzq(30, 75, "Le pusiste 30 más y quedaron 75. ¿Cuántos había?"),
+          faltaIzq(40, 92, "Le pusiste 40 más y quedaron 92. ¿Cuántos había?"),
+          faltaIzq(25, 61, "Le pusiste 25 más y quedaron 61. ¿Cuántos había?"),
+        ],
+      },
+      {
+        e: 3,
+        /* Las opciones son SITUACIONES, no preguntas.
+
+           Antes el enunciado decía «Un paquete trae 6 lápices. ¿Cuál se
+           resuelve multiplicando?» — y «¿cuál?» no tenía sujeto: la frase
+           remitía a unas opciones que eran medias frases sobre cosas que no
+           existían en ninguna parte («cuántos sobran de 20», sin que hubiera
+           ningún 20). Leída en el globo no significaba nada.
+
+           Una situación se puede imaginar; una pregunta sobre preguntas, no.
+           Y son las cuatro operaciones, una por opción, sobre los mismos
+           objetos: lo que cambia es qué les pasa. */
+        v: [
+          v("¿En cuál de estas situaciones hay que multiplicar?", null, [
+            "6 cajas con 4 lápices cada una",
+            "6 lápices y te regalan 4 más",
+            "6 lápices y te quitan 4",
+            "6 lápices repartidos entre 4 niños",
+          ]),
+          v("¿En cuál de estas situaciones hay que multiplicar?", null, [
+            "5 mesas con 3 puestos cada una",
+            "5 puestos y ponen 3 más",
+            "5 puestos y quitan 3",
+            "5 puestos repartidos entre 3 grupos",
+          ]),
+          v("¿En cuál de estas situaciones hay que multiplicar?", null, [
+            "7 bolsas con 2 galletas cada una",
+            "7 galletas y te dan 2 más",
+            "7 galletas y te comes 2",
+            "7 galletas repartidas entre 2 niños",
           ]),
         ],
       },

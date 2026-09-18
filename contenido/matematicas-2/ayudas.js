@@ -21,24 +21,6 @@
 
 module.exports = {
   // ============================================================ DBA 1
-  "1|¿Cuántas galletas hay en la bandeja?": {
-    pista: "No cuentes de uno en uno: cuenta cuántos hay en una fila y cuántas filas hay.",
-    pasos: [
-      "Todas las filas tienen lo mismo, y eso es lo que permite ir más rápido.",
-      "Cuenta cuántos hay en una fila, y luego cuenta las filas.",
-      "Ve sumando de fila en fila: cuenta de tantos en tantos como tenga una.",
-    ],
-    ojo: "Contar uno por uno también da, pero se pierde la cuenta. Por filas casi nunca.",
-  },
-  "1|¿Cuántas flores sembraron en total?": {
-    pista: "Mira si las filas son todas iguales: si lo son, cuentas una y la repites.",
-    pasos: [
-      "Cuenta cuántos hay en una sola fila.",
-      "Cuenta cuántas filas hay en el dibujo.",
-      "Suma esa fila tantas veces como filas haya.",
-    ],
-    ojo: "Da lo mismo contar por filas o por columnas: el total no cambia.",
-  },
   "1|¿Cuántos globos más tiene Ana que Luis?": {
     pista: "«Cuántos más» se busca restando: mira la diferencia entre las dos barras.",
     pasos: [
@@ -48,14 +30,23 @@ module.exports = {
     ],
     ojo: "Si sumas las dos barras te da cuántos hay entre los dos, que es otra pregunta.",
   },
-  "1|Cada hora en la sala cuesta $2.000. ¿Cuál se resuelve multiplicando?": {
-    pista: "Se multiplica cuando algo vale lo mismo y se repite varias veces.",
+  "1|Hay 4 filas con 5 sillas cada una. ¿Qué cuenta da el total?": {
+    pista: "No te piden el total: te piden con qué cuenta se saca.",
     pasos: [
-      "Pregúntate: ¿hay algo que vale siempre igual y se repite?",
-      "Si la pregunta es por VARIAS veces eso mismo, se multiplica.",
-      "Si la pregunta es por lo que sobra o lo que falta, ahí se suma o se resta.",
+      "Mira qué se repite: hay varias filas y todas tienen lo mismo.",
+      "Cuando algo igual se repite varias veces, la cuenta es multiplicar.",
+      "El primer número dice cuántas filas hay y el segundo cuántos tiene cada una.",
     ],
-    ojo: "Que aparezcan dos números no quiere decir que haya que multiplicarlos.",
+    ojo: "Sumar los dos números no sirve: eso junta una fila con el número de filas.",
+  },
+  "1|¿En cuál de estas situaciones hay que multiplicar?": {
+    pista: "Busca la que tenga varios montones y todos del mismo tamaño.",
+    pasos: [
+      "Se multiplica cuando algo igual se repite: montones del mismo tamaño.",
+      "Si a una cantidad le llega más, se suma; si se le va, se resta.",
+      "Si un total se parte en pedazos iguales, se reparte.",
+    ],
+    ojo: "Que haya dos números no quiere decir que haya que multiplicarlos.",
   },
   "1|Reparten 20 fichas entre 4 niños, iguales. ¿Qué haces?": {
     pista: "Fíjate si algo se junta, se quita, se repite o se parte en pedazos iguales.",
