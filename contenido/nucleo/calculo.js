@@ -127,6 +127,14 @@ function opcionesMulti(r, a, b, semilla) {
   throw new Error(`no hay 4 opciones distintas para ${a} × ${b}`);
 }
 
+/* El arreglo: las mismas cuentas de multiplicar, pero el dibujo reemplaza la
+   línea y el niño cuenta montones en vez de leer un signo. Es el paso
+   concreto que va ANTES de "3 × 4 = ?", y por eso existe aparte. */
+const arreglo = (filas, columnas, p) => ({
+  p, op: `arreglo ${filas}×${columnas}`,
+  o: opcionesMulti(filas * columnas, filas, columnas, filas + 11 * columnas), c: 0,
+});
+
 const multiplicacion = (a, b, p = "¿Cuánto es?") => ({
   p, op: `${a} × ${b} = ?`,
   o: opcionesMulti(a * b, a, b, a + 11 * b), c: 0,
@@ -154,5 +162,5 @@ const porCuanto = (dado, total, p = "¿Qué número falta?") => {
   };
 };
 
-module.exports = { MOLDES, opciones, suma, resta, falta, faltaIzq, secuencia, MOLDES_MULTI, opcionesMulti, multiplicacion, reparto, porCuanto };
+module.exports = { MOLDES, opciones, suma, resta, falta, faltaIzq, secuencia, MOLDES_MULTI, opcionesMulti, multiplicacion, reparto, porCuanto, arreglo };
 
