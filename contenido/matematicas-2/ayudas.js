@@ -26,7 +26,7 @@ module.exports = {
     pasos: [
       "Todas las filas tienen lo mismo, y eso es lo que permite ir más rápido.",
       "Cuenta cuántos hay en una fila, y luego cuenta las filas.",
-      "Ve sumando de fila en fila: si cada una tiene 4, vas 4, 8, 12…",
+      "Ve sumando de fila en fila: cuenta de tantos en tantos como tenga una.",
     ],
     ojo: "Contar uno por uno también da, pero se pierde la cuenta. Por filas casi nunca.",
   },
@@ -167,7 +167,7 @@ module.exports = {
       "El anterior se consigue quitando 1, y el siguiente sumando 1.",
       "Cuando el número termina en ceros, al quitar 1 cambian varias cifras a la vez.",
     ],
-    ojo: "Antes del 700 no está el 690: entre esos dos hay muchos números.",
+    ojo: "El anterior no es el número redondo de más abajo: entre esos dos hay muchos.",
   },
   "3|Tienes 9 y yo 6. Los dos ganamos 4. ¿Quién tiene más?": {
     pista: "Si a los dos les pasa lo MISMO, la diferencia no cambia; si solo a uno, hay que mirar otra vez.",
@@ -581,7 +581,7 @@ module.exports = {
       "El número no cambia: lo que cambia es la operación.",
       "Y se empieza por el último paso, que es el que se deshace primero.",
     ],
-    ojo: "Deshacer no es repetir: si el paso decía sumar 5, para volver hay que quitar 5.",
+    ojo: "Deshacer no es repetir: si el paso sumaba, para volver hay que quitar.",
   },
   "8|Si a un número le sumas 7 y luego le quitas 7, ¿qué queda?": {
     pista: "Dos operaciones contrarias con el mismo número se anulan entre ellas.",
