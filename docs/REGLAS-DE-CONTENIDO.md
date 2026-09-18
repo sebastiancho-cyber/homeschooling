@@ -181,6 +181,28 @@ Dos formas legítimas que NO son esto:
 Lo que no vale es la tercera: una frase que ni pregunta ni termina en dos
 puntos, con opciones numéricas. Ahí la pregunta no está en ninguna parte.
 
+**Y la pregunta tiene que llevar un VERBO.** *"¿Cuántos dibujos?"* no pregunta
+nada: nombra. Es el mismo defecto de *"¿Cuántos en 3 vasos?"*, y se repitió
+porque la primera vez busqué finales concretos en vez de buscar lo que de verdad
+faltaba. El verbo es lo que convierte un sustantivo en una pregunta:
+
+| Nombra | Pregunta |
+|---|---|
+| ¿Cuántos dibujos? | ¿Cuántos dibujos **son** 20 votos? |
+| ¿Cuántos cm más? | ¿Cuántos cm más **mide** el lápiz? |
+| ¿Cuánto pesarán diez? | ¿Cuánto pesarán diez **arepas**? |
+
+**No le pidas al niño lo que su grado no pide.** *"Si un dibujo vale 5 y otro
+vale 10 en el mismo gráfico:"* → *"el gráfico engaña al que lo lee"*. Eso es
+lectura crítica de cuarto o quinto, no está en ninguna evidencia del DBA 10 del
+grado 2, y encima es un condicional sin pregunta. La evidencia dice *"pictogramas
+con escala (uno a muchos)"*: lo que hay que saber a esta edad es que la escala es
+una sola para todo el gráfico, y eso se pregunta derecho — *"En un pictograma,
+todos los dibujos deben valer:"*.
+
+Cuando una pregunta se sienta difícil de entender, la sospecha correcta no suele
+ser que esté mal redactada: es que **mide algo que el grado no pide**.
+
 **Todo lo que el enunciado nombra tiene que estar en pantalla.** *"¿Cuántos
 clips más largo es el segundo lápiz?"* nombraba dos lápices que no existían en
 ninguna parte. Si la pregunta se refiere a algo, ese algo se dibuja, se lista o

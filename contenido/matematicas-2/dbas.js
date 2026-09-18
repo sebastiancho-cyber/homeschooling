@@ -362,7 +362,7 @@ const DBAS = {
         e: 2,
         v: [
           suma(247, 135, "El colegio tiene 247 niños y 135 niñas. ¿Cuántos alumnos son?"),
-          suma(368, 214, "En la mañana entraron 368 personas y en la tarde 214. ¿Cuántas son?"),
+          suma(368, 214, "Entraron 368 en la mañana y 214 en la tarde. ¿Cuántas personas son?"),
           suma(156, 273, "La finca tiene 156 naranjos y 273 limoneros. ¿Cuántos árboles son?"),
         ],
       },
@@ -720,9 +720,9 @@ const DBAS = {
       {
         e: 3,
         v: [
-          v("Un lápiz mide 9 cm y un borrador 3 cm. ¿Cuántos cm más?", "9 − 3 = ?", opciones(6, 12, 39)),
-          v("Una cinta mide 14 cm y otra 6 cm. ¿Cuántos cm más?", "14 − 6 = ?", opciones(8, 20, 62)),
-          v("Un cuaderno mide 11 cm y una tarjeta 4 cm. ¿Cuántos cm más?", "11 − 4 = ?", opciones(7, 15, 47)),
+          v("El lápiz mide 9 cm y el borrador 3. ¿Cuántos cm más mide el lápiz?", "9 − 3 = ?", opciones(6, 12, 39)),
+          v("La cinta mide 14 cm y la cuerda 6. ¿Cuántos cm más mide la cinta?", "14 − 6 = ?", opciones(8, 20, 62)),
+          v("El cuaderno mide 11 cm y la ficha 4. ¿Cuántos cm más mide el cuaderno?", "11 − 4 = ?", opciones(7, 15, 47)),
         ],
       },
       {
@@ -757,13 +757,13 @@ const DBAS = {
             "Como 1.200 metros",
             "Como 12 centímetros",
           ]),
-          v("Una arepa pesa 100 gramos. ¿Cuánto pesarán diez?", null, [
+          v("Una arepa pesa 100 gramos. ¿Cuánto pesarán diez arepas?", null, [
             "Como un kilo",
             "Como diez kilos",
             "Como cien kilos",
             "Como un gramo",
           ]),
-          v("Un recreo dura 20 minutos. ¿Cuánto durarán tres?", null, [
+          v("Un recreo dura 20 minutos. ¿Cuánto durarán tres recreos?", null, [
             "Como una hora",
             "Como un minuto",
             "Como un día",
@@ -1726,9 +1726,9 @@ const DBAS = {
       {
         e: 1,
         v: [
-          v("Cada dibujo vale 5 votos y hay 20 votos. ¿Cuántos dibujos?", null, ["4 dibujos", "15 dibujos", "25 dibujos", "20 dibujos"]),
-          v("Cada dibujo vale 10 votos y hay 50 votos. ¿Cuántos dibujos?", null, ["5 dibujos", "40 dibujos", "60 dibujos", "50 dibujos"]),
-          v("Cada dibujo vale 2 votos y hay 14 votos. ¿Cuántos dibujos?", null, ["7 dibujos", "12 dibujos", "16 dibujos", "14 dibujos"]),
+          v("Cada dibujo vale 5 votos. ¿Cuántos dibujos son 20 votos?", null, ["4 dibujos", "15 dibujos", "25 dibujos", "20 dibujos"]),
+          v("Cada dibujo vale 10 votos. ¿Cuántos dibujos son 50 votos?", null, ["5 dibujos", "40 dibujos", "60 dibujos", "50 dibujos"]),
+          v("Cada dibujo vale 2 votos. ¿Cuántos dibujos son 14 votos?", null, ["7 dibujos", "12 dibujos", "16 dibujos", "14 dibujos"]),
         ],
       },
       {
@@ -1740,11 +1740,20 @@ const DBAS = {
             "Porque así la cuenta da más fácil",
             "Porque los dibujos salen más bonitos",
           ]),
-          v("Si un dibujo vale 5 y otro vale 10 en el mismo gráfico:", null, [
-            "El gráfico engaña al que lo lee",
-            "El gráfico queda más completo",
-            "El gráfico se lee más rápido",
-            "El gráfico no cambia en nada",
+          /* Aquí decía «si un dibujo vale 5 y otro vale 10 en el mismo gráfico:»
+             y la respuesta era «el gráfico engaña al que lo lee». Eso es lectura
+             crítica de cuarto o quinto: le pide a un niño de siete años razonar
+             sobre la honestidad de un gráfico, y además es un condicional sin
+             pregunta. No está en ninguna evidencia del DBA 10.
+
+             La evidencia dice «pictogramas CON ESCALA (uno a muchos)». Lo que
+             de verdad hay que saber es que la escala es una sola para todo el
+             gráfico, y eso se pregunta derecho. */
+          v("En un pictograma, todos los dibujos deben valer:", null, [
+            "Lo mismo, sin excepción",
+            "Lo que cada uno quiera",
+            "Más si están más arriba",
+            "Uno cada uno, siempre",
           ]),
           v("¿Qué hay que escribir siempre debajo de un pictograma?", null, [
             "Cuánto vale cada dibujo",
@@ -1827,9 +1836,9 @@ const DBAS = {
       {
         e: 2,
         v: [
-          v("Anotaste los votos con palitos: IIII IIII II. ¿Cuántos son?", null, ["10", "3", "11", "2"]),
-          v("Anotaste los votos con palitos: IIII III. ¿Cuántos son?", null, ["7", "2", "8", "4"]),
-          v("Anotaste los votos con palitos: IIII IIII IIII. ¿Cuántos son?", null, ["12", "3", "13", "4"]),
+          v("Anotaste con palitos: IIII IIII II. ¿Cuántos votos son?", null, ["10", "3", "11", "2"]),
+          v("Anotaste con palitos: IIII III. ¿Cuántos votos son?", null, ["7", "2", "8", "4"]),
+          v("Anotaste con palitos: IIII IIII IIII. ¿Cuántos votos son?", null, ["12", "3", "13", "4"]),
         ],
       },
       {

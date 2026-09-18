@@ -690,7 +690,7 @@ module.exports = {
     ],
     ojo: "Sumar el valor con la cantidad de dibujos no da nada: hay que repetir, no juntar.",
   },
-  "10|Cada dibujo vale 5 votos y hay 20 votos. ¿Cuántos dibujos?": {
+  "10|Cada dibujo vale 5 votos. ¿Cuántos dibujos son 20 votos?": {
     pista: "Aquí es al revés: sabes el total y buscas cuántos dibujos hacen falta.",
     pasos: [
       "Pregúntate cuántas veces cabe el valor de un dibujo dentro del total.",
@@ -753,7 +753,7 @@ module.exports = {
     ],
     ojo: "Restar los DIBUJOS y no convertir a votos deja el resultado mucho más pequeño de lo real.",
   },
-  "10|Anotaste los votos con palitos: IIII IIII II. ¿Cuántos son?": {
+  "10|Anotaste con palitos: IIII IIII II. ¿Cuántos votos son?": {
     pista: "Los palitos se anotan en grupos: cuenta los grupos completos y súmale los sueltos.",
     pasos: [
       "Cada grupo completo vale lo mismo; cuenta cuántos grupos hay.",
