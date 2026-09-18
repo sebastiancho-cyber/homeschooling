@@ -44,9 +44,167 @@ const haciaAtras = (desde: number, cuantos: number) =>
    niño acabe usando. */
 const MAX_PASOS = 6;
 
+/* Descompone un número en centenas, decenas y unidades. */
+const cdu = (n: number) => ({ c: Math.floor(n / 100), d: Math.floor((n % 100) / 10), u: n % 10 });
+
+/* Sumar o restar una decena entera —10, 20, 100— no se cuenta: se le cambia
+   una cifra al número. Es la estrategia que el DBA quiere que el niño use, y
+   sin esta rama la explicación general salía con números negativos: "a 42 le
+   faltan −32 para llegar a 10". */
+function decenaRedonda(a: number, b: number, suma: boolean): Ayuda {
+  const esCentena = b % 100 === 0;
+  const cual = esCentena ? "centenas" : "decenas";
+  const unidad = esCentena ? "centena" : "decena";
+  const n = esCentena ? b / 100 : b / 10;
+  const r = suma ? a + b : a - b;
+  return {
+    pista: `Sumar o quitar ${unidad}s enteras no se cuenta de uno en uno: cambia solo la cifra de las ${cual}.`,
+    pasos: [
+      `${b} ${n === 1 ? "es" : "son"} ${n} ${n === 1 ? unidad : unidad + "s"} ${n === 1 ? "justa" : "justas"}, sin nada suelto.`,
+      esCentena
+        ? `Las decenas y las unidades de ${a} no se mueven: sigue terminando en ${String(a % 100).padStart(2, "0")}.`
+        : `Las unidades de ${a} no se mueven: siguen siendo ${a % 10}.`,
+      `${suma ? "Le agregas" : "Le quitas"} ${n} a las ${cual} y queda ${r}.`,
+    ],
+    ojo: esCentena
+      ? "Fíjate en que las dos últimas cifras no cambiaron: eso es lo que te dice que lo hiciste bien."
+      : "Fíjate en que la cifra de las unidades no cambió: eso es lo que te dice que lo hiciste bien.",
+  };
+}
+
+/* La suma y la resta en columna, que es lo que el grado 2 tiene que aprender.
+   Contar hacia adelante deja de servir apenas los dos números pasan de diez:
+   nadie suma 247 + 135 contando. */
+function columnaSuma(a: number, b: number): Ayuda {
+  const A = cdu(a), B = cdu(b);
+  const pasos: string[] = ["Se suma por columnas: unidades con unidades, decenas con decenas."];
+  const u = A.u + B.u;
+  const llevoU = u >= 10 ? 1 : 0;
+  pasos.push(
+    llevoU
+      ? `Unidades: ${A.u} + ${B.u} = ${u}. Eso es 1 decena y ${u - 10} unidades: escribes ${u - 10} y llevas 1.`
+      : `Unidades: ${A.u} + ${B.u} = ${u}.`,
+  );
+  const d = A.d + B.d + llevoU;
+  const llevoD = d >= 10 ? 1 : 0;
+  pasos.push(
+    llevoD
+      ? `Decenas: ${A.d} + ${B.d}${llevoU ? " y la que llevas" : ""} = ${d}. Escribes ${d - 10} y llevas 1 a las centenas.`
+      : `Decenas: ${A.d} + ${B.d}${llevoU ? " y la que llevas" : ""} = ${d}.`,
+  );
+  if (A.c + B.c + llevoD > 0) pasos.push(`Centenas: ${A.c} + ${B.c}${llevoD ? " y la que llevas" : ""} = ${A.c + B.c + llevoD}.`);
+  pasos.push(`En total, ${a + b}.`);
+  return {
+    pista: "Súmalos por columnas, empezando por las unidades: si se pasan de diez, llevas una a las decenas.",
+    pasos,
+    ojo: llevoU
+      ? "Lo que más se falla es olvidar la que se lleva. Si las unidades pasan de 9, hay una decena esperando."
+      : "Cada columna se suma aparte: las unidades no se mezclan con las decenas.",
+  };
+}
+
+function columnaResta(a: number, b: number): Ayuda {
+  const A = cdu(a), B = cdu(b);
+  const pasos: string[] = ["Se resta por columnas: unidades con unidades, decenas con decenas."];
+  const prestaU = A.u < B.u;
+  pasos.push(
+    prestaU
+      ? `Unidades: a ${A.u} no le alcanza para quitarle ${B.u}. Le pide una decena a la columna de al lado y se vuelve ${A.u + 10}: ${A.u + 10} − ${B.u} = ${A.u + 10 - B.u}.`
+      : `Unidades: ${A.u} − ${B.u} = ${A.u - B.u}.`,
+  );
+  const dA = A.d - (prestaU ? 1 : 0);
+  const prestaD = dA < B.d;
+  pasos.push(
+    prestaD
+      ? `Decenas: a ${dA} no le alcanza para quitarle ${B.d}. Le pide una centena y se vuelve ${dA + 10}: ${dA + 10} − ${B.d} = ${dA + 10 - B.d}.`
+      : `Decenas: ${prestaU ? `a ${A.d} le prestaste una, así que queda ${dA}. ` : ""}${dA} − ${B.d} = ${dA - B.d}.`,
+  );
+  if (A.c > 0 || B.c > 0) pasos.push(`Centenas: ${A.c - (prestaD ? 1 : 0)} − ${B.c} = ${A.c - (prestaD ? 1 : 0) - B.c}.`);
+  pasos.push(`Quedan ${a - b}.`);
+  return {
+    pista: "Réstalos por columnas, empezando por las unidades: si no alcanzan, le piden una decena a la de al lado.",
+    pasos,
+    ojo: prestaU
+      ? "Pedir prestado no es gratis: la columna que prestó se queda con uno menos."
+      : "Cada columna se resta aparte, y siempre se empieza por las unidades.",
+  };
+}
+
 export function ayudaPara(operation: string | undefined): Ayuda | null {
   if (!operation) return null;
   const op = operation.replace(/\s+/g, " ").trim();
+
+  /* ------------------------------------------------------ multiplicación */
+  const multi = op.match(/^(\d+) × (\d+) = \?$/);
+  if (multi) {
+    const a = Number(multi[1]);
+    const b = Number(multi[2]);
+    const parciales: number[] = [];
+    for (let i = 1; i <= a; i++) parciales.push(b * i);
+    return {
+      pista: "Multiplicar es sumar montones iguales: cuenta de tantos en tantos como tenga cada montón.",
+      pasos: [
+        `${a} × ${b} quiere decir ${a} montones de ${b}.`,
+        a <= MAX_PASOS
+          ? `Cuenta de ${b} en ${b}: ${listar(parciales)}.`
+          : `Súmalos de a poco: ${b} + ${b} = ${b * 2}, y así hasta juntar los ${a} montones.`,
+        `En total hay ${a * b}.`,
+      ],
+      ojo: `${a} montones de ${b} y ${b} montones de ${a} dan lo mismo: puedes contar por el lado que te quede más fácil.`,
+    };
+  }
+
+  /* ------------------------------------------------------------- reparto */
+  const reparto = op.match(/^(\d+) ÷ (\d+) = \?$/);
+  if (reparto) {
+    const total = Number(reparto[1]);
+    const partes = Number(reparto[2]);
+    const cada = total / partes;
+    return {
+      pista: "Repartir por igual es ver cuánto le toca a cada uno cuando no le sobra a nadie.",
+      pasos: [
+        `Tienes ${total} para repartir entre ${partes}, y a todos les tiene que tocar lo mismo.`,
+        `Piénsalo al revés: ¿cuántos hay que darle a cada uno para gastar los ${total}? ${partes} × ${cada} = ${total}.`,
+        `A cada uno le tocan ${cada}.`,
+      ],
+      ojo: "Repartir y multiplicar son la misma cuenta al derecho y al revés.",
+    };
+  }
+
+  /* --------------------------------------- multiplicación con un hueco */
+  const multiFalta = op.match(/^(\d+) × \? = (\d+)$/);
+  const multiFaltaIzq = op.match(/^\? × (\d+) = (\d+)$/);
+  if (multiFalta || multiFaltaIzq) {
+    const dado = Number((multiFalta ?? multiFaltaIzq)![1]);
+    const total = Number((multiFalta ?? multiFaltaIzq)![2]);
+    const falta = total / dado;
+    return {
+      pista: "Busca por cuánto hay que multiplicar el número que ya tienes para llegar al total.",
+      pasos: [
+        `Ya tienes ${dado} y quieres llegar a ${total}.`,
+        `Cuenta de ${dado} en ${dado} hasta ${total} y mira cuántos saltos diste.`,
+        `Son ${falta}, porque ${dado} × ${falta} = ${total}.`,
+      ],
+      ojo: `Sumar ${dado} y ${total} no sirve aquí: lo que falta es un número de veces, no una cantidad.`,
+    };
+  }
+
+  /* -------------------------------- decenas enteras, y las columnas */
+  const sumaGrande = op.match(/^(\d+) \+ (\d+) = \?$/);
+  if (sumaGrande) {
+    const a = Number(sumaGrande[1]);
+    const b = Number(sumaGrande[2]);
+    if (a >= 10 && b >= 10 && ((b % 10 === 0 && b < 100) || b % 100 === 0)) return decenaRedonda(a, b, true);
+    if (a >= 10 && b >= 10) return columnaSuma(a, b);
+  }
+  const restaGrande = op.match(/^(\d+) [−-] (\d+) = \?$/);
+  if (restaGrande) {
+    const a = Number(restaGrande[1]);
+    const b = Number(restaGrande[2]);
+    if (a >= 10 && b >= 10 && ((b % 10 === 0 && b < 100) || b % 100 === 0)) return decenaRedonda(a, b, false);
+    if (a >= 10 && b >= 10) return columnaResta(a, b);
+  }
+
 
   /* ---------------------------------------------------------------- suma */
   const suma = op.match(/^(\d+) \+ (\d+) = \?$/);
@@ -212,13 +370,13 @@ export function ayudaPara(operation: string | undefined): Ayuda | null {
     if (constante) {
       const ultimo = nums[nums.length - 1];
       return {
-        pista: "Averigua de cuánto en cuánto salta la secuencia, y dale ese mismo salto al último número.",
+        pista: "Averigua de cuánto en cuánto salta la secuencia y para qué lado, y dale ese mismo salto al último número.",
         pasos: [
-          `Mira de cuánto en cuánto va: de ${nums[0]} a ${nums[1]} hay ${paso}.`,
+          `Mira de cuánto en cuánto va: de ${nums[0]} a ${nums[1]} ${paso > 0 ? `sube ${paso}` : `baja ${-paso}`}.`,
           `Y sigue saltando igual hasta ${ultimo}.`,
-          `Entonces el que sigue es ${ultimo} + ${paso} = ${ultimo + paso}.`,
+          `Entonces el que sigue es ${ultimo} ${paso > 0 ? `+ ${paso}` : `− ${-paso}`} = ${ultimo + paso}.`,
         ],
-        ojo: "Lo primero siempre es averiguar de cuánto en cuánto salta.",
+        ojo: "Lo primero siempre es averiguar de cuánto en cuánto salta, y para qué lado.",
       };
     }
   }

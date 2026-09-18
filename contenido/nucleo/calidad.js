@@ -28,6 +28,11 @@ const DERIVABLES = [
   /^\d+(?:, \d+)+, \?$/,
   /^(\d+)(?: \+ \1)+ = \?$/,
   /^\d+ \+ \d+ \+ \d+ = \?$/,
+  // Grado 2: multiplicación y reparto. Espejo de las ramas nuevas de ayudaPara().
+  /^\d+ × \d+ = \?$/,
+  /^\d+ ÷ \d+ = \?$/,
+  /^\d+ × \? = \d+$/,
+  /^\? × \d+ = \d+$/,
 ];
 
 /* Los topes. Son del núcleo porque salen de la PANTALLA, no de la materia: un

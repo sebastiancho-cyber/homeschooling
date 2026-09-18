@@ -97,4 +97,62 @@ const secuencia = (nums, resp, malos, p) => ({
   p, op: `${nums.join(", ")}, ?`, o: [`${resp}`, ...malos.map(String)], c: 0,
 });
 
-module.exports = { MOLDES, opciones, suma, resta, falta, faltaIzq, secuencia };
+/* ---------- Multiplicación y reparto (desde el grado 2) ----------------
+
+   Los moldes de arriba no sirven aquí, y el motivo es de contenido, no de
+   forma: en una multiplicación el resultado ±1 no es un error que nadie
+   cometa. El error de verdad es equivocarse de MÚLTIPLO —contar un montón de
+   más o de menos— o sumar en vez de multiplicar. Un distractor que nadie
+   elegiría no mide nada y además estrecha la pregunta a tres opciones. */
+const MOLDES_MULTI = [
+  (r, a, b) => [a + b, b * (a + 1), b * (a - 1)],
+  (r, a, b) => [b * (a + 1), b * (a + 2), a + b],
+  (r, a, b) => [b * (a - 1), b * (a - 2), a + b],
+  (r, a, b) => [a + b, b * (a + 1), r + b + 1],
+  (r, a, b) => [b * (a + 1), b * (a - 1), a + b],
+  (r, a, b) => [b * (a - 1), b * (a + 2), r + 1],
+  (r, a, b) => [a * (b + 1), b * (a + 1), a + b],
+  (r, a, b) => [b * (a + 2), b * (a + 1), r - 1],
+  (r, a, b) => [b * (a - 1), r + 1, a + b],
+  (r, a, b) => [a + b, r + b, r - b + 1],
+];
+
+/** Igual que `opciones`, pero con los moldes de multiplicar. */
+function opcionesMulti(r, a, b, semilla) {
+  const validos = MOLDES_MULTI.map((m) => [r, ...m(r, a, b)]).filter(
+    (cuatro) => cuatro.every((n) => n >= 0) && new Set(cuatro).size === 4,
+  );
+  const mezclada = Math.imul(semilla + 0x9e3779b9, 0x85ebca6b) >>> 8;
+  if (validos.length) return validos[mezclada % validos.length].map(String);
+  throw new Error(`no hay 4 opciones distintas para ${a} × ${b}`);
+}
+
+const multiplicacion = (a, b, p = "¿Cuánto es?") => ({
+  p, op: `${a} × ${b} = ?`,
+  o: opcionesMulti(a * b, a, b, a + 11 * b), c: 0,
+});
+
+/* Repartir es la multiplicación al revés, así que sus distractores son los
+   mismos vistos desde el otro lado: repartir entre uno más o uno menos, y
+   restar en vez de repartir. */
+const reparto = (total, partes, p = "¿Cuánto le toca a cada uno?") => {
+  const r = total / partes;
+  if (!Number.isInteger(r)) throw new Error(`${total} entre ${partes} no es exacto`);
+  return {
+    p, op: `${total} ÷ ${partes} = ?`,
+    o: opcionesMulti(r, partes, r, total + 13 * partes), c: 0,
+  };
+};
+
+/** `5 × ? = 20`: por cuánto hay que multiplicar para llegar al total. */
+const porCuanto = (dado, total, p = "¿Qué número falta?") => {
+  const r = total / dado;
+  if (!Number.isInteger(r)) throw new Error(`${total} entre ${dado} no es exacto`);
+  return {
+    p, op: `${dado} × ? = ${total}`,
+    o: opcionesMulti(r, dado, r, dado + 17 * total), c: 0,
+  };
+};
+
+module.exports = { MOLDES, opciones, suma, resta, falta, faltaIzq, secuencia, MOLDES_MULTI, opcionesMulti, multiplicacion, reparto, porCuanto };
+
