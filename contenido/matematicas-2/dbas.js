@@ -316,9 +316,9 @@ const DBAS = {
       {
         e: 2,
         v: [
-          multiplicacion(6, 4, "¿Cuánto es?"),
-          multiplicacion(7, 3, "¿Cuánto es?"),
-          multiplicacion(5, 8, "¿Cuánto es?"),
+          multiplicacion(6, 4, "Un bus lleva 6 filas de 4 puestos. ¿Cuántos puestos tiene?"),
+          multiplicacion(7, 3, "Una semana tiene 7 días. ¿Cuántos días hay en 3 semanas?"),
+          multiplicacion(5, 8, "En la finca hay 5 corrales con 8 gallinas. ¿Cuántas son?"),
         ],
       },
       {
@@ -352,18 +352,18 @@ const DBAS = {
       {
         e: 2,
         v: [
-          resta(64, 28, "¿Cuánto es?"),
-          resta(83, 45, "¿Cuánto es?"),
-          resta(72, 36, "¿Cuánto es?"),
+          resta(64, 28, "La tienda tenía 64 panes y vendió 28. ¿Cuántos quedan?"),
+          resta(83, 45, "El bus salió con 83 pasajeros y bajaron 45. ¿Cuántos van?"),
+          resta(72, 36, "Había 72 sillas en el salón y sacaron 36. ¿Cuántas quedan?"),
         ],
       },
       // --- ev2: calcular y estimar ---
       {
         e: 2,
         v: [
-          suma(247, 135, "¿Cuánto es?"),
-          suma(368, 214, "¿Cuánto es?"),
-          suma(156, 273, "¿Cuánto es?"),
+          suma(247, 135, "El colegio tiene 247 niños y 135 niñas. ¿Cuántos son?"),
+          suma(368, 214, "Entraron 368 personas en la mañana y 214 en la tarde."),
+          suma(156, 273, "La finca tiene 156 naranjos y 273 limoneros. ¿Cuántos son?"),
         ],
       },
     ],

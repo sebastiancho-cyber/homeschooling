@@ -192,6 +192,30 @@ function revisar({ DBAS, AYUDAS, EXCEPCIONES, visualPara, derivables = DERIVABLE
     }
   }
 
+  /* Un cálculo pelado no enseña nada: hace falta la situación.
+
+     «¿Cuánto es? 368 + 214» es una cuenta sin mundo. La evidencia del DBA 2 del
+     grado 2 pide que el niño «describa y justifique» lo que hizo, y de un
+     número suelto no hay nada que describir. El director lo dijo mejor: «yo
+     apoyo al MEN, situaciones reales más que abstractas».
+
+     Ojo con la línea: esto acusa el CÁLCULO sin situación, no la expresión. En
+     «2 + 3 = 1 + ?» la expresión ES el tema —el grado 1 tiene una lección
+     entera sobre lo que significa el signo igual— y meterle una historia
+     taparía justo lo que se quiere enseñar. Por eso «¿Qué número falta?» no se
+     acusa y «¿Cuánto es?» sí. */
+  for (const [dba, d] of Object.entries(DBAS)) {
+    d.slots.forEach((slot, i) => {
+      slot.v.forEach((v, j) => {
+        if (/^¿Cu[aá]nto es\?$/.test(v.p.trim())) {
+          errores.push(
+            `DBA ${dba}.${i + 1}.v${j + 1}: «${v.p}» es un cálculo sin situación. La operación es la herramienta; la situación es lo que le da sentido`,
+          );
+        }
+      });
+    });
+  }
+
   /* Una comparación necesita sus DOS términos nombrados.
 
      «Mira el dibujo. ¿Cuántos votos menos tiene el pez?» sobre un gráfico con

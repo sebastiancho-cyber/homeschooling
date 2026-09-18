@@ -168,6 +168,19 @@ clips más largo es el segundo lápiz?"* nombraba dos lápices que no existían 
 ninguna parte. Si la pregunta se refiere a algo, ese algo se dibuja, se lista o
 se nombra en la misma pregunta.
 
+**Un cálculo pelado no enseña nada: hace falta la situación.** «¿Cuánto es?
+368 + 214» es una cuenta sin mundo. La evidencia del DBA 2 del grado 2 pide que
+el niño *«describa y justifique»* lo que hizo, y de un número suelto no hay nada
+que describir. El director lo zanjó así: *«yo apoyo al MEN, situaciones reales
+más que abstractas; un "cuánto es" es abstracto»*. Había 42 en los dos grados y
+ya no hay ninguno.
+
+**Pero la expresión sí puede ser el tema.** En «2 + 3 = 1 + ?» lo que se enseña
+es lo que significa el signo igual, y meterle una historia taparía justo eso. La
+línea: un CÁLCULO necesita situación —la operación es la herramienta y la
+situación es lo que le da sentido—; una IGUALDAD no. Por eso el chequeo acusa
+«¿Cuánto es?» y deja pasar «¿Qué número falta?».
+
 **La premisa va antes que la pregunta.** El globo se lee primero y la tarjeta de
 operación aparece debajo. Un enunciado que empieza por *"Entonces…"* obliga al
 niño a leer al revés.

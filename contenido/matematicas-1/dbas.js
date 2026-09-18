@@ -152,8 +152,16 @@ const DBAS = {
         { p: "Hay 2 cajas con 5 crayolas cada una.", op: "5 + 5 = ?", o: ["10", "7", "5", "15"], c: 0 },
         { p: "Hay 4 platos con 5 uvas cada uno.", op: "5 + 5 + 5 + 5 = ?", o: ["20", "9", "15", "25"], c: 0 },
       ]},
-      { e: 3, v: [suma(5, 3), suma(6, 2), suma(4, 5)] },
-      { e: 3, v: [resta(9, 3), resta(8, 5), resta(10, 4)] },
+      { e: 3, v: [
+        suma(5, 3, "Tienes 5 canicas y encuentras 3. ¿Cuántas tienes?"),
+        suma(6, 2, "Había 6 pájaros y llegaron 2. ¿Cuántos hay ahora?"),
+        suma(4, 5, "Juntas 4 fichas rojas y 5 azules. ¿Cuántas son?"),
+      ] },
+      { e: 3, v: [
+        resta(9, 3, "Tenías 9 stickers y pegaste 3. ¿Cuántos te quedan?"),
+        resta(8, 5, "Había 8 sillas y sacaron 5. ¿Cuántas quedaron?"),
+        resta(10, 4, "Tenías 10 hojas y usaste 4. ¿Cuántas te quedan?"),
+      ] },
       // El ejemplo oficial del DBA 2 es explorar qué hace la tecla = al
       // presionarla varias veces. Es la semilla de la multiplicación y no
       // teníamos nada de eso.
@@ -231,16 +239,20 @@ const DBAS = {
         { p: "¿Cuál pareja suma 10?", o: ["8 y 2", "8 y 3", "7 y 5", "6 y 2"], c: 0 },
       ]},
       { e: 4, v: [alDiez(8), alDiez(3), alDiez(9)] },
-      { e: 4, v: [suma(7, 6), suma(8, 4), suma(9, 5)] },
+      { e: 4, v: [
+        suma(7, 6, "Tienes 7 láminas y te dan 6. ¿Cuántas tienes?"),
+        suma(8, 4, "Había 8 niños y llegaron 4. ¿Cuántos hay ahora?"),
+        suma(9, 5, "Tienes 9 monedas y te dan 5. ¿Cuántas tienes?"),
+      ] },
       { e: 3, v: [
-        { p: "¿Cuánto es?", op: "25 + 10 = ?", o: ["35", "26", "15", "45"], c: 0 },
-        { p: "¿Cuánto es?", op: "42 + 10 = ?", o: ["52", "43", "32", "62"], c: 0 },
-        { p: "¿Cuánto es?", op: "17 + 10 = ?", o: ["27", "18", "7", "37"], c: 0 },
+        { p: "En la caja hay 25 clavos y echan 10 más. ¿Cuántos son?", op: "25 + 10 = ?", o: ["35", "26", "15", "45"], c: 0 },
+        { p: "El álbum tiene 42 láminas y pegas 10 más. ¿Cuántas son?", op: "42 + 10 = ?", o: ["52", "43", "32", "62"], c: 0 },
+        { p: "La mata tiene 17 hojas y le salen 10 más. ¿Cuántas son?", op: "17 + 10 = ?", o: ["27", "18", "7", "37"], c: 0 },
       ]},
       { e: 3, v: [
-        { p: "¿Cuánto es?", op: "40 − 10 = ?", o: ["30", "39", "50", "20"], c: 0 },
-        { p: "¿Cuánto es?", op: "56 − 10 = ?", o: ["46", "55", "66", "36"], c: 0 },
-        { p: "¿Cuánto es?", op: "83 − 10 = ?", o: ["73", "82", "93", "63"], c: 0 },
+        { p: "Había 40 panes y se vendieron 10. ¿Cuántos quedan?", op: "40 − 10 = ?", o: ["30", "39", "50", "20"], c: 0 },
+        { p: "Había 56 puestos y ocuparon 10. ¿Cuántos quedan?", op: "56 − 10 = ?", o: ["46", "55", "66", "36"], c: 0 },
+        { p: "Había 83 fichas y guardaron 10. ¿Cuántas quedan?", op: "83 − 10 = ?", o: ["73", "82", "93", "63"], c: 0 },
       ]},
       { e: 3, v: [
         { p: "Diez más que 63 es:", o: ["73", "64", "53", "630"], c: 0 },
