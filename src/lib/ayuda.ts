@@ -111,24 +111,48 @@ function restaCompletando(a: number, b: number): Ayuda {
   };
 }
 
-/** Sumar descomponiendo el segundo número: primero sus decenas, después sus
- *  unidades. 247 + 135: 247 + 100 = 347, + 30 = 377, + 5 = 382. */
+/** Sumar descomponiendo LOS DOS números y juntando lo igual con lo igual.
+ *
+ *  Es el método que las Mallas de Aprendizaje del grado 2 muestran trabajado,
+ *  con este ejemplo exacto (p. 26):
+ *
+ *      Una posible forma de sumar 354 + 476
+ *        300 y 400 son 700 · 50 y 70 son 120 · 4 y 6 son 10
+ *        700 y 120 son 820; 820 y 10 son 830
+ *
+ *  Antes esto descomponía solo el segundo número y contaba hacia adelante
+ *  (368 + 200, + 10, + 4). También es un algoritmo no convencional y también
+ *  vale, pero obliga a cargar un número de tres cifras en la cabeza en cada
+ *  paso. Juntando lo igual con lo igual, cada suma parcial es de una sola
+ *  cifra. */
 function sumaDescomponiendo(a: number, b: number): Ayuda {
-  const partes = [Math.floor(b / 100) * 100, Math.floor((b % 100) / 10) * 10, b % 10].filter(Boolean);
-  const cuenta: string[] = [];
-  let n = a;
-  for (const p of partes) {
-    cuenta.push(`${n} + ${p} = ${n + p}`);
-    n += p;
+  const partes = (n: number) => [Math.floor(n / 100) * 100, Math.floor((n % 100) / 10) * 10, n % 10];
+  const [cA, dA, uA] = partes(a);
+  const [cB, dB, uB] = partes(b);
+  const nombres = ["las centenas", "las decenas", "las unidades"];
+
+  const parciales: { texto: string; valor: number }[] = [];
+  [[cA, cB], [dA, dB], [uA, uB]].forEach(([x, y], i) => {
+    if (x === 0 && y === 0) return;
+    parciales.push({ texto: `${nombres[i]}: ${x} y ${y} son ${x + y}`, valor: x + y });
+  });
+
+  // Y se juntan los parciales de a dos, que es como lo junta el documento.
+  const juntar: string[] = [];
+  let corriendo = parciales[0].valor;
+  for (let i = 1; i < parciales.length; i++) {
+    juntar.push(`${corriendo} y ${parciales[i].valor} son ${corriendo + parciales[i].valor}`);
+    corriendo += parciales[i].valor;
   }
+
   return {
-    pista: "No los sumes de un solo golpe: parte el segundo número y ve agregándolo por pedazos.",
+    pista: "Parte los dos números y junta lo igual con lo igual: las decenas con las decenas, las unidades con las unidades.",
     pasos: [
-      `${b} se puede partir en ${partes.join(" + ")}.`,
-      `Agrégale los pedazos a ${a}, uno por uno: ${cuenta.join(", luego ")}.`,
-      `En total, ${a + b}.`,
+      `${a} es ${partes(a).filter(Boolean).join(" + ")} y ${b} es ${partes(b).filter(Boolean).join(" + ")}.`,
+      `Junta lo que es igual — ${parciales.map((p) => p.texto).join("; ")}.`,
+      `Ahora suma esos pedazos: ${juntar.join("; ")}.`,
     ],
-    ojo: "Sumar de a pedazos redondos es más seguro que sumar cifra por cifra, y se puede hacer de cabeza.",
+    ojo: "Cada pedazo se suma aparte y son números redondos: se hace de cabeza, sin llevar nada.",
   };
 }
 
