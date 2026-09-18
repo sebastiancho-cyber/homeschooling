@@ -32,7 +32,13 @@ export type Visual =
   /** Bloques de diez y unidades sueltas. Valor posicional. */
   | { tipo: "decenas"; decenas: number; unidades: number }
   /** Barras horizontales. Datos, votaciones y medidas que se comparan. */
-  | { tipo: "barras"; datos: { etiqueta: string; valor: number }[] };
+  | { tipo: "barras"; datos: { etiqueta: string; valor: number }[] }
+  /** Filas iguales de objetos. El dibujo ES el dato: se cuenta por montones. */
+  | { tipo: "arreglo"; icono: string; filas: number; columnas: number }
+  /** Dibujos que valen VARIOS. La escala se declara y se muestra abajo. */
+  | { tipo: "pictograma"; icono: string; escala: number; unidad: string; datos: { etiqueta: string; valor: number }[] }
+  /** Líneas: horizontal, vertical, paralelas, perpendiculares. */
+  | { tipo: "lineas"; clase: "horizontal" | "vertical" | "paralelas" | "perpendiculares" };
 
 type Lado = { etiqueta: string; cantidad: number };
 
@@ -236,6 +242,83 @@ export function Ilustracion({ visual }: { visual: Visual }) {
             />
           ))}
         </div>
+      </div>
+    );
+  }
+
+  if (visual.tipo === "arreglo") {
+    // Filas iguales, alineadas en columna. Puesto así, el mismo dibujo se puede
+    // contar por filas o por columnas y da lo mismo — que es exactamente lo que
+    // el grado 2 tiene que descubrir de la multiplicación.
+    const total = visual.filas * visual.columnas;
+    const talla = total <= 12 ? "grande" : total <= 25 ? "medio" : "chico";
+    let orden = 0;
+    return (
+      <div className="flex flex-col gap-1.5">
+        {Array.from({ length: visual.filas }, (_, f) => (
+          <div key={f} className={`flex ${talla === "grande" ? "gap-1.5" : "gap-1"}`}>
+            {Array.from({ length: visual.columnas }, (_, c) => (
+              <Icono key={c} orden={0} retraso={orden++ * 70} talla={talla}>
+                {visual.icono}
+              </Icono>
+            ))}
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  if (visual.tipo === "pictograma") {
+    // Un dibujo vale varios, y eso hay que DECIRLO. Un pictograma con escala en
+    // el que la escala no se ve no es un pictograma: es una cuenta mal hecha.
+    // Por eso la leyenda es parte del dibujo y no un adorno debajo.
+    let orden = 0;
+    return (
+      <div className="flex w-full max-w-xs flex-col gap-2">
+        <div className="flex flex-col gap-1.5">
+          {visual.datos.map((d) => (
+            <div key={d.etiqueta} className="flex items-center gap-1.5">
+              <span className="w-16 shrink-0 text-right font-sans text-[11px] font-extrabold leading-tight text-ink-muted">
+                {d.etiqueta}
+              </span>
+              <span className="flex gap-1">
+                {Array.from({ length: Math.round(d.valor / visual.escala) }, (_, i) => (
+                  <Icono key={i} orden={0} retraso={orden++ * 70} talla="medio">
+                    {visual.icono}
+                  </Icono>
+                ))}
+              </span>
+            </div>
+          ))}
+        </div>
+        <p className="border-t border-hairline pt-1.5 text-center font-sans text-[11px] font-bold text-ink-muted">
+          <span aria-hidden>{visual.icono}</span> = {visual.escala} {visual.unidad}
+        </p>
+      </div>
+    );
+  }
+
+  if (visual.tipo === "lineas") {
+    // Horizontal y vertical solo significan algo CONTRA algo: una línea suelta
+    // en una hoja en blanco no es ninguna de las dos. Por eso van dentro de un
+    // marco, que es el suelo y la pared contra los que se leen.
+    const barra = "rec-crecer absolute rounded-full bg-sky";
+    return (
+      <div className="relative h-24 w-40 rounded-xl border-2 border-hairline bg-sky/5" aria-hidden>
+        {visual.clase === "horizontal" && <span className={`${barra} left-4 right-4 top-1/2 h-1.5 -translate-y-1/2`} />}
+        {visual.clase === "vertical" && <span className={`${barra} bottom-4 left-1/2 top-4 w-1.5 -translate-x-1/2`} />}
+        {visual.clase === "paralelas" && (
+          <>
+            <span className={`${barra} left-4 right-4 top-7 h-1.5`} />
+            <span className={`${barra} bottom-7 left-4 right-4 h-1.5`} style={{ animationDelay: "220ms" }} />
+          </>
+        )}
+        {visual.clase === "perpendiculares" && (
+          <>
+            <span className={`${barra} left-4 right-4 top-1/2 h-1.5 -translate-y-1/2`} />
+            <span className={`${barra} bottom-3 left-1/2 top-3 w-1.5 -translate-x-1/2`} style={{ animationDelay: "220ms" }} />
+          </>
+        )}
       </div>
     );
   }

@@ -62,6 +62,48 @@ function ilustrador(iconosExtra = []) {
   function visualPara(v) {
     const op = v.op ?? "";
 
+    /* Los tres dibujos del grado 2 se declaran con una marca explícita en la
+       línea de operación, y los tres la REEMPLAZAN: el dibujo no acompaña al
+       dato, el dibujo ES el dato. Van de primeras porque sus marcas llevan
+       letras y números y si no, las reglas de más abajo las malinterpretan. */
+
+    // "arreglo 3×4": filas iguales. No se usa para ilustrar "3 × 4 = ?" a
+    // secas —ahí la cuenta es la destreza que se mide y dibujarla la regala—,
+    // sino cuando la pregunta es cuántos hay y el montón es el enunciado.
+    const arreglo = op.match(/^arreglo (\d+)×(\d+)$/);
+    if (arreglo) {
+      return {
+        vis: { tipo: "arreglo", icono: iconoDe(v.p), filas: Number(arreglo[1]), columnas: Number(arreglo[2]) },
+        quitarOp: true,
+      };
+    }
+
+    // "×5 niños · Lunes 15 · Martes 10": un dibujo vale 5. La escala va en la
+    // marca y se pinta debajo del pictograma, porque un pictograma cuya escala
+    // no se ve no es un pictograma: es una cuenta mal hecha.
+    const picto = op.match(/^×(\d+) ([^·]+?) · (.+)$/);
+    if (picto) {
+      const escala = Number(picto[1]);
+      const unidad = picto[2].trim();
+      const datos = picto[3].split("·").map((t) => t.trim()).map((t) => {
+        const m = t.match(/^(.+?)\s+(\d+)$/);
+        return m ? { etiqueta: m[1], valor: Number(m[2]) } : null;
+      });
+      if (datos.every(Boolean) && datos.length >= 2) {
+        return {
+          vis: { tipo: "pictograma", icono: iconoDe(unidad, iconoDe(v.p)), escala, unidad, datos },
+          quitarOp: true,
+        };
+      }
+    }
+
+    // "lineas paralelas": la posición de una línea solo significa algo contra
+    // un marco, así que el dibujo lo trae.
+    const lineas = op.match(/^lineas (horizontal|vertical|paralelas|perpendiculares)$/);
+    if (lineas) {
+      return { vis: { tipo: "lineas", clase: lineas[1] }, quitarOp: true };
+    }
+
     /* La figura del enunciado, cuando lo que se mide es CONTAR sus lados, sus
        puntas o sus esquinas. Ahí el dibujo no regala nada: es el ejercicio.
 
