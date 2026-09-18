@@ -336,9 +336,9 @@ const DBAS = {
       {
         e: 2,
         v: [
-          reparto(24, 4, "Reparte por igual. ¿Cuánto le toca a cada uno?"),
-          reparto(35, 5, "Reparte por igual. ¿Cuánto le toca a cada uno?"),
-          reparto(27, 3, "Reparte por igual. ¿Cuánto le toca a cada uno?"),
+          reparto(24, 4, "Reparte 24 galletas entre 4 niños. ¿Cuántas le tocan?"),
+          reparto(35, 5, "Reparte 35 lápices entre 5 mesas. ¿Cuántos le tocan?"),
+          reparto(27, 3, "Reparte 27 fichas entre 3 grupos. ¿Cuántas le tocan?"),
         ],
       },
       {
