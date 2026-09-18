@@ -49,6 +49,10 @@ const LIMITES = {
   minRanurasPorEvidencia: 2,
   maxRanurasPorEvidencia: 4,
   versiones: 3,
+  /* Solo el grado 1: ahí contar los objetos de un dibujo ES la materia. De
+     segundo en adelante, un ejercicio que se contesta contando el dibujo está
+     midiendo lo que ya se sabía. */
+  contarEsLaMateria: false,
 };
 
 /** La ayuda escrita se busca por el ENUNCIADO de la primera versión, no por la
@@ -123,6 +127,98 @@ function revisar({ DBAS, AYUDAS, EXCEPCIONES, visualPara, derivables = DERIVABLE
         const esperado = m[2] === "+" ? +m[1] + +m[3] : +m[1] - +m[3];
         if (Number(v.o[v.c]) !== esperado) {
           errores.push(`DBA ${dba}.${i + 1}.v${j + 1}: ${v.op} da ${esperado}, pero marca ${v.o[v.c]}`);
+        }
+      });
+    });
+  }
+
+  /* El orden de las ranuras tiene que ser una RAMPA DE DIFICULTAD, y la señal
+     más clara de que no lo es: que las evidencias salgan en el orden en que las
+     lista el MEN.
+
+     El documento las CLASIFICA, no las secuencia. Ordenando por evidencia, el
+     tema 1 del grado 2 quedó con cuatro dibujos fáciles seguidos y después, de
+     golpe, 146 + 235: arrancaba en kínder y aterrizaba en tercero. Lo encontró
+     un niño jugando —bueno, su papá—, no un chequeo, y por eso existe este.
+
+     Lo que se acusa es la firma exacta de haber copiado el documento: las
+     ranuras en BLOQUES y los bloques en ORDEN ASCENDENTE. Las dos cosas a la
+     vez, porque una sola no dice nada. El tema 10 del grado 1 va en bloques
+     —3322114444— pero empieza por la tercera evidencia: alguien lo reordenó
+     pensando, y acusarlo sería ruido. Probado contra los dos grados antes de
+     creerle. */
+  for (const [dba, d] of Object.entries(DBAS)) {
+    if (d.evidencias.length < 2) continue;
+    const ev = d.slots.map((s) => s.e);
+    const enBloques = ev.filter((x, i) => i > 0 && x !== ev[i - 1]).length === d.evidencias.length - 1;
+    const ascendente = ev.every((x, i) => i === 0 || x >= ev[i - 1]);
+    if (enBloques && ascendente) {
+      errores.push(
+        `DBA ${dba}: las ranuras salen en el orden en que el MEN lista las evidencias (${ev.join("")}). Eso es la clasificación del documento; el orden tiene que ser una rampa de dificultad`,
+      );
+    }
+  }
+
+  /* Un ejercicio que se contesta CONTANDO el dibujo mide contar.
+
+     "¿Cuántas galletas hay?" sobre un montón dibujado entero se responde de una
+     en una, por grande que sea el montón: agrandarlo no lo vuelve una
+     multiplicación, solo lo vuelve más molesto. Si el dibujo enseña todos los
+     objetos y la respuesta es cuántos hay, el ejercicio es de kínder aunque el
+     tema hable de relaciones multiplicativas.
+
+     En el grado 1 contar ES la materia, así que ahí se permite. De segundo en
+     adelante, no. */
+  if (!L.contarEsLaMateria) {
+    for (const [dba, d] of Object.entries(DBAS)) {
+      d.slots.forEach((slot, i) => {
+        slot.v.forEach((v, j) => {
+          const ilus = visualPara(v);
+          if (!ilus) return;
+          const vis = ilus.vis;
+          const dibujados =
+            vis.tipo === "arreglo" ? vis.filas * vis.columnas
+            : vis.tipo === "contar" ? vis.cantidad
+            : vis.tipo === "grupos" ? vis.grupos * vis.porGrupo
+            : null;
+          if (dibujados === null) return;
+          if (Number(v.o[v.c]) === dibujados) {
+            errores.push(
+              `DBA ${dba}.${i + 1}.v${j + 1}: el dibujo enseña ${dibujados} objetos y la respuesta es ${dibujados} — se contesta contando, no con la materia del grado`,
+            );
+          }
+        });
+      });
+    }
+  }
+
+  /* Una comparación necesita sus DOS términos nombrados.
+
+     «Mira el dibujo. ¿Cuántos votos menos tiene el pez?» sobre un gráfico con
+     perro 12, gato 8 y pez 5 tiene dos respuestas defendibles: menos que el
+     perro son 7 y menos que el gato son 3. El niño que sabe restar puede fallar
+     igual, que es lo contrario de lo que queremos.
+
+     Con dos series no hay ambigüedad —la otra es la otra—, pero desde tres hay
+     que decir contra cuál se compara. */
+  const COMPARA = /cu[aá]nt[oa]s?\b.*(\bm[aá]s\b|\bmenos\b|separan|diferencia)/i;
+  for (const [dba, d] of Object.entries(DBAS)) {
+    d.slots.forEach((slot, i) => {
+      slot.v.forEach((v, j) => {
+        const ilus = visualPara(v);
+        if (!ilus) return;
+        const vis = ilus.vis;
+        const series =
+          vis.tipo === "barras" || vis.tipo === "pictograma" ? vis.datos.map((x) => x.etiqueta)
+          : vis.tipo === "comparar" ? vis.lados.map((x) => x.etiqueta)
+          : null;
+        if (!series || series.length < 3) return;
+        if (!COMPARA.test(v.p)) return;
+        const nombradas = series.filter((e) => new RegExp(e, "i").test(v.p)).length;
+        if (nombradas < 2) {
+          errores.push(
+            `DBA ${dba}.${i + 1}.v${j + 1}: compara sobre ${series.length} series y solo nombra ${nombradas} — no se sabe contra cuál se compara`,
+          );
         }
       });
     });

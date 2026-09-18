@@ -86,7 +86,7 @@ module.exports = {
     ],
     ojo: "El total no es el de la barra más larga: es el de todas juntas.",
   },
-  "2|Mira el dibujo. ¿Cuántos votos más tiene la mora?": {
+  "2|¿Cuántos votos más tiene la mora que la fresa?": {
     pista: "«Cuántos más» es una resta entre dos barras, no una suma de todas.",
     pasos: [
       "Busca solo las dos barras que nombra la pregunta.",
@@ -95,14 +95,14 @@ module.exports = {
     ],
     ojo: "Aquí sobra una barra. No todos los datos de un gráfico sirven para toda pregunta.",
   },
-  "2|¿Cuántas frutas hay en las tres filas?": {
-    pista: "Las filas son iguales: cuenta una y repítela tantas veces como filas haya.",
+  "2|Hay 3 filas de 5 frutas. Si pones una fila más, ¿cuántas son?": {
+    pista: "El dibujo enseña las filas que hay; la pregunta pide una más.",
     pasos: [
-      "Cuenta cuántos hay en una sola fila.",
-      "Cuenta las filas del dibujo.",
-      "Ve sumando de fila en fila hasta llegar a la última.",
+      "Mira cuántos hay en UNA fila: todas tienen lo mismo.",
+      "Cuenta las filas del dibujo y súmale la que te piden poner.",
+      "Multiplica lo de una fila por ese total de filas.",
     ],
-    ojo: "Si las filas no fueran todas iguales, este atajo no serviría.",
+    ojo: "Contar lo que está dibujado deja la cuenta corta: falta la fila nueva.",
   },
   "2|Un dibujo vale 5 votos. ¿Cuántos votos sacó Ana?": {
     pista: "Cada dibujito vale varios: cuenta los dibujos y después aplica lo que vale cada uno.",
@@ -325,15 +325,6 @@ module.exports = {
       "El que necesitó menos, los tiene más largos.",
     ],
     ojo: "Un número más grande no significa un espacio más grande si la unidad cambió.",
-  },
-  "5|Mides una tira con cuadrados de papel: caben 12.": {
-    pista: "Cuenta cuántas piezas iguales caben, de punta a punta y sin dejar huecos.",
-    pasos: [
-      "Las piezas van pegadas una detrás de otra, sin montarse ni separarse.",
-      "El número de piezas es la medida de la tira en esa unidad.",
-      "Si cambias el tamaño de la pieza, cambia el número.",
-    ],
-    ojo: "Dejar huecos entre las piezas hace que el resultado quede corto.",
   },
   "5|¿Qué hora marca el reloj?": {
     pista: "La manecilla corta dice la hora y la larga dice los minutos.",

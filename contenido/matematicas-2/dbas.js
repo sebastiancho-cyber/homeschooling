@@ -86,7 +86,7 @@ const DBAS = {
         v: [
           v("¿Cuántos globos más tiene Ana que Luis?", "Ana 7 · Luis 4", opciones(3, 11, 74)),
           v("¿Cuántas fichas menos tiene Sara que Jorge?", "Jorge 9 · Sara 5", opciones(4, 14, 95)),
-          v("¿Cuántos puntos más hizo el equipo azul?", "Azul 15 · Verde 8", opciones(7, 23, 158)),
+          v("¿Cuántos puntos más hizo el azul que el verde?", "Azul 15 · Verde 8", opciones(7, 23, 158)),
         ],
       },
       {
@@ -296,44 +296,21 @@ const DBAS = {
         ],
       },
       {
-        e: 1,
-        v: [
-          v("Mira el dibujo. ¿Cuántos votos más tiene la mora?", "Fresa 6 · Mora 13 · Uva 4", opciones(7, 19, 63)),
-          v("Mira el dibujo. ¿Cuántos votos menos tiene el pez?", "Perro 12 · Gato 8 · Pez 5", opciones(7, 17, 125)),
-          v("Mira el dibujo. ¿Cuántos votos separan al rojo del azul?", "Rojo 14 · Azul 6 · Verde 6", opciones(8, 20, 146)),
-        ],
-      },
-      {
-        e: 1,
-        v: [
-          arreglo(3, 5, "¿Cuántas frutas hay en las tres filas?"),
-          arreglo(2, 9, "¿Cuántas fichas hay en las dos filas?"),
-          arreglo(4, 6, "¿Cuántos puntos hay en las cuatro filas?"),
-        ],
-      },
-      {
-        e: 1,
-        v: [
-          v("Un dibujo vale 5 votos. ¿Cuántos votos sacó Ana?", "×5 votos · Ana 15 · Beto 25 · Caro 10", opcionesMulti(15, 3, 5, 41)),
-          v("Un dibujo vale 10 libros. ¿Cuántos libros hay de cuentos?", "×10 libros · Cuentos 30 · Poesía 20 · Ciencia 40", opcionesMulti(30, 3, 10, 73)),
-          v("Un dibujo vale 5 niños. ¿Cuántos niños vinieron el martes?", "×5 niños · Lunes 20 · Martes 35 · Miércoles 15", opcionesMulti(35, 7, 5, 112)),
-        ],
-      },
-      // --- ev2: calcular y estimar ---
-      {
         e: 2,
+        // Estimar no es calcular: la pregunta pide el redondeo, no el resultado,
+        // y por eso las opciones son decenas justas.
         v: [
-          suma(247, 135, "¿Cuánto es?"),
-          suma(368, 214, "¿Cuánto es?"),
-          suma(156, 273, "¿Cuánto es?"),
+          v("Sin hacer la cuenta, ¿cerca de cuánto da 48 + 31?", null, ["80", "70", "90", "100"]),
+          v("Sin hacer la cuenta, ¿cerca de cuánto da 61 + 28?", null, ["90", "80", "100", "70"]),
+          v("Sin hacer la cuenta, ¿cerca de cuánto da 34 + 27?", null, ["60", "50", "70", "80"]),
         ],
       },
       {
-        e: 2,
+        e: 1,
         v: [
-          resta(64, 28, "¿Cuánto es?"),
-          resta(83, 45, "¿Cuánto es?"),
-          resta(72, 36, "¿Cuánto es?"),
+          v("¿Cuántos votos más tiene la mora que la fresa?", "Fresa 6 · Mora 13 · Uva 4", opciones(7, 19, 63)),
+          v("¿Cuántos votos menos tiene el pez que el perro?", "Perro 14 · Gato 8 · Pez 5", opciones(9, 19, 145)),
+          v("¿Cuántos votos separan al rojo del azul?", "Rojo 14 · Azul 6 · Verde 6", opciones(8, 20, 146)),
         ],
       },
       {
@@ -345,6 +322,18 @@ const DBAS = {
         ],
       },
       {
+        e: 1,
+        /* El dibujo enseña las filas que hay; la pregunta pide una más. Contar
+           lo dibujado da 15, no 20: hay que ver de a cuánto va cada fila. Un
+           arreglo dibujado entero y preguntado por su total se contesta
+           contando, y eso ya se sabía desde primero. */
+        v: [
+          v("Hay 3 filas de 5 frutas. Si pones una fila más, ¿cuántas son?", "arreglo 3×5", opcionesMulti(20, 4, 5, 354)),
+          v("Hay 2 filas de 6 fichas. Si pones una fila más, ¿cuántas son?", "arreglo 2×6", opcionesMulti(18, 3, 6, 263)),
+          v("Hay 3 filas de 7 puntos. Si pones una fila más, ¿cuántas son?", "arreglo 3×7", opcionesMulti(28, 4, 7, 374)),
+        ],
+      },
+      {
         e: 2,
         v: [
           reparto(24, 4, "Reparte por igual. ¿Cuánto le toca a cada uno?"),
@@ -353,13 +342,28 @@ const DBAS = {
         ],
       },
       {
-        e: 2,
-        // Estimar no es calcular: la pregunta pide el redondeo, no el resultado,
-        // y por eso las opciones son decenas justas.
+        e: 1,
         v: [
-          v("Sin hacer la cuenta, ¿cerca de cuánto da 48 + 31?", null, ["80", "70", "90", "100"]),
-          v("Sin hacer la cuenta, ¿cerca de cuánto da 61 + 28?", null, ["90", "80", "100", "70"]),
-          v("Sin hacer la cuenta, ¿cerca de cuánto da 34 + 27?", null, ["60", "50", "70", "80"]),
+          v("Un dibujo vale 5 votos. ¿Cuántos votos sacó Ana?", "×5 votos · Ana 15 · Beto 25 · Caro 10", opcionesMulti(15, 3, 5, 41)),
+          v("Un dibujo vale 10 libros. ¿Cuántos libros hay de cuentos?", "×10 libros · Cuentos 30 · Poesía 20 · Ciencia 40", opcionesMulti(30, 3, 10, 73)),
+          v("Un dibujo vale 5 niños. ¿Cuántos niños vinieron el martes?", "×5 niños · Lunes 20 · Martes 35 · Miércoles 15", opcionesMulti(35, 7, 5, 112)),
+        ],
+      },
+      {
+        e: 2,
+        v: [
+          resta(64, 28, "¿Cuánto es?"),
+          resta(83, 45, "¿Cuánto es?"),
+          resta(72, 36, "¿Cuánto es?"),
+        ],
+      },
+      // --- ev2: calcular y estimar ---
+      {
+        e: 2,
+        v: [
+          suma(247, 135, "¿Cuánto es?"),
+          suma(368, 214, "¿Cuánto es?"),
+          suma(156, 273, "¿Cuánto es?"),
         ],
       },
     ],
@@ -393,6 +397,46 @@ const DBAS = {
           v("¿Cuál de estos números es el MAYOR?", null, ["620", "602", "612", "608"]),
         ],
       },
+      // --- ev3: hay más, hay menos, la misma cantidad ---
+      {
+        e: 3,
+        v: [
+          v("En un plato hay 7 uvas y en otro 7. ¿Cómo están?", null, [
+            "Hay la misma cantidad",
+            "Hay más en el primero",
+            "Hay más en el segundo",
+            "No alcanza el dato"
+          ]),
+          v("En un plato hay 12 uvas y en otro 8. ¿Cómo están?", null, [
+            "Hay más en el primero",
+            "Hay la misma cantidad",
+            "Hay más en el segundo",
+            "No alcanza el dato"
+          ]),
+          v("En un plato hay 6 uvas y en otro «varias». ¿Cómo están?", null, [
+            "No alcanza el dato",
+            "Hay la misma cantidad",
+            "Hay más en el primero",
+            "Hay más en el segundo"
+          ]),
+        ],
+      },
+      {
+        e: 1,
+        v: [
+          v("¿Cuál número está entre 250 y 300?", null, ["274", "250", "305", "247"]),
+          v("¿Cuál número está entre 400 y 450?", null, ["418", "400", "462", "395"]),
+          v("¿Cuál número está entre 700 y 800?", null, ["765", "700", "815", "697"]),
+        ],
+      },
+      {
+        e: 1,
+        v: [
+          v("¿Cuál número va justo ANTES del 700?", null, ["699", "701", "690", "600"]),
+          v("¿Cuál número va justo DESPUÉS del 899?", null, ["900", "898", "809", "890"]),
+          v("¿Cuál número va justo ANTES del 510?", null, ["509", "511", "500", "501"]),
+        ],
+      },
       {
         e: 1,
         v: [
@@ -414,22 +458,6 @@ const DBAS = {
             "930, 903, 390, 309",
             "903, 930, 309, 390",
           ]),
-        ],
-      },
-      {
-        e: 1,
-        v: [
-          v("¿Cuál número está entre 250 y 300?", null, ["274", "250", "305", "247"]),
-          v("¿Cuál número está entre 400 y 450?", null, ["418", "400", "462", "395"]),
-          v("¿Cuál número está entre 700 y 800?", null, ["765", "700", "815", "697"]),
-        ],
-      },
-      {
-        e: 1,
-        v: [
-          v("¿Cuál número va justo ANTES del 700?", null, ["699", "701", "690", "600"]),
-          v("¿Cuál número va justo DESPUÉS del 899?", null, ["900", "898", "809", "890"]),
-          v("¿Cuál número va justo ANTES del 510?", null, ["509", "511", "500", "501"]),
         ],
       },
       // --- ev2: la relación que se conserva, o no ---
@@ -457,6 +485,29 @@ const DBAS = {
         ],
       },
       {
+        e: 3,
+        v: [
+          v("Ana tiene 10 y Beto 14. ¿Qué haces para dejarlos iguales?", null, [
+            "Le doy 4 a Ana",
+            "Le doy 4 a Beto",
+            "Les doy 4 a los dos",
+            "Le quito 4 a Ana",
+          ]),
+          v("Ana tiene 15 y Beto 9. ¿Qué haces para dejarlos iguales?", null, [
+            "Le quito 6 a Ana",
+            "Le quito 6 a Beto",
+            "Les quito 6 a los dos",
+            "Le doy 6 a Ana",
+          ]),
+          v("Ana tiene 13 y Beto 8. ¿Qué haces para dejarlos iguales?", null, [
+            "Le doy 5 a Beto",
+            "Le quito 5 a Beto",
+            "Le doy 5 a Ana y 5 a Beto",
+            "Le quito 5 a Ana",
+          ]),
+        ],
+      },
+      {
         e: 2,
         v: [
           v("Antonio tiene más que Bea. A los dos les quitan 2.", null, [
@@ -476,6 +527,29 @@ const DBAS = {
             "Antonio queda con más",
             "Bea queda con más que Antonio",
             "Depende de cuánto tenía cada uno",
+          ]),
+        ],
+      },
+      {
+        e: 3,
+        v: [
+          v("Hay 8 y 8. ¿Qué operación deja el primero con más?", null, [
+            "Sumarle 3 al primero",
+            "Sumarle 3 a los dos",
+            "Quitarle 3 al primero",
+            "Quitarle 3 a los dos",
+          ]),
+          v("Hay 8 y 8. ¿Qué operación los deja como estaban?", null, [
+            "Sumarle 3 a los dos",
+            "Sumarle 3 al primero",
+            "Quitarle 3 al primero",
+            "Sumarle 3 solo al segundo",
+          ]),
+          v("Hay 8 y 8. ¿Qué operación deja el segundo con más?", null, [
+            "Quitarle 3 al primero",
+            "Quitarle 3 a los dos",
+            "Sumarle 3 al primero",
+            "Sumarle 3 a los dos",
           ]),
         ],
       },
@@ -501,76 +575,6 @@ const DBAS = {
             "Solo uno, el 2",
             "Muchos, del 2 en adelante",
             "Ninguno sirve",
-          ]),
-        ],
-      },
-      // --- ev3: hay más, hay menos, la misma cantidad ---
-      {
-        e: 3,
-        v: [
-          v("En un plato hay 7 uvas y en otro 7. ¿Cómo están?", null, [
-            "Hay la misma cantidad",
-            "Hay más en el primero",
-            "Hay más en el segundo",
-            "No alcanza el dato"
-          ]),
-          v("En un plato hay 12 uvas y en otro 8. ¿Cómo están?", null, [
-            "Hay más en el primero",
-            "Hay la misma cantidad",
-            "Hay más en el segundo",
-            "No alcanza el dato"
-          ]),
-          v("En un plato hay 6 uvas y en otro «varias». ¿Cómo están?", null, [
-            "No alcanza el dato",
-            "Hay la misma cantidad",
-            "Hay más en el primero",
-            "Hay más en el segundo"
-          ]),
-        ],
-      },
-      {
-        e: 3,
-        v: [
-          v("Ana tiene 10 y Beto 14. ¿Qué haces para dejarlos iguales?", null, [
-            "Le doy 4 a Ana",
-            "Le doy 4 a Beto",
-            "Les doy 4 a los dos",
-            "Le quito 4 a Ana",
-          ]),
-          v("Ana tiene 15 y Beto 9. ¿Qué haces para dejarlos iguales?", null, [
-            "Le quito 6 a Ana",
-            "Le quito 6 a Beto",
-            "Les quito 6 a los dos",
-            "Le doy 6 a Ana",
-          ]),
-          v("Ana tiene 13 y Beto 8. ¿Qué haces para dejarlos iguales?", null, [
-            "Le doy 5 a Beto",
-            "Le quito 5 a Beto",
-            "Le doy 5 a Ana y 5 a Beto",
-            "Le quito 5 a Ana",
-          ]),
-        ],
-      },
-      {
-        e: 3,
-        v: [
-          v("Hay 8 y 8. ¿Qué operación deja el primero con más?", null, [
-            "Sumarle 3 al primero",
-            "Sumarle 3 a los dos",
-            "Quitarle 3 al primero",
-            "Quitarle 3 a los dos",
-          ]),
-          v("Hay 8 y 8. ¿Qué operación los deja como estaban?", null, [
-            "Sumarle 3 a los dos",
-            "Sumarle 3 al primero",
-            "Quitarle 3 al primero",
-            "Sumarle 3 solo al segundo",
-          ]),
-          v("Hay 8 y 8. ¿Qué operación deja el segundo con más?", null, [
-            "Quitarle 3 al primero",
-            "Quitarle 3 a los dos",
-            "Sumarle 3 al primero",
-            "Sumarle 3 a los dos",
           ]),
         ],
       },
@@ -898,10 +902,17 @@ const DBAS = {
       },
       {
         e: 2,
+        /* Antes esto decía «Mides una tira con cuadrados de papel: caben 12» y
+           la respuesta era 12: el enunciado regalaba la respuesta y ningún
+           detector lo veía, porque todos ignoran los números.
+
+           Medir con una unidad no convencional sirve para COMPARAR, que es lo
+           que pide la evidencia. Las dos tiras se midieron con el mismo
+           cuadrado, así que sus números sí se pueden restar. */
         v: [
-          v("Mides una tira con cuadrados de papel: caben 12.", "arreglo 1×12", opciones(12, 6, 121)),
-          v("Mides una tira con cuadrados de papel: caben 15.", "arreglo 1×15", opciones(15, 5, 151)),
-          v("Mides una tira con cuadrados de papel: caben 9.", "arreglo 1×9", opciones(9, 3, 91)),
+          resta(12, 8, "La tira roja da 12 cuadrados y la azul 8. ¿Cuántos más?"),
+          resta(15, 9, "La cinta verde da 15 cuadrados y la gris 9. ¿Cuántos más?"),
+          resta(14, 5, "La cuerda larga da 14 cuadrados y la corta 5. ¿Cuántos más?"),
         ],
       },
       {
@@ -1569,6 +1580,14 @@ const DBAS = {
         ],
       },
       {
+        e: 2,
+        v: [
+          v("¿Cuál signo va en el espacio? 9 ? 4 = 13", null, ["El de sumar", "El de restar", "El de multiplicar", "El de repartir"]),
+          v("¿Cuál signo va en el espacio? 9 ? 4 = 5", null, ["El de restar", "El de sumar", "El de multiplicar", "El de repartir"]),
+          v("¿Cuál signo va en el espacio? 9 ? 4 = 36", null, ["El de multiplicar", "El de sumar", "El de restar", "El de repartir"]),
+        ],
+      },
+      {
         e: 1,
         // Secuencias que BAJAN: sin ellas, "seguir el patrón" se vuelve
         // "sumarle algo", y eso no es el patrón, es una costumbre.
@@ -1576,6 +1595,14 @@ const DBAS = {
           secuencia([30, 27, 24, 21], 18, [24, 19, 17], "¿Qué número sigue?"),
           secuencia([50, 45, 40, 35], 30, [40, 31, 25], "¿Qué número sigue?"),
           secuencia([100, 90, 80, 70], 60, [80, 65, 50], "¿Qué número sigue?"),
+        ],
+      },
+      {
+        e: 3,
+        v: [
+          v("¿Cuál de estas cuentas NO da 12?", null, ["7 + 4", "8 + 4", "6 + 6", "20 − 8"]),
+          v("¿Cuál de estas cuentas NO da 15?", null, ["9 + 7", "8 + 7", "10 + 5", "20 − 5"]),
+          v("¿Cuál de estas cuentas NO da 20?", null, ["12 + 9", "15 + 5", "10 + 10", "25 − 5"]),
         ],
       },
       {
@@ -1589,17 +1616,17 @@ const DBAS = {
       {
         e: 2,
         v: [
-          v("¿Cuál signo va en el espacio? 9 ? 4 = 13", null, ["El de sumar", "El de restar", "El de multiplicar", "El de repartir"]),
-          v("¿Cuál signo va en el espacio? 9 ? 4 = 5", null, ["El de restar", "El de sumar", "El de multiplicar", "El de repartir"]),
-          v("¿Cuál signo va en el espacio? 9 ? 4 = 36", null, ["El de multiplicar", "El de sumar", "El de restar", "El de repartir"]),
-        ],
-      },
-      {
-        e: 2,
-        v: [
           v("¿Cuál signo va en el espacio? 20 ? 5 = 4", null, ["El de repartir", "El de sumar", "El de restar", "El de multiplicar"]),
           v("¿Cuál signo va en el espacio? 6 ? 6 = 12", null, ["El de sumar", "El de restar", "El de multiplicar", "El de repartir"]),
           v("¿Cuál signo va en el espacio? 6 ? 6 = 36", null, ["El de multiplicar", "El de sumar", "El de restar", "El de repartir"]),
+        ],
+      },
+      {
+        e: 3,
+        v: [
+          v("El 12 se puede escribir de varias formas. ¿Cuál sirve?", null, ["4 × 3", "4 × 4", "5 × 3", "6 × 3"]),
+          v("El 18 se puede escribir de varias formas. ¿Cuál sirve?", null, ["6 × 3", "6 × 4", "5 × 3", "4 × 3"]),
+          v("El 24 se puede escribir de varias formas. ¿Cuál sirve?", null, ["8 × 3", "8 × 4", "6 × 3", "7 × 3"]),
         ],
       },
       {
@@ -1626,19 +1653,11 @@ const DBAS = {
         ],
       },
       {
-        e: 3,
+        e: 4,
         v: [
-          v("¿Cuál de estas cuentas NO da 12?", null, ["7 + 4", "8 + 4", "6 + 6", "20 − 8"]),
-          v("¿Cuál de estas cuentas NO da 15?", null, ["9 + 7", "8 + 7", "10 + 5", "20 − 5"]),
-          v("¿Cuál de estas cuentas NO da 20?", null, ["12 + 9", "15 + 5", "10 + 10", "25 − 5"]),
-        ],
-      },
-      {
-        e: 3,
-        v: [
-          v("El 12 se puede escribir de varias formas. ¿Cuál sirve?", null, ["4 × 3", "4 × 4", "5 × 3", "6 × 3"]),
-          v("El 18 se puede escribir de varias formas. ¿Cuál sirve?", null, ["6 × 3", "6 × 4", "5 × 3", "4 × 3"]),
-          v("El 24 se puede escribir de varias formas. ¿Cuál sirve?", null, ["8 × 3", "8 × 4", "6 × 3", "7 × 3"]),
+          v("Buscas dos números que sumen 9 y uno sea el doble del otro.", null, ["3 y 6", "4 y 5", "2 y 7", "1 y 8"]),
+          v("Buscas dos números que sumen 12 y uno sea el doble del otro.", null, ["4 y 8", "5 y 7", "3 y 9", "2 y 10"]),
+          v("Buscas dos números que sumen 15 y uno sea el doble del otro.", null, ["5 y 10", "6 y 9", "7 y 8", "4 y 11"]),
         ],
       },
       {
@@ -1658,14 +1677,6 @@ const DBAS = {
           v("De las parejas que suman 10, ¿cuál da el mayor al multiplicar?", null, ["5 y 5", "1 y 9", "2 y 8", "3 y 7"]),
           v("De las parejas que suman 8, ¿cuál da el mayor al multiplicar?", null, ["4 y 4", "1 y 7", "2 y 6", "3 y 5"]),
           v("De las parejas que suman 12, ¿cuál da el mayor al multiplicar?", null, ["6 y 6", "2 y 10", "3 y 9", "4 y 8"]),
-        ],
-      },
-      {
-        e: 4,
-        v: [
-          v("Buscas dos números que sumen 9 y uno sea el doble del otro.", null, ["3 y 6", "4 y 5", "2 y 7", "1 y 8"]),
-          v("Buscas dos números que sumen 12 y uno sea el doble del otro.", null, ["4 y 8", "5 y 7", "3 y 9", "2 y 10"]),
-          v("Buscas dos números que sumen 15 y uno sea el doble del otro.", null, ["5 y 10", "6 y 9", "7 y 8", "4 y 11"]),
         ],
       },
     ],

@@ -30,6 +30,10 @@ sembrar({
   // nuevo. El que está por defecto es la última que se aplicó.
   migracion: process.argv[2] ?? "0024_distractores_creibles",
   dir: __dirname,
+  /* En PRIMERO contar los objetos de un dibujo ES la materia: el DBA 2 se llama
+     «Contar y calcular de varias maneras» y el 10 pide contar para responder.
+     De segundo en adelante ya no, y el chequeo lo bloquea. */
+  limites: { contarEsLaMateria: true },
   encabezado: `-- Tres versiones de cada pregunta.
 -- Una lección se repite, y con una sola versión el niño acaba recordando "la
 -- segunda de la derecha" en vez de sumar. Cada ranura tiene ahora 3 versiones
