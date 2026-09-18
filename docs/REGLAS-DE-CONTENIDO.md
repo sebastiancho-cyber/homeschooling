@@ -228,6 +228,26 @@ le pasó. Los del grado 1:
 | `Diez más que 63` | `630` | "más diez" como "ponerle un cero" |
 | `4 + ? = 9` | `13` | sumó los dos números dados |
 
+**Ninguna pregunta puede depender de una convención que no se declaró.**
+*"¿Cuántas parejas de números suman 3?"* tiene dos respuestas defendibles: si
+1+2 y 2+1 son la misma pareja son **2**, y si son distintas son **4**. Estaba
+puesta con el 4 de respuesta y el 2 de distractor, así que el niño que razonaba
+bien quedaba castigado. Eso no mide la materia: mide si adivinaste la
+convención.
+
+Las preguntas de CONTAR POSIBILIDADES son las que caen aquí —¿el orden cuenta?,
+¿vale el cero?, ¿se repite?—. Hay dos salidas, y las dos sirven:
+
+- **Declarar la convención dentro de la opción.** *"Muchos, del 6 en adelante"*,
+  *"Solo tres: 0, 1 y 2"*. Así está bien hecho en el tema 3 del grado 2, y por
+  eso esas sí pasan.
+- **No preguntarlo.** La que sobraba se cambió por *"¿Cuál vale lo mismo que
+  8 + 5?"*, que mide la misma evidencia y solo tiene una respuesta.
+
+Es de la familia de [Lo que ninguna máquina ve](#lo-que-ninguna-máquina-ve): la
+pregunta está bien escrita, las cuatro opciones son distintas y la aritmética
+cuadra. Solo se ve pensándola dos veces.
+
 **Ningún distractor puede ser defendible.** *"¿Qué se puede medir de una
 piedra?"* tenía *"Su edad"* como opción incorrecta — y la edad de una piedra sí
 se mide. El niño que sabe de más no puede quedar castigado.

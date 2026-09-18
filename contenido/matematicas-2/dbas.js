@@ -1666,10 +1666,22 @@ const DBAS = {
       },
       {
         e: 3,
+        /* Aquí había un acertijo de conteo: «¿cuántas parejas de números suman
+           3, contando el 0?». Tenía DOS respuestas defendibles según qué se
+           entienda por pareja: si 1+2 y 2+1 son la misma, son 2; si son
+           distintas, son 4. Yo asumí lo segundo y puse el 2 de distractor, así
+           que el niño que razonaba bien quedaba castigado. Una pregunta cuya
+           respuesta depende de una convención que nadie declaró no mide la
+           materia, mide si adivinaste la convención.
+
+           En su lugar, dos sumas que valen lo mismo — que es la evidencia («un
+           número puede escribirse de varias maneras equivalentes») y de paso
+           entrena el paso por la decena, que es la estrategia que el MEN pide
+           para este grado. */
         v: [
-          v("¿Cuántas parejas de números suman 3, contando el 0?", null, ["4", "3", "2", "6"]),
-          v("¿Cuántas parejas de números suman 4, contando el 0?", null, ["5", "4", "3", "8"]),
-          v("¿Cuántas parejas de números suman 5, contando el 0?", null, ["6", "5", "4", "10"]),
+          v("¿Cuál vale lo mismo que 8 + 5?", null, ["10 + 3", "10 + 5", "8 + 3", "9 + 5"]),
+          v("¿Cuál vale lo mismo que 9 + 7?", null, ["10 + 6", "10 + 7", "9 + 6", "8 + 6"]),
+          v("¿Cuál vale lo mismo que 6 + 8?", null, ["10 + 4", "10 + 6", "6 + 7", "8 + 4"]),
         ],
       },
       {

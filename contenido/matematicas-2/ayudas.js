@@ -652,14 +652,14 @@ module.exports = {
     ],
     ojo: "Que dos cuentas se parezcan no quiere decir que den lo mismo: hay que resolverlas.",
   },
-  "9|¿Cuántas parejas de números suman 3, contando el 0?": {
-    pista: "Ve armando las parejas en orden, empezando por el cero, y cuéntalas.",
+  "9|¿Cuál vale lo mismo que 8 + 5?": {
+    pista: "Resuelve la cuenta del enunciado y después busca cuál de las opciones da lo mismo.",
     pasos: [
-      "Empieza por el cero y busca cuánto le falta para llegar al total.",
-      "Sigue con el uno, el dos, y así, hasta que empieces a repetir parejas al revés.",
-      "Cuenta cuántas te salieron.",
+      "Primero saca cuánto da la suma que te muestran.",
+      "Después ve probando las opciones hasta encontrar la que da ese mismo número.",
+      "Fíjate en las que empiezan por 10: esas se resuelven casi sin pensar.",
     ],
-    ojo: "Si cuentas por separado una pareja y la misma al revés, te da el doble de las que hay.",
+    ojo: "Dos sumas distintas pueden valer lo mismo; por eso una se puede cambiar por la otra.",
   },
   "9|De las parejas que suman 10, ¿cuál da el mayor al multiplicar?": {
     pista: "Multiplica cada pareja y compara los resultados: ahí se ve el patrón.",
