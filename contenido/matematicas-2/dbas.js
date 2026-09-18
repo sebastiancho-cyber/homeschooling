@@ -27,6 +27,7 @@ const {
   faltaIzq,
   secuencia,
   opciones,
+  opcionesMulti,
   multiplicacion,
   reparto,
   porCuanto,
@@ -261,9 +262,9 @@ const DBAS = {
       {
         e: 1,
         v: [
-          v("Un dibujo vale 5 votos. ¿Cuántos votos sacó Ana?", "×5 votos · Ana 15 · Beto 25 · Caro 10", opciones(15, 3, 41)),
-          v("Un dibujo vale 10 libros. ¿Cuántos libros hay de cuentos?", "×10 libros · Cuentos 30 · Poesía 20 · Ciencia 40", opciones(30, 3, 73)),
-          v("Un dibujo vale 5 niños. ¿Cuántos niños vinieron el martes?", "×5 niños · Lunes 20 · Martes 35 · Miércoles 15", opciones(35, 7, 112)),
+          v("Un dibujo vale 5 votos. ¿Cuántos votos sacó Ana?", "×5 votos · Ana 15 · Beto 25 · Caro 10", opcionesMulti(15, 3, 5, 41)),
+          v("Un dibujo vale 10 libros. ¿Cuántos libros hay de cuentos?", "×10 libros · Cuentos 30 · Poesía 20 · Ciencia 40", opcionesMulti(30, 3, 10, 73)),
+          v("Un dibujo vale 5 niños. ¿Cuántos niños vinieron el martes?", "×5 niños · Lunes 20 · Martes 35 · Miércoles 15", opcionesMulti(35, 7, 5, 112)),
         ],
       },
       // --- ev2: calcular y estimar ---
@@ -1677,9 +1678,9 @@ const DBAS = {
       {
         e: 3,
         v: [
-          v("Un dibujo vale 5 votos. ¿Cuántos votos sacó el candidato 2?", "×5 votos · Cand 1 20 · Cand 2 45 · Cand 3 25", opciones(45, 9, 452)),
-          v("Un dibujo vale 5 votos. ¿Cuántos votos sacó el candidato 3?", "×5 votos · Cand 1 30 · Cand 2 20 · Cand 3 40", opciones(40, 8, 403)),
-          v("Un dibujo vale 10 libros. ¿Cuántos libros hay de ciencia?", "×10 libros · Cuentos 40 · Poesía 20 · Ciencia 60", opciones(60, 6, 601)),
+          v("Un dibujo vale 5 votos. ¿Cuántos votos sacó el candidato 2?", "×5 votos · Cand 1 20 · Cand 2 45 · Cand 3 25", opcionesMulti(45, 9, 5, 452)),
+          v("Un dibujo vale 5 votos. ¿Cuántos votos sacó el candidato 3?", "×5 votos · Cand 1 30 · Cand 2 20 · Cand 3 40", opcionesMulti(40, 8, 5, 403)),
+          v("Un dibujo vale 10 libros. ¿Cuántos libros hay de ciencia?", "×10 libros · Cuentos 40 · Poesía 20 · Ciencia 60", opcionesMulti(60, 6, 10, 601)),
         ],
       },
       {
@@ -1708,9 +1709,9 @@ const DBAS = {
       {
         e: 3,
         v: [
-          v("Un dibujo vale 5 votos. ¿Cuántos votos hay en total?", "×5 votos · Ana 15 · Beto 10 · Caro 20", opciones(45, 9, 451)),
-          v("Un dibujo vale 10 votos. ¿Cuántos votos hay en total?", "×10 votos · Ana 20 · Beto 30 · Caro 10", opciones(60, 6, 602)),
-          v("Un dibujo vale 5 votos. ¿Cuántos votos hay en total?", "×5 votos · Ana 25 · Beto 5 · Caro 15", opciones(45, 9, 453)),
+          v("Un dibujo vale 5 votos. ¿Cuántos votos hay en total?", "×5 votos · Ana 15 · Beto 10 · Caro 20", opcionesMulti(45, 9, 5, 451)),
+          v("Un dibujo vale 10 votos. ¿Cuántos votos hay en total?", "×10 votos · Ana 20 · Beto 30 · Caro 10", opcionesMulti(60, 6, 10, 602)),
+          v("Un dibujo vale 5 votos. ¿Cuántos votos hay en total?", "×5 votos · Ana 25 · Beto 5 · Caro 15", opcionesMulti(45, 9, 5, 453)),
         ],
       },
       {
