@@ -5,13 +5,22 @@ equivocarnos muchas veces en el camino. Cada una dice **por qué** existe,
 casi siempre nombrando el error que la hizo necesaria: una regla sin su motivo
 se rompe apenas estorba.
 
-Aplican a cualquier grado y a cualquier área. El grado 1 es el ejemplo
-trabajado: su generador vive en [`contenido/matematicas-1/`](../contenido/),
-que tiene su propio README con el manual de la herramienta. El contenido se
-sembró con `supabase/migrations/0023_sin_fugas.sql` y las estaciones de repaso
-con `supabase/migrations/0022_lecciones_de_repaso.sql`.
+Aplican a cualquier grado y a cualquier área. Hay dos grados hechos, y el
+segundo le enseñó varias cosas a estas reglas: están anotadas donde
+corresponde, con el caso que las hizo necesarias.
 
-## Las diez que más importan
+| | Generador | Siembra |
+|---|---|---|
+| Matemáticas 1 | [`contenido/matematicas-1/`](../contenido/) | `0024_distractores_creibles.sql`, repasos en `0022` |
+| Matemáticas 2 | [`contenido/matematicas-2/`](../contenido/) | `0026_matematicas_grado2.sql`, contexto y repasos en `0025` |
+
+La maquinaria es una sola y vive en [`contenido/nucleo/`](../contenido/): los
+moldes de los distractores, los detectores de fugas, el control de calidad y el
+SQL. **Un grado son cuatro archivos y tres de ellos son contenido.** No se copia
+el núcleo: si se copiara, el día que un detector necesite un arreglo habría que
+aplicarlo en cada grado de cada área, o no quedaría aplicado.
+
+## Las once que más importan
 
 Si solo vas a leer una parte, que sea esta. Cada una tiene su sección.
 
@@ -35,6 +44,10 @@ Si solo vas a leer una parte, que sea esta. Cada una tiene su sección.
 10. **Lo automático no reemplaza leerlo.** Un revisor independiente encontró en
     el grado 1 las DOS fugas de mayor alcance, y las dos eran invisibles
     ejercicio por ejercicio: solo se ven mirando el banco entero. (§4, §9)
+11. **Y leerlo tampoco reemplaza medirlo.** Los dibujos se comprueban con las
+    cajas y los ángulos, no con una captura: cinco de cada doce marcas de los
+    relojes del grado 2 estaban fuera de la esfera y en pantalla parecían parte
+    del diseño. (§5)
 
 ---
 
@@ -62,6 +75,12 @@ falta?"* seguidas. Eso no es una lección, es una plana.
   de nombre.
 - **Más de cuatro acapara.** La lección se vuelve la misma pregunta repetida y
   las demás evidencias se quedan sin sitio.
+- **Salvo que el DBA traiga muy pocas evidencias.** El DBA 2 y el DBA 8 del
+  grado 2 traen **dos cada uno**: con el techo de cuatro, la lección más larga
+  posible sería de ocho ranuras y el mínimo de diez no se alcanzaría nunca. El
+  chequeo se contradecía a sí mismo, y no se vio hasta que un DBA real lo pisó.
+  El techo sube lo justo para que diez sea alcanzable —cinco por evidencia
+  cuando hay dos— y ni una más.
 - **El largo sale de ahí:** diez casi siempre, y más cuando el DBA trae tantas
   evidencias que con diez alguna se quedaría corta. El grado 1 tiene siete temas
   de diez ranuras, dos de once y uno de doce: los que necesitaban más sitio.
@@ -94,6 +113,19 @@ No todo lo que pide el ejemplo cabe en una selección múltiple —proponer y
 construir, no—, pero casi siempre hay una versión que sí: *"¿cuántas parejas
 sirven?"* mide lo mismo que *"indaga otras soluciones"*, y se puede contestar
 tocando una ficha.
+
+En el grado 2 esta regla cambió la forma de **cuatro de los once temas**, y no
+por matices:
+
+| DBA | Lo que parecía | Lo que pide el ejemplo oficial |
+|---|---|---|
+| 3 | valor posicional | el tablero de Sara, medio borrado: poner números **para que la relación se cumpla**, y discutir cuántos sirven |
+| 5 | medir con unidades | **señalar la pareja de relojes** de la hora de llegada |
+| 8 | hallar el valor que falta | una **cadena numérica** recorrida en los dos sentidos |
+| 10 | leer un gráfico | **comprobar cuatro afirmaciones** de un informe contra el pictograma |
+
+Ninguno de los cuatro se habría escrito así sin abrir el documento. Es la regla
+que más contenido cambia, y la más fácil de saltarse.
 
 **La ruta lleva además LECCIONES DE REPASO.** Una a la mitad y otra al cierre.
 Sin ellas, un niño puede aprobar los diez temas sin haber tenido que decidir
@@ -355,19 +387,40 @@ detectados solo cuando se dibujó:
 - La barra rotulada **"Rojo"** salía **azul**, porque el color lo repartía el
   turno en la paleta. Si la barra se llama Rojo, la barra es roja.
 
-**Los ocho tipos existentes.** Un tipo nuevo se agrega solo si sirve a varias
-ranuras; una animación por ejercicio no se mantiene.
+**Los trece tipos existentes.** Un tipo nuevo se agrega solo si sirve a varias
+ranuras; una animación por ejercicio no se mantiene. Los cinco últimos los pidió
+el grado 2, y los cinco salieron de un **ejemplo oficial** del MEN, no de una
+idea nuestra.
 
-| Tipo | Qué muestra |
-|---|---|
-| `contar` | objetos que aparecen uno a uno — conteo, pictogramas |
-| `juntar` | dos montones que se unen, el segundo **después** del primero |
-| `grupos` | montones iguales — contar de 2 en 2, de 5 en 5 |
-| `quitar` | los que se van se apagan — restas |
-| `comparar` | varias colecciones con nombre, alineadas para verlas sin contar |
-| `decenas` | columnas de diez + unidades sueltas — valor posicional |
-| `barras` | datos, votaciones y medidas que se comparan |
-| `figura` | una figura plana o un cuerpo, para contarle lados o esquinas |
+| Tipo | Qué muestra | Cómo se declara |
+|---|---|---|
+| `contar` | objetos que aparecen uno a uno | la línea es solo emojis |
+| `juntar` | dos montones que se unen, el segundo **después** del primero | `🍎🍎 + 🍎` |
+| `grupos` | montones iguales — contar de 2 en 2, de 5 en 5 | `2 + 2 + 2 = ?` |
+| `quitar` | los que se van se apagan — restas | `🍎🍎🍎 − 🍎` |
+| `comparar` | varias colecciones alineadas para verlas sin contar | `🍎🍎 · 🍎` |
+| `decenas` | columnas de diez + unidades sueltas | lo dice el enunciado |
+| `barras` | datos, votaciones y medidas que se comparan | `Rojo 3 · Azul 5` |
+| `figura` | una figura plana o un cuerpo, para contarle lados | lo dice el enunciado |
+| `arreglo` | filas iguales: el mismo montón se cuenta por filas o por columnas | `arreglo 3×4` |
+| `pictograma` | un dibujo vale VARIOS, con la escala dibujada debajo | `×5 votos · Ana 15 · Beto 25` |
+| `lineas` | horizontal, vertical, paralelas, perpendiculares | `lineas paralelas` |
+| `reloj` | manecillas, para leer la hora | `reloj 3:45` |
+| `cadena` | entra un número, pasa por operaciones y sale otro | `cadena 4 \| +3 \| −2 \| ?` |
+
+**Un pictograma cuya escala no se ve no es un pictograma: es una cuenta mal
+hecha.** La leyenda («🟦 = 5 votos») es parte del dibujo, no un pie de foto. Y
+el icono tiene que ser una figura simple y de un solo color: la urna de votación
+🗳️ al tamaño de un pictograma es un borrón gris que no se distingue de otro.
+
+**Una línea suelta no es horizontal ni vertical.** Solo lo es contra algo. Por
+eso el tipo `lineas` dibuja un marco: el marco es el suelo y la pared contra los
+que la línea significa algo.
+
+**Un reloj que no mueva la manecilla de las horas enseña a leer la hora mal.**
+Avanza medio grado por minuto: a las 3:30 no apunta al 3, apunta entre el 3 y el
+4. Eso no es un detalle estético — es exactamente lo que confunde a un niño que
+está aprendiendo, y un reloj que lo ignore le enseña una regla falsa.
 
 **A veces el dibujo va en las OPCIONES, no en el enunciado.** Es la diferencia
 entre *escoger la palabra "triángulo"* y *mirar cuál de estos tiene 3 lados*. El
@@ -393,6 +446,23 @@ puntas romas deja de servir para contar puntas.
 en dos renglones deja de servir para comparar de un vistazo, que es justo para
 lo que existe. Por eso el icono se achica según la fila más larga en vez de
 envolverse.
+
+**Un dibujo se verifica MIDIÉNDOLO, no mirándolo.** Cinco de las doce marcas de
+cada reloj del grado 2 quedaban fuera de la esfera, una de ellas cuarenta y
+cuatro píxeles arriba, y en una captura de pantalla parecían parte del diseño.
+Se vieron comparando la caja de cada marca contra la del reloj, desde la consola
+del navegador. La causa era de geometría y no de gusto: al componer `translate`
+con `rotate` en el mismo `transform`, el punto de giro no queda en el centro
+sino en el borde, y lo que gira sale volando.
+
+Después de dibujar algo nuevo, tres medidas que valen más que una mirada:
+
+- que ninguna parte se salga de su contenedor,
+- que lo que debe ir en una sola fila ocupe una sola fila —la cadena numérica se
+  partía en tres renglones en un teléfono, y una cadena partida deja de leerse
+  de izquierda a derecha—,
+- que los ángulos y las cantidades sean los que dicen ser: 9:15 pone la
+  manecilla de las horas en 277,5 grados, no en 270.
 
 **Sin archivos.** Emoji y CSS sobre marcado normal: nada que descargar, ningún
 temporizador de JavaScript que pueda quedar corriendo. Con
@@ -426,13 +496,22 @@ sirve para las tres versiones de la ranura, porque las tres miden la misma idea.
 Por eso una explicación escrita **no puede nombrar los números de una versión
 concreta**; cuando pone un ejemplo, dice "por ejemplo".
 
+**Mostrar la operación y derivar de ella la explicación son dos cosas
+distintas.** Una cadena numérica se ve como cajas y flechas, no como el texto
+`cadena 4 | +3 | −2 | ?`; pero de ese texto salen unos pasos que cambian con los
+números, que es mejor que cualquier explicación escrita a mano. Por eso existe
+`config.ayudaOp`: le lleva la línea a `ayudaPara()` sin pintarla. Antes, todo
+dibujo que reemplazaba la línea condenaba a su ejercicio a llevar ayuda escrita
+aunque la app supiera explicarlo solo.
+
 **Se explica como se enseña, no como se demuestra.** *"7 − 2 = 5"* no le enseña
 nada a quien no supo hacerlo. *"Empieza en 7 y cuenta 2 hacia atrás: 6, 5"*, sí.
 
 **El `ojo` nombra el error que la pregunta persigue.** Si una pregunta no
 persigue ningún error concreto, probablemente no está midiendo nada.
 
-En el grado 1: 85 ranuras escritas (255 ejercicios) y 19 derivadas (57).
+En el grado 1: 84 ranuras escritas (252 ejercicios) y 20 derivadas (60).
+En el grado 2: 94 escritas (282) y 18 derivadas (54).
 
 ---
 
@@ -445,8 +524,15 @@ Como referencia de arranque —siempre a contrastar contra el texto oficial—:
 | Grado | Cálculo | Nota |
 |---|---|---|
 | 1 | 0–20; valor posicional hasta 99 | dos dígitos, sin llevar más allá del paso por el diez |
-| 2 | hasta 999 | aditivos con reagrupación |
+| 2 | hasta 999 | aditivos con reagrupación; multiplicación y reparto sencillos |
 | 3 | hasta 9.999; multiplicación y división | |
+
+El del grado 2 ya está contrastado contra el texto oficial y es el que usa su
+generador. Ojo con una consecuencia: **contar hacia adelante deja de servir
+apenas los dos números pasan de diez**. Nadie suma 247 + 135 contando. Un grado
+que suba el rango tiene que llevar a `ayudaPara()` la manera en que de verdad se
+enseña a esa edad —por columnas, con la que se lleva y la que se presta dichas
+en voz alta— o sus explicaciones serán correctas y absurdas a la vez.
 
 **Un número fuera de rango solo se permite como distractor deliberado o como
 código.** `502` está en el grado 1 porque es el error clásico de escribir
@@ -518,6 +604,20 @@ chequeos automáticos.
    No se reescriben ni se resumen. El ejemplo se lee antes de escribir la
    primera pregunta: es la tarea de verdad, y la pregunta que uno escribe sin
    mirarlo suele ser su sombra (sección 1).
+
+   El documento es *Derechos Básicos de Aprendizaje V.2, Matemáticas*, del MEN.
+   Vive en el portal del Ministerio y pesa 11 MB, más de lo que admite una
+   descarga normal de página, así que se baja aparte y se lee con `pdftotext`:
+
+   ```bash
+   pdftotext -enc UTF-8 -layout dba_matematicas.pdf dba.txt
+   ```
+
+   **Cuidado al leerlo: está en dos columnas y el texto plano las entrelaza.**
+   Las evidencias de un DBA aparecen intercaladas con las del DBA de al lado, y
+   atribuirle a uno las evidencias del otro es un error que ningún chequeo
+   posterior puede detectar. Se lee despacio y se verifica que cada evidencia
+   hable de lo que dice su enunciado.
 2. **Repartir las ranuras** entre las evidencias, 2 a 4 cada una, antes de
    redactar nada. Es lo que decide el largo de la lección.
 3. **Escribir el generador del grado** — un archivo, única fuente de verdad.
@@ -553,10 +653,13 @@ chequeos automáticos.
 
 Honestidad sobre los límites, para no fingir cobertura:
 
-- **Pictogramas con escala** (1 dibujo = 5 niños). Aparecen desde el DBA 10 del
-  grado 2. El tipo `contar` dibuja uno por uno y sería falso ahí.
-- **Probabilidad** (DBA 11 de los grados 2 y 3). No hay ningún tipo de dibujo ni
-  de interacción que la sostenga.
+- ~~**Pictogramas con escala**~~ — **hecho** en el grado 2: el tipo
+  `pictograma` dibuja la escala debajo, que es lo que lo vuelve honesto.
+- ~~**Probabilidad**~~ — **hecho** en el grado 2, y resultó no necesitar dibujo
+  ninguno. Sus evidencias son *posible / imposible / seguro* y *predecir con lo
+  observado*, y eso se pregunta con palabras. La suposición de que hacía falta
+  una interacción nueva estaba equivocada: el que escribió esta línea no había
+  leído las evidencias.
 - **Evidencias de *crear*.** Varias piden que el niño *dibuje* o *construya* un
   pictograma. Una pregunta de selección múltiple no puede medir eso; hoy se
   cubren de lado, preguntando por lo que el niño tendría que haber decidido al

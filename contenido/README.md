@@ -17,11 +17,13 @@ contenido/
     calidad.js             todos los chequeos
     sembrar.js             arma el SQL y lo escribe
   fugas.js                 los detectores de respuestas que se delatan
+  probar-ayuda.mjs         qué le dice la app al niño cuando falla
   matematicas-1/
     generar.js             ~40 líneas: junta las piezas
     dbas.js                EL CONTENIDO del grado
     ayudas.js              las explicaciones escritas
     excepciones.js         los falsos positivos revisados, con su motivo
+  matematicas-2/           los mismos cuatro archivos
 ```
 
 **La división es la que importa.** Un grado son cuatro archivos y tres de ellos
