@@ -528,11 +528,28 @@ Como referencia de arranque —siempre a contrastar contra el texto oficial—:
 | 3 | hasta 9.999; multiplicación y división | |
 
 El del grado 2 ya está contrastado contra el texto oficial y es el que usa su
-generador. Ojo con una consecuencia: **contar hacia adelante deja de servir
-apenas los dos números pasan de diez**. Nadie suma 247 + 135 contando. Un grado
-que suba el rango tiene que llevar a `ayudaPara()` la manera en que de verdad se
-enseña a esa edad —por columnas, con la que se lleva y la que se presta dichas
-en voz alta— o sus explicaciones serán correctas y absurdas a la vez.
+generador.
+
+**El rango no dice CÓMO se calcula, y esa es una regla aparte.** Que el grado 2
+llegue a 999 no autoriza a enseñar la suma en columna. La evidencia del DBA 2
+dice, con estas palabras, «usa algoritmos **no convencionales** para calcular o
+estimar», y las Mallas de Aprendizaje del mismo grado lo repiten de frente:
+«encontrar estrategias […] **sin utilizar los algoritmos clásicos de suma y
+resta**». Las que sí nombran son redondear a la decena más cercana, contar de
+10 en 10 desde uno de los números, y usar los dobles.
+
+La palabra «estandarizados» no aparece en el documento hasta **grado 4**. El
+grado 3 todavía habla de descomponer y de completar hasta la decena.
+
+Esto ya se rompió una vez: `83 − 45` se explicaba con «a 3 no le alcanza para
+quitarle 5, le pide una decena a la columna de al lado» —el algoritmo clásico,
+tres años adelantado— y lo encontró el director jugando, no un chequeo. Ahora
+la misma resta se explica completando: *de 45 a 50 son 5, de 50 a 80 son 30, de
+80 a 83 son 3*. Mismo resultado, y es el método que el grado tiene que aprender.
+
+**Antes de escribir un cálculo, hay que mirar qué MÉTODO pide el grado, no solo
+qué números le caben.** Un ejercicio con los números correctos y el método
+equivocado enseña algo que el niño va a tener que desaprender.
 
 **Un número fuera de rango solo se permite como distractor deliberado o como
 código.** `502` está en el grado 1 porque es el error clásico de escribir

@@ -44,9 +44,6 @@ const haciaAtras = (desde: number, cuantos: number) =>
    niño acabe usando. */
 const MAX_PASOS = 6;
 
-/* Descompone un número en centenas, decenas y unidades. */
-const cdu = (n: number) => ({ c: Math.floor(n / 100), d: Math.floor((n % 100) / 10), u: n % 10 });
-
 /* Sumar o restar una decena entera —10, 20, 100— no se cuenta: se le cambia
    una cifra al número. Es la estrategia que el DBA quiere que el niño use, y
    sin esta rama la explicación general salía con números negativos: "a 42 le
@@ -72,61 +69,66 @@ function decenaRedonda(a: number, b: number, suma: boolean): Ayuda {
   };
 }
 
-/* La suma y la resta en columna, que es lo que el grado 2 tiene que aprender.
-   Contar hacia adelante deja de servir apenas los dos números pasan de diez:
-   nadie suma 247 + 135 contando. */
-function columnaSuma(a: number, b: number): Ayuda {
-  const A = cdu(a), B = cdu(b);
-  const pasos: string[] = ["Se suma por columnas: unidades con unidades, decenas con decenas."];
-  const u = A.u + B.u;
-  const llevoU = u >= 10 ? 1 : 0;
-  pasos.push(
-    llevoU
-      ? `Unidades: ${A.u} + ${B.u} = ${u}. Eso es 1 decena y ${u - 10} unidades: escribes ${u - 10} y llevas 1.`
-      : `Unidades: ${A.u} + ${B.u} = ${u}.`,
-  );
-  const d = A.d + B.d + llevoU;
-  const llevoD = d >= 10 ? 1 : 0;
-  pasos.push(
-    llevoD
-      ? `Decenas: ${A.d} + ${B.d}${llevoU ? " y la que llevas" : ""} = ${d}. Escribes ${d - 10} y llevas 1 a las centenas.`
-      : `Decenas: ${A.d} + ${B.d}${llevoU ? " y la que llevas" : ""} = ${d}.`,
-  );
-  if (A.c + B.c + llevoD > 0) pasos.push(`Centenas: ${A.c} + ${B.c}${llevoD ? " y la que llevas" : ""} = ${A.c + B.c + llevoD}.`);
-  pasos.push(`En total, ${a + b}.`);
+/* Sumar y restar SIN el algoritmo clásico.
+
+   Esto no es una preferencia nuestra: el MEN lo pide con esas palabras. La
+   evidencia del DBA 2 del grado 2 dice «usa algoritmos NO CONVENCIONALES para
+   calcular o estimar», y sus Mallas de Aprendizaje lo repiten de frente —
+   «encontrar estrategias […] sin utilizar los algoritmos clásicos de suma y
+   resta»— y nombran cuáles sí: redondear a la decena más cercana, contar de 10
+   en 10 desde uno de los números, y usar los dobles.
+
+   La palabra «estandarizados» no aparece hasta GRADO 4. El grado 3 todavía
+   habla de descomponer y de completar hasta la decena.
+
+   Lo que había aquí antes era el algoritmo de columnas con la que se lleva y la
+   que se presta: correcto de resultado, y tres años adelantado. Lo encontró el
+   director jugando 83 − 45.
+
+   Cuando llegue el grado 4 habrá que agregar el algoritmo estandarizado al
+   lado de estos, no en vez de ellos: ahí el DBA sí lo pide. */
+
+/** Restar completando hasta la decena, que es lo que el MEN nombra.
+ *  83 − 45: de 45 a 50 son 5, de 50 a 80 son 30, de 80 a 83 son 3 → 38. */
+function restaCompletando(a: number, b: number): Ayuda {
+  const aLaDecena = (10 - (b % 10)) % 10;
+  const desdeDecena = b + aLaDecena;
+  const decenaDeA = a - (a % 10);
+  const porDecenas = decenaDeA - desdeDecena;
+  const sueltas = a - decenaDeA;
+  const tramos: string[] = [];
+  if (aLaDecena) tramos.push(`de ${b} a ${desdeDecena} hay ${aLaDecena}`);
+  if (porDecenas) tramos.push(`de ${desdeDecena} a ${decenaDeA} hay ${porDecenas}`);
+  if (sueltas) tramos.push(`de ${decenaDeA} a ${a} hay ${sueltas}`);
   return {
-    pista: "Súmalos por columnas, empezando por las unidades: si se pasan de diez, llevas una a las decenas.",
-    pasos,
-    ojo: llevoU
-      ? "Lo que más se falla es olvidar la que se lleva. Si las unidades pasan de 9, hay una decena esperando."
-      : "Cada columna se suma aparte: las unidades no se mezclan con las decenas.",
+    pista: "No cuentes hacia atrás: cuenta hacia adelante desde el número pequeño, parando en las decenas.",
+    pasos: [
+      `Restar es ver cuánto hay de ${b} hasta ${a}.`,
+      `Ve por tramos, apoyándote en las decenas: ${tramos.join(", ")}.`,
+      `Junta los tramos: ${[aLaDecena, porDecenas, sueltas].filter(Boolean).join(" + ")} = ${a - b}.`,
+    ],
+    ojo: "Parar en la decena es lo que hace fácil el salto largo: de una decena a otra se cuenta de 10 en 10.",
   };
 }
 
-function columnaResta(a: number, b: number): Ayuda {
-  const A = cdu(a), B = cdu(b);
-  const pasos: string[] = ["Se resta por columnas: unidades con unidades, decenas con decenas."];
-  const prestaU = A.u < B.u;
-  pasos.push(
-    prestaU
-      ? `Unidades: a ${A.u} no le alcanza para quitarle ${B.u}. Le pide una decena a la columna de al lado y se vuelve ${A.u + 10}: ${A.u + 10} − ${B.u} = ${A.u + 10 - B.u}.`
-      : `Unidades: ${A.u} − ${B.u} = ${A.u - B.u}.`,
-  );
-  const dA = A.d - (prestaU ? 1 : 0);
-  const prestaD = dA < B.d;
-  pasos.push(
-    prestaD
-      ? `Decenas: a ${dA} no le alcanza para quitarle ${B.d}. Le pide una centena y se vuelve ${dA + 10}: ${dA + 10} − ${B.d} = ${dA + 10 - B.d}.`
-      : `Decenas: ${prestaU ? `a ${A.d} le prestaste una, así que queda ${dA}. ` : ""}${dA} − ${B.d} = ${dA - B.d}.`,
-  );
-  if (A.c > 0 || B.c > 0) pasos.push(`Centenas: ${A.c - (prestaD ? 1 : 0)} − ${B.c} = ${A.c - (prestaD ? 1 : 0) - B.c}.`);
-  pasos.push(`Quedan ${a - b}.`);
+/** Sumar descomponiendo el segundo número: primero sus decenas, después sus
+ *  unidades. 247 + 135: 247 + 100 = 347, + 30 = 377, + 5 = 382. */
+function sumaDescomponiendo(a: number, b: number): Ayuda {
+  const partes = [Math.floor(b / 100) * 100, Math.floor((b % 100) / 10) * 10, b % 10].filter(Boolean);
+  const cuenta: string[] = [];
+  let n = a;
+  for (const p of partes) {
+    cuenta.push(`${n} + ${p} = ${n + p}`);
+    n += p;
+  }
   return {
-    pista: "Réstalos por columnas, empezando por las unidades: si no alcanzan, le piden una decena a la de al lado.",
-    pasos,
-    ojo: prestaU
-      ? "Pedir prestado no es gratis: la columna que prestó se queda con uno menos."
-      : "Cada columna se resta aparte, y siempre se empieza por las unidades.",
+    pista: "No los sumes de un solo golpe: parte el segundo número y ve agregándolo por pedazos.",
+    pasos: [
+      `${b} se puede partir en ${partes.join(" + ")}.`,
+      `Agrégale los pedazos a ${a}, uno por uno: ${cuenta.join(", luego ")}.`,
+      `En total, ${a + b}.`,
+    ],
+    ojo: "Sumar de a pedazos redondos es más seguro que sumar cifra por cifra, y se puede hacer de cabeza.",
   };
 }
 
@@ -261,14 +263,14 @@ export function ayudaPara(operation: string | undefined): Ayuda | null {
     const a = Number(sumaGrande[1]);
     const b = Number(sumaGrande[2]);
     if (a >= 10 && b >= 10 && ((b % 10 === 0 && b < 100) || b % 100 === 0)) return decenaRedonda(a, b, true);
-    if (a >= 10 && b >= 10) return columnaSuma(a, b);
+    if (a >= 10 && b >= 10) return sumaDescomponiendo(a, b);
   }
   const restaGrande = op.match(/^(\d+) [−-] (\d+) = \?$/);
   if (restaGrande) {
     const a = Number(restaGrande[1]);
     const b = Number(restaGrande[2]);
     if (a >= 10 && b >= 10 && ((b % 10 === 0 && b < 100) || b % 100 === 0)) return decenaRedonda(a, b, false);
-    if (a >= 10 && b >= 10) return columnaResta(a, b);
+    if (a >= 10 && b >= 10) return restaCompletando(a, b);
   }
 
 
